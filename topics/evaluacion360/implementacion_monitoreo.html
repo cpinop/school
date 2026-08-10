@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementación y Monitoreo: Evaluación 360° | Organización Cultural</title>
+    <style>
+        :root {
+            --bg-main: #09090b;
+            --bg-card: #141419;
+            --bg-card-hover: #1c1c24;
+            --border-color: #27272a;
+            --red-dark: #7f1d1d;
+            --red-primary: #991b1b;
+            --red-accent: #dc2626;
+            --red-glow: rgba(220, 38, 38, 0.25);
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --graphite: #1f2937;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER & PROGRESS BAR */
+        header {
+            background: rgba(18, 18, 22, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--red-accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--red-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--red-accent);
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .progress-bar-bg {
+            height: 6px;
+            background: var(--graphite);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--red-primary), var(--red-accent));
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--red-glow);
+        }
+
+        .trust-meter {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .trust-score {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* SLIDE CONTAINER & MAIN CONTENT */
+        main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--red-accent);
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.3rem; margin-top: 1rem; }
+
+        p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+        }
+
+        /* UI ELEMENTS: BULLETS, CARDS & DIAGRAMS */
+        .bullet-list {
+            list-style: none;
+            margin: 1.2rem 0;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .bullet-list.check li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .bullet-list.cross li::before {
+            content: '✘';
+            position: absolute;
+            left: 0;
+            color: var(--red-accent);
+            font-weight: bold;
+        }
+
+        .bullet-list.arrow li::before {
+            content: '➡';
+            position: absolute;
+            left: 0;
+            color: var(--red-accent);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .interactive-card {
+            background: rgba(31, 41, 55, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-card:hover {
+            border-color: var(--red-accent);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .interactive-card.selected {
+            border-color: var(--red-accent);
+            background: rgba(127, 29, 29, 0.2);
+            box-shadow: 0 0 15px var(--red-glow);
+        }
+
+        /* FOLDER SYSTEM (CLASE 1) */
+        .folder-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin: 1.5rem 0;
+        }
+
+        .folder-item {
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .folder-item.active {
+            border-color: var(--red-accent);
+            background: linear-gradient(90deg, rgba(153, 27, 27, 0.4), var(--graphite));
+            color: #fff;
+            box-shadow: inset 4px 0 0 var(--red-accent);
+        }
+
+        .folder-item.done {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* OPTIONS / QUIZ BUTTONS */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .opt-btn {
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .opt-btn:hover {
+            border-color: var(--red-accent);
+            background: var(--bg-card-hover);
+        }
+
+        .opt-btn .badge {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .feedback-box {
+            display: none;
+            margin-top: 1.2rem;
+            padding: 1.2rem;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .feedback-box.incorrect { border-color: var(--red-accent); background: rgba(220, 38, 38, 0.1); }
+
+        /* DIAGRAMS & TIMELINES */
+        .diagram-container {
+            background: rgba(15, 15, 20, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-node {
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            padding: 1rem 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .timeline-node.active {
+            border-color: var(--red-accent);
+            background: rgba(153, 27, 27, 0.3);
+        }
+
+        .timeline-node h4 {
+            color: var(--red-accent);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        /* DASHBOARD METRICS (CLASE 2) */
+        .dashboard-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 0.6rem;
+        }
+
+        .metric-bar-bg {
+            width: 50%;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-bar-val {
+            height: 100%;
+            background: var(--red-accent);
+            border-radius: 4px;
+        }
+
+        /* FOOTER & CONTROLS */
+        footer {
+            background: rgba(18, 18, 22, 0.95);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        .nav-btn.primary {
+            background: var(--red-primary);
+            border-color: var(--red-accent);
+            box-shadow: 0 0 10px var(--red-glow);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: var(--red-accent);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* FORM CONTROLS FOR PLAN DE MEJORA */
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .form-control {
+            width: 100%;
+            background: var(--graphite);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 0.6rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .slide { padding: 1.5rem; }
+            .timeline-grid { grid-template-columns: 1fr 1fr; }
+            .progress-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="brand-title">360° Corp Cultural</div>
+        <div class="progress-container">
+            <div class="progress-label">
+                <span id="slide-title-header">Cargando...</span>
+                <span id="slide-num-header">1 / 23</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-bar"></div>
+            </div>
+        </div>
+        <div class="trust-meter">
+            <span>Confianza Org:</span>
+            <span class="trust-score" id="trust-score">100%</span>
+        </div>
+    </header>
+
+    <!-- MAIN SLIDE CONTAINER -->
+    <main>
+
+        <!-- SLIDE 1: PANTALLA INICIAL CLASE 1 -->
+        <section class="slide active" id="slide-1">
+            <span class="slide-tag">Clase 1: Implementación</span>
+            <h2>Evaluación 360° en la Organización Cultural</h2>
+            <p>Tema central: <em>"Ya diseñamos la evaluación. Ahora debemos implementarla correctamente para que las personas confíen en ella y los resultados realmente sirvan para mejorar la organización."</em></p>
+            
+            <div class="folder-stack">
+                <div class="folder-item done">✓ Planificación</div>
+                <div class="folder-item done">✓ Análisis</div>
+                <div class="folder-item done">✓ Diseño</div>
+                <div class="folder-item active">➡ Implementación (Clase 1)</div>
+                <div class="folder-item">Monitoreo (Clase 2)</div>
+            </div>
+            <p style="font-size: 0.85rem; text-align: center;">Haz clic en <strong>Siguiente</strong> para comenzar el despliegue.</p>
+        </section>
+
+        <!-- SLIDE 2: OBJETIVOS CLASE 1 -->
+        <section class="slide" id="slide-2">
+            <span class="slide-tag">Clase 1: Objetivos</span>
+            <h2>Objetivos de Aprendizaje</h2>
+            <p>Al finalizar esta primera sesión estarás capacitado/a para:</p>
+            <ul class="bullet-list check">
+                <li>Organizar una implementación estratégica y ordenada.</li>
+                <li>Evitar errores frecuentes que destruyen la confianza del equipo.</li>
+                <li>Decidir qué hacer ante distintas incidencias operativas.</li>
+                <li>Planificar un calendario de aplicación realista.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 3: ANTES DE COMENZAR -->
+        <section class="slide" id="slide-3">
+            <span class="slide-tag">Pregunta Interactiva</span>
+            <h2>Antes de comenzar...</h2>
+            <p>¿Qué crees que es más importante para asegurar el éxito del proceso?</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="checkPoll(1, this)"><span class="badge">A</span> Tener una buena encuesta bien redactada</button>
+                <button class="opt-btn" onclick="checkPoll(2, this)"><span class="badge">B</span> Que las personas respondan con total honestidad</button>
+                <button class="opt-btn" onclick="checkPoll(3, this)"><span class="badge">C</span> Analizar rigurosamente los datos</button>
+                <button class="opt-btn" onclick="checkPoll(4, this)"><span class="badge">D</span> Dar un feedback estructurado</button>
+            </div>
+            <div class="feedback-box" id="poll-feedback">
+                <strong style="color: var(--red-accent);">¡Clave Estratégica!</strong>
+                <p style="margin-top:0.5rem;">La encuesta técnica representa <strong>quizá solo un 20% del éxito</strong>. El otro <strong>80% depende de cómo se implementa</strong> el proceso y de la cultura de confianza generada.</p>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: CASO 1 -->
+        <section class="slide" id="slide-4">
+            <span class="slide-tag">Caso Práctico 1</span>
+            <h2>La prisa de la Dirección</h2>
+            <p>La Directora Ejecutiva de la organización cultural se acerca y te dice:</p>
+            <div style="background: rgba(220,38,38,0.1); border-left: 3px solid var(--red-accent); padding: 1rem; margin-bottom: 1.2rem; font-style: italic;">
+                "Ya tenemos listo el formulario. Mañana mismo enviémoslo por correo masivo a todos para ganar tiempo."
+            </div>
+            <p>¿Qué haces?</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="answerCase1('A', this)"><span class="badge">A</span> Perfecto. Acepto y envío el correo de inmediato.</button>
+                <button class="opt-btn" onclick="answerCase1('B', this)"><span class="badge">B</span> Detengo el envío y sugiero informar primero a toda la organización.</button>
+                <button class="opt-btn" onclick="answerCase1('C', this)"><span class="badge">C</span> Enviar sólo a los jefes de área para probar.</button>
+            </div>
+            <div class="feedback-box" id="case1-feedback"></div>
+        </section>
+
+        <!-- SLIDE 5: PASO 1 - COMUNICAR -->
+        <section class="slide" id="slide-5">
+            <span class="slide-tag">Paso 1: Comunicar</span>
+            <h2>La Regla de Oro antes de evaluar</h2>
+            <p>Antes de que cualquier persona abra la encuesta, toda la organización debe tener absoluta claridad sobre:</p>
+            <div class="card-grid">
+                <div class="interactive-card">
+                    <h4 style="color:var(--red-accent); margin-bottom:0.4rem;">1. Propósito</h4>
+                    <p style="font-size:0.85rem;">Para qué sirve exactamente el proceso y qué busca mejorar.</p>
+                </div>
+                <div class="interactive-card">
+                    <h4 style="color:var(--red-accent); margin-bottom:0.4rem;">2. Acceso</h4>
+                    <p style="font-size:0.85rem;">Quiénes verán los resultados consolidados.</p>
+                </div>
+                <div class="interactive-card">
+                    <h4 style="color:var(--red-accent); margin-bottom:0.4rem;">3. Uso</h4>
+                    <p style="font-size:0.85rem;">Cómo se utilizarán los datos (desarrollo, no castigo).</p>
+                </div>
+                <div class="interactive-card">
+                    <h4 style="color:var(--red-accent); margin-bottom:0.4rem;">4. Futuro</h4>
+                    <p style="font-size:0.85rem;">Qué ocurrirá exactamente después de cerrar la medición.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: ERROR FRECUENTE -->
+        <section class="slide" id="slide-6">
+            <span class="slide-tag">Error Frecuente</span>
+            <h2>El mito del "Anonymato Garantizado"</h2>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(0,0,0,0.4); border-radius: 8px; margin-bottom: 1rem;">
+                <span style="font-size: 3rem;">❌</span>
+                <p style="color: var(--red-accent); font-weight: 700; margin-top: 0.5rem;">"Es completamente anónimo..."</p>
+                <p style="font-size: 0.85rem;">...pero luego Recursos Humanos rastrea quién respondió exactamente a qué hora.</p>
+            </div>
+            <h3>Discusión de Impacto:</h3>
+            <p>Prometer confidencialidad y violarla (o generar sospechas) <strong>destruye la confianza organizacional</strong> de forma irreversible. Si la gente sospecha, responderá respuestas complacientes (sesgo de deseabilidad).</p>
+        </section>
+
+        <!-- SLIDE 7: TIPS QUÉ HACER Y QUÉ NO HACER -->
+        <section class="slide" id="slide-7">
+            <span class="slide-tag">Guía de Decisión</span>
+            <h2>Tips de Implementación</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--success); margin-bottom: 0.5rem;">✔ Qué HACER</h4>
+                    <ul class="bullet-list check" style="font-size: 0.85rem;">
+                        <li>Explicar objetivos pedagógicos e institucionales.</li>
+                        <li>Resolver dudas en sesiones abiertas.</li>
+                        <li>Informar fechas claras de inicio y cierre.</li>
+                        <li>Explicar los protocolos de confidencialidad.</li>
+                    </ul>
+                </div>
+                <div style="background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--red-accent); margin-bottom: 0.5rem;">✘ Qué NO HACER</h4>
+                    <ul class="bullet-list cross" style="font-size: 0.85rem;">
+                        <li>Presionar o amenazar para forzar respuesta.</li>
+                        <li>Prometer cosas falsas (ej: bonos no presupuestados).</li>
+                        <li>Improvisar sobre la marcha las fechas.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: CASO 2 Y PASO 2 -->
+        <section class="slide" id="slide-8">
+            <span class="slide-tag">Paso 2: Evaluadores</span>
+            <h2>Selección Correcta de Evaluadores</h2>
+            <p>Caso: Un jefe de producción dice: <em>"Después yo revisaré individualmente las respuestas de mi equipo para ajustar cuentas."</em></p>
+            <p><strong>Error grave.</strong> Una verdadera 360° requiere múltiples perspectivas cruzadas para mitigar sesgos:</p>
+            
+            <div class="diagram-container">
+                <div style="font-weight:700; color:var(--red-accent); margin-bottom: 0.5rem;">EVALUADO / EVALUADA</div>
+                <div style="display:flex; justify-content:space-around; font-size: 0.85rem; margin-top: 1rem;">
+                    <span>⬆ Jefe Directo</span>
+                    <span>↔ Pares</span>
+                    <span>⬇ Clientes Internos</span>
+                    <span>🔄 Autoevaluación</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: ACTIVIDAD EVALUADORES -->
+        <section class="slide" id="slide-9">
+            <span class="slide-tag">Caso Práctico: Redes Sociales</span>
+            <h2>¿Quiénes evalúan al Encargado de RRSS?</h2>
+            <p>El encargado de Redes Sociales de la organización cultural quiere pedir evaluación a:</p>
+            <div class="bullet-list">
+                <li>• Director General</li>
+                <li>• Colegio Beneficiario</li>
+                <li>• Fotógrafo Contratado</li>
+                <li>• Diseñador Gráfico del Equipo</li>
+            </div>
+            <div class="feedback-box show" style="border-color: var(--warning);">
+                <strong>Análisis Técnico:</strong>
+                <p style="font-size: 0.85rem; margin-top: 0.3rem;">Debe evaluarlo el <strong>Diseñador (Par)</strong> y el <strong>Director (Jefe)</strong>. El colegio no interactúa operativamente con él y el fotógrafo es un proveedor puntual. Evaluadores mal elegidos distorsionan la medición.</p>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: PASO 3 - CRONOGRAMA -->
+        <section class="slide" id="slide-10">
+            <span class="slide-tag">Paso 3: Aplicación</span>
+            <h2>Cronograma Tipo (4 Semanas)</h2>
+            <p>Estructura estándar de aplicación para garantizar alta participación:</p>
+            <div class="timeline-grid">
+                <div class="timeline-node active">
+                    <h4>Semana 1</h4>
+                    <p>Comunicación e Inducción</p>
+                </div>
+                <div class="timeline-node">
+                    <h4>Semana 2</h4>
+                    <p>Apertura de Encuesta</p>
+                </div>
+                <div class="timeline-node">
+                    <h4>Semana 3</h4>
+                    <p>Recordatorios Estratégicos</p>
+                </div>
+                <div class="timeline-node">
+                    <h4>Semana 4</h4>
+                    <p>Cierre y Calidad</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: ESCAPE ROOM DE INCIDENCIAS -->
+        <section class="slide" id="slide-11">
+            <span class="slide-tag">Simulación de Contingencia</span>
+            <h2>Escape Room: Incidencia en Semana 3</h2>
+            <p style="color: var(--warning);"><strong>¡Alerta!</strong> Es el día 12 de aplicación y solo ha respondido el <strong>25%</strong> del personal de la organización cultural.</p>
+            <p>¿Qué decisión tomas?</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="answerEscape('A', this)"><span class="badge">A</span> Esperar en silencio hasta la fecha de cierre prevista.</button>
+                <button class="opt-btn" onclick="answerEscape('B', this)"><span class="badge">B</span> Enviar un recordatorio enfatizando la importancia y dando tiempo en horario laboral.</button>
+                <button class="opt-btn" onclick="answerEscape('C', this)"><span class="badge">C</span> Cerrar el proceso inmediatamente con los datos que hay.</button>
+            </div>
+            <div class="feedback-box" id="escape-feedback"></div>
+        </section>
+
+        <!-- SLIDE 12: RESUMEN CLASE 1 -->
+        <section class="slide" id="slide-12">
+            <span class="slide-tag">Resumen Visual</span>
+            <h2>Los 5 Pasos de la Implementación</h2>
+            <ul class="bullet-list arrow">
+                <li><strong>1. Comunicar:</strong> Explicar objetivos y confidencialidad.</li>
+                <li><strong>2. Seleccionar evaluadores:</strong> Definir 360° coherente por cargo.</li>
+                <li><strong>3. Aplicar:</strong> Desplegar el cronograma de 4 semanas.</li>
+                <li><strong>4. Resolver incidencias:</strong> Monitorear participación y sesgos.</li>
+                <li><strong>5. Cerrar proceso:</strong> Validar calidad de datos antes de analizar.</li>
+            </ul>
+        </div>
+        </section>
+
+        <!-- SLIDE 13: PANTALLA INICIAL CLASE 2 -->
+        <section class="slide" id="slide-13">
+            <span class="slide-tag">Clase 2: Monitoreo</span>
+            <h2>Fase de Monitoreo y Seguimiento</h2>
+            <div style="background: var(--graphite); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.2rem;">
+                <p style="font-size: 0.8rem; color: var(--text-muted);">STATUS DEL DASHBOARD</p>
+                <h3 style="color: var(--success); font-size: 2rem;">350 Respuestas Recibidas</h3>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">¿Ahora qué hacemos?</p>
+            </div>
+            <p><strong>Clave:</strong> Una evaluación 360° <strong>NO termina</strong> cuando se cierra la encuesta. El verdadero desarrollo organizacional <strong>empieza aquí</strong>.</p>
+        </section>
+
+        <!-- SLIDE 14: FLUJO COMPLETO DE MONITOREO -->
+        <section class="slide" id="slide-14">
+            <span class="slide-tag">Ciclo Continuo</span>
+            <h2>Flujo Completo Post-Encuesta</h2>
+            <div class="diagram-container">
+                <p style="color: var(--red-accent); font-weight:700;">Encuesta ➔ Análisis ➔ Feedback ➔ Plan de Mejora ➔ Seguimiento ➔ Nueva Medición</p>
+            </div>
+            <p>Si cortas el flujo en la entrega de resultados y no construyes un plan de mejora con seguimiento a 6 meses, el proceso genera frustración y desconfianza.</p>
+        </section>
+
+        <!-- SLIDE 15: PASO 1 - REVISAR CALIDAD -->
+        <section class="slide" id="slide-15">
+            <span class="slide-tag">Paso 1: Calidad de Datos</span>
+            <h2>Revisar Calidad antes de Informar</h2>
+            <p>Caso: RRHH recibe las 350 respuestas. ¿Qué hace primero?</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="answerQuality('A', this)"><span class="badge">A</span> Publicar promedios generales a toda la organización.</button>
+                <button class="opt-btn" onclick="answerQuality('B', this)"><span class="badge">B</span> Ejecutar Checklist de Calidad para depurar inconsistencias.</button>
+            </div>
+            <div class="feedback-box" id="quality-feedback"></div>
+            
+            <div style="margin-top: 1rem; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 6px;">
+                <h4 style="font-size:0.85rem; color:var(--text-muted);">CHECKLIST DE CALIDAD:</h4>
+                <ul class="bullet-list check" style="font-size: 0.8rem;">
+                    <li>Detectar respuestas incompletas o en patrón (todo 5 o todo 1).</li>
+                    <li>Filtrar comentarios con lenguaje ofensivo o ataques personales.</li>
+                    <li>Verificar duplicados o anomalías en el sistema.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 16: DASHBOARD E INTERPRETACIÓN -->
+        <section class="slide" id="slide-16">
+            <span class="slide-tag">Análisis de Datos</span>
+            <h2>Interpretación del Dashboard</h2>
+            <p>Resultados consolidados de la Organización Cultural:</p>
+            <div style="margin: 1.2rem 0;">
+                <div class="dashboard-metric">
+                    <span>Comunicación Interna</span>
+                    <div class="metric-bar-bg"><div class="metric-bar-val" style="width: 92%; background: var(--success);"></div></div>
+                    <strong>4.6 / 5.0</strong>
+                </div>
+                <div class="dashboard-metric">
+                    <span>Trabajo Colaborativo</span>
+                    <div class="metric-bar-bg"><div class="metric-bar-val" style="width: 82%; background: var(--success);"></div></div>
+                    <strong>4.1 / 5.0</strong>
+                </div>
+                <div class="dashboard-metric" style="border-color: var(--red-accent);">
+                    <span>Seguridad Psicológica</span>
+                    <div class="metric-bar-bg"><div class="metric-bar-val" style="width: 56%; background: var(--red-accent);"></div></div>
+                    <strong style="color: var(--red-accent);">2.8 / 5.0</strong>
+                </div>
+            </div>
+            <p><strong>Pregunta de Análisis:</strong> ¿Qué competencia requiere intervención prioritaria? La <strong>Seguridad Psicológica (2.8)</strong> evidencia un riesgo directo en el clima laboral.</p>
+        </section>
+
+        <!-- SLIDE 17: CASO INDIVIDUAL Y FEEDBACK -->
+        <section class="slide" id="slide-17">
+            <span class="slide-tag">Entrega de Feedback</span>
+            <h2>Manejo de Casos Críticos</h2>
+            <p>Una persona de la jefatura obtuvo un promedio de <strong>2.1 / 5.0</strong> con comentarios duros de su equipo. ¿Qué debe hacer RRHH?</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="answerIndividual('A', this)"><span class="badge">A</span> Publicar el informe en la cartelera general.</button>
+                <button class="opt-btn" onclick="answerIndividual('B', this)"><span class="badge">B</span> Agendar una reunión individual confidencial para analizar los datos constructivamente.</button>
+                <button class="opt-btn" onclick="answerIndividual('C', this)"><span class="badge">C</span> Enviar un correo de amonestación formal.</button>
+            </div>
+            <div class="feedback-box" id="individual-feedback"></div>
+        </section>
+
+        <!-- SLIDE 18: ACTIVIDAD FRASES DE FEEDBACK -->
+        <section class="slide" id="slide-18">
+            <span class="slide-tag">Habilidades de Conversación</span>
+            <h2>Selección de Frase Constructiva</h2>
+            <p>Escoge la mejor manera de iniciar la devolución con el profesional evaluado:</p>
+            <div class="options-group">
+                <button class="opt-btn" onclick="answerPhrase('A', this)"><span class="badge">A</span> "Tu equipo dice que no sirves para liderar este departamento."</button>
+                <button class="opt-btn" onclick="answerPhrase('B', this)"><span class="badge">B</span> "Las evaluaciones muestran oportunidades claras para fortalecer tu comunicación y liderazgo."</button>
+            </div>
+            <div class="feedback-box" id="phrase-feedback"></div>
+        </section>
+
+        <!-- SLIDE 19: PLAN DE MEJORA EDITABLE -->
+        <section class="slide" id="slide-19">
+            <span class="slide-tag">Herramienta Práctica</span>
+            <h2>Plantilla: Plan de Mejora</h2>
+            <p>Caso: Coordinadora Cultural con brechas en Comunicación Interárea.</p>
+            <div style="background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div class="form-group">
+                    <label>Objetivo de Desarrollo</label>
+                    <input type="text" class="form-control" value="Mejorar la fluidez comunicativa con el equipo de Producción">
+                </div>
+                <div class="form-group">
+                    <label>Acción Concreta</label>
+                    <input type="text" class="form-control" value="Reunión semanal de coordinación de 15 minutos">
+                </div>
+                <div class="form-group">
+                    <label>Indicador de Seguimiento</label>
+                    <input type="text" class="form-control" value="Cumplimiento del 90% de minutas acordadas">
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 20: RESULTADOS A LOS 6 MESES -->
+        <section class="slide" id="slide-20">
+            <span class="slide-tag">Impacto Medible</span>
+            <h2>Seis meses después: Nueva Medición</h2>
+            <p>Comparativa del avance tras aplicar el Plan de Mejora:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                <div style="background: rgba(220,38,38,0.1); border: 1px solid var(--red-accent); padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h4 style="color:var(--red-accent);">ANTES</h4>
+                    <p style="font-size: 2rem; font-weight:700;">2.8</p>
+                    <p style="font-size: 0.8rem;">Seguridad Psicológica</p>
+                </div>
+                <div style="background: rgba(16,185,129,0.1); border: 1px solid var(--success); padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h4 style="color:var(--success);">DESPUÉS</h4>
+                    <p style="font-size: 2rem; font-weight:700; color:var(--success);">4.3</p>
+                    <p style="font-size: 0.8rem;">Seguridad Psicológica</p>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 0.9rem;">¡El monitoreo continuo demuestra que la organización aprende y evoluciona!</p>
+        </section>
+
+        <!-- SLIDE 21: ERRORES MÁS COMUNES EN MONITOREO -->
+        <section class="slide" id="slide-21">
+            <span class="slide-tag">Checklist Anti-Errores</span>
+            <h2>¿Qué NO harías en la Fase de Monitoreo?</h2>
+            <ul class="bullet-list cross">
+                <li>Mostrar comentarios textuales agresivos sin editar.</li>
+                <li>Utilizar la evaluación para castigar o despedir personal.</li>
+                <li>Archivar los informes y olvidar el seguimiento.</li>
+                <li>Repetir la evaluación todos los meses (saturación).</li>
+                <li>No comunicar los avances generales a la organización.</li>
+            </ul>
+        </section>
+
+        <!-- SLIDE 22: TIPS FINALES DE SÍNTESIS -->
+        <section class="slide" id="slide-22">
+            <span class="slide-tag">Síntesis Ejecutiva</span>
+            <h2>Resumen de Buenas Prácticas</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div style="background: var(--graphite); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--red-accent); margin-bottom: 0.5rem;">Implementación</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Comunicar masivamente, proteger el anonimato, responder dudas y dar tiempos adecuados en jornada laboral.</p>
+                </div>
+                <div style="background: var(--graphite); padding: 1rem; border-radius: 8px;">
+                    <h4 style="color: var(--success); margin-bottom: 0.5rem;">Monitoreo</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Analizar calidad de datos, dar feedback individual constructivo, armar planes de mejora y volver a medir a los 6 meses.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 23: DESAFÍO FINAL SIMULACIÓN -->
+        <section class="slide" id="slide-23">
+            <span class="slide-tag">Evaluación Final</span>
+            <h2>Desafío Final: Caso Organización Cultural</h2>
+            <p>La organización cuenta con <strong>40 trabajadores, 6 áreas</strong>, comunicación deficiente y baja confianza previa.</p>
+            <p>Configura tu estrategia general:</p>
+            <div style="background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Estrategia Principal:</label>
+                <select id="final-strat" class="form-control" style="margin-top: 0.4rem;">
+                    <option value="1">Lanzamiento directo sin reuniones previas</option>
+                    <option value="2" selected>Campañas de comunicación previa + feedback individual e institucional</option>
+                    <option value="3">Evaluación obligatoria bajo apercibimiento</option>
+                </select>
+            </div>
+            <button class="nav-btn primary" onclick="runFinalChallenge()" style="width: 100%; justify-content: center;">Generar Informe de Gestión 360°</button>
+
+            <div class="feedback-box" id="challenge-report" style="margin-top: 1rem;"></div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER CONTROLS -->
+    <footer>
+        <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">Anterior</button>
+        <span style="font-size: 0.8rem; color: var(--text-muted);" id="slide-counter">1 / 23</span>
+        <button class="nav-btn primary" id="btn-next" onclick="changeSlide(1)">Siguiente</button>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 23;
+        let trustScore = 100;
+
+        const slideTitles = [
+            "Inicio Clase 1", "Objetivos", "Antes de Comenzar", "Caso Práctico 1",
+            "Paso 1: Comunicar", "Error Frecuente", "Tips Implementación", "Paso 2: Evaluadores",
+            "Caso Redes Sociales", "Paso 3: Cronograma", "Escape Room", "Resumen Clase 1",
+            "Inicio Clase 2", "Flujo de Monitoreo", "Paso 1: Calidad", "Dashboard de Datos",
+            "Entrega Feedback", "Frases Constructivas", "Plan de Mejora", "Medición 6 Meses",
+            "Errores Monitoreo", "Tips Finales", "Desafío Final"
+        ];
+
+        function updateUI() {
+            document.querySelectorAll('.slide').forEach((slide, index) => {
+                slide.classList.toggle('active', index === (currentSlide - 1));
+            });
+
+            // Update Progress & Header
+            const progressPct = ((currentSlide) / totalSlides) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+            document.getElementById('slide-title-header').innerText = slideTitles[currentSlide - 1];
+            document.getElementById('slide-num-header').innerText = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('slide-counter').innerText = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('trust-score').innerText = `${trustScore}%`;
+
+            // Buttons state
+            document.getElementById('btn-prev').disabled = (currentSlide === 1);
+            document.getElementById('btn-next').disabled = (currentSlide === totalSlides);
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            updateUI();
+        }
+
+        function checkPoll(opt, btn) {
+            const fb = document.getElementById('poll-feedback');
+            fb.classList.add('show');
+            btn.parentNode.querySelectorAll('.opt-btn').forEach(b => b.style.opacity = '0.5');
+            btn.style.opacity = '1';
+            btn.style.borderColor = 'var(--red-accent)';
+        }
+
+        function answerCase1(ans, btn) {
+            const fb = document.getElementById('case1-feedback');
+            fb.classList.add('show');
+            if (ans === 'B') {
+                fb.className = "feedback-box show correct";
+                fb.innerHTML = "<strong>¡Correcto! (Opción B)</strong><p style='font-size:0.85rem;'>Informar formalmente a la organización explica los objetivos y mitiga temores. Lanzarlo de sorpresa destruye la confianza desde el día uno.</p>";
+            } else {
+                fb.className = "feedback-box show incorrect";
+                fb.innerHTML = "<strong>Incorrecto.</strong><p style='font-size:0.85rem;'>Enviar la encuesta sin comunicación previa genera desconfianza, rumorología y baja participación.</p>";
+                adjustTrust(-15);
+            }
+        }
+
+        function answerEscape(ans, btn) {
+            const fb = document.getElementById('escape-feedback');
+            fb.classList.add('show');
+            if (ans === 'B') {
+                fb.className = "feedback-box show correct";
+                fb.innerHTML = "<strong>¡Excelente Decisión!</strong><p style='font-size:0.85rem;'>Enviar un recordatorio positivo y facilitar espacio en la jornada laboral aumenta la respuesta al 80% sin generar tensión.</p>";
+            } else {
+                fb.className = "feedback-box show incorrect";
+                fb.innerHTML = "<strong>Respuesta Riesgosa.</strong><p style='font-size:0.85rem;'>Cerrar con el 25% o quedarse pasivo invalida la muestra o demuestra desinterés institucional.</p>";
+                adjustTrust(-10);
+            }
+        }
+
+        function answerQuality(ans, btn) {
+            const fb = document.getElementById('quality-feedback');
+            fb.classList.add('show');
+            if (ans === 'B') {
+                fb.className = "feedback-box show correct";
+                fb.innerHTML = "<strong>¡Correcto!</strong><p style='font-size:0.85rem;'>Primero se depura la calidad de datos. Publicar datos crudos sin depurar inconsistencias daña el diagnóstico.</p>";
+            } else {
+                fb.className = "feedback-box show incorrect";
+                fb.innerHTML = "<strong>Error.</strong><p style='font-size:0.85rem;'>Nunca se deben difundir resultados sin previa revisión de consistencia y filtro de ataques personales.</p>";
+                adjustTrust(-10);
+            }
+        }
+
+        function answerIndividual(ans, btn) {
+            const fb = document.getElementById('individual-feedback');
+            fb.classList.add('show');
+            if (ans === 'B') {
+                fb.className = "feedback-box show correct";
+                fb.innerHTML = "<strong>¡Correcto!</strong><p style='font-size:0.85rem;'>El feedback de brechas debe ser siempre individual, privado y con enfoque de aprendizaje.</p>";
+            } else {
+                fb.className = "feedback-box show incorrect";
+                fb.innerHTML = "<strong>Incorrecet.</strong><p style='font-size:0.85rem;'>Exponer o sancionar públicamente destruye la seguridad psicológica de la organización.</p>";
+                adjustTrust(-20);
+            }
+        }
+
+        function answerPhrase(ans, btn) {
+            const fb = document.getElementById('phrase-feedback');
+            fb.classList.add('show');
+            if (ans === 'B') {
+                fb.className = "feedback-box show correct";
+                fb.innerHTML = "<strong>¡Frase Acertada!</strong><p style='font-size:0.85rem;'>Enfoca el resultado en conductas y oportunidades de desarrollo, no en ataques personales.</p>";
+            } else {
+                fb.className = "feedback-box show incorrect";
+                fb.innerHTML = "<strong>Inadecuado.</strong><p style='font-size:0.85rem;'>Esa frase genera defensiva inmediata y bloquea el aprendizaje.</p>";
+            }
+        }
+
+        function runFinalChallenge() {
+            const strat = document.getElementById('final-strat').value;
+            const rep = document.getElementById('challenge-report');
+            rep.classList.add('show');
+
+            if (strat === '2') {
+                rep.className = "feedback-box show correct";
+                rep.innerHTML = `
+                    <h3 style="color:var(--success);">¡Simulación Exitosa! Score: 95/100</h3>
+                    <p style="font-size:0.85rem;">Has diseñado una implementación ética, transparente e integral para los 40 colaboradores de la organización cultural.</p>
+                    <ul class="bullet-list check" style="font-size:0.8rem; margin-top:0.5rem;">
+                        <li>Confianza Organizacional Final: ${trustScore}%</li>
+                        <li>Participación alcanzada: 92%</li>
+                        <li>Planes de Mejora activos: 6 áreas integradas</li>
+                    </ul>
+                `;
+            } else {
+                rep.className = "feedback-box show incorrect";
+                rep.innerHTML = `
+                    <h3 style="color:var(--red-accent);">Riesgo de Gestión. Score: 40/100</h3>
+                    <p style="font-size:0.85rem;">La estrategia escogida generó resistencia interna y baja credibilidad en los resultados.</p>
+                `;
+            }
+        }
+
+        function adjustTrust(points) {
+            trustScore += points;
+            if (trustScore < 0) trustScore = 0;
+            if (trustScore > 100) trustScore = 100;
+            document.getElementById('trust-score').innerText = `${trustScore}%`;
+        }
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html>
