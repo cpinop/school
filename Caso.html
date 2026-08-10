@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caso Práctico: Gestión del Feedback 360°</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      padding: 40px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3 {
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--bg);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .card {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .dark-theme {
+      background-color: #0f172a;
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .dark-theme p {
+      color: #94a3b8;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .tag {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .tag-danger { background: #fee2e2; color: var(--danger); }
+    .tag-success { background: #dcfce7; color: var(--success); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg);
+      font-weight: 600;
+    }
+
+    .checklist {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    .checklist li {
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .interactive-option {
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .interactive-option:hover {
+      border-color: var(--primary);
+      background-color: #eff6ff;
+    }
+
+    .feedback-msg {
+      margin-top: 8px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 24px 0;
+    }
+
+    .diagram-step {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .diagram-arrow {
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- PANTALLA 1 -->
+  <div id="screen-1" class="screen active">
+    <h1>Caso Práctico: Evaluación 360°</h1>
+    <p>Una organización cultural acaba de terminar su primera Evaluación 360°.</p>
+    
+    <div class="grid-3">
+      <div class="card">
+        <h3>📊 38 Trabajadores</h3>
+        <p>Participantes del proceso completo de evaluación.</p>
+      </div>
+      <div class="card">
+        <h3>🏫 Área Educación</h3>
+        <p>Trabajan en vinculación directa con colegios.</p>
+      </div>
+      <div class="card">
+        <h3>🎭 Área Cultural</h3>
+        <p>Organizan actividades y difunden en redes sociales.</p>
+      </div>
+    </div>
+
+    <p><strong>Después de dos semanas...</strong> RRHH recibe todos los resultados y surge una pregunta decisiva:</p>
+    <h2 style="color: var(--primary);">¿Cómo debería entregar el feedback?</h2>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-2')">Comenzar historia</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2 -->
+  <div id="screen-2" class="screen">
+    <h2>Resultados de Andrea</h2>
+    <p>Coordinadora de Vinculación con Colegios</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+      <div class="card">
+        <h3 style="color: var(--danger);">Oportunidades de Mejora</h3>
+        <div class="tag-list">
+          <span class="tag tag-danger">❌ Comunicación</span>
+          <span class="tag tag-danger">❌ Coordinación entre áreas</span>
+          <span class="tag tag-danger">❌ Escucha activa</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--success);">Fortalezas Identificadas</h3>
+        <div class="tag-list">
+          <span class="tag tag-success">✅ Compromiso</span>
+          <span class="tag tag-success">✅ Responsabilidad</span>
+          <span class="tag tag-success">✅ Calidad técnica</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>¿Qué debería hacer el equipo de RRHH?</h3>
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="nextScreen('screen-path1')">A) Entregar los resultados exactamente como aparecieron</button>
+      <button class="btn" onclick="nextScreen('screen-path2')">B) Preparar previamente una reunión de retroalimentación</button>
+    </div>
+  </div>
+
+  <!-- CAMINO 1 -->
+  <div id="screen-path1" class="screen">
+    <h2 style="color: var(--danger);">Camino 1: Feedback sin preparación</h2>
+    
+    <div class="dark-theme">
+      <p style="color: #ef4444; font-weight: bold;">RRHH dice: "Tu evaluación fue bastante mala."</p>
+      <p>Se presentan comentarios crudos y sin contexto:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>"Es muy difícil trabajar contigo."</li>
+        <li>"No escucha."</li>
+        <li>"No acepta opiniones."</li>
+        <li>"Genera conflictos."</li>
+      </ul>
+      <p style="margin-top: 15px;">RRHH concluye: <em>"No sabemos exactamente quién escribió esto. Simplemente mejora."</em></p>
+    </div>
+
+    <h3>Impacto Emocional en Andrea:</h3>
+    <div class="tag-list">
+      <span class="tag tag-danger">Ansiedad</span>
+      <span class="tag tag-danger">Vergüenza</span>
+      <span class="tag tag-danger">Rabia</span>
+      <span class="tag tag-danger">Confusión</span>
+      <span class="tag tag-danger">Injusticia</span>
+    </div>
+
+    <div class="card" style="margin-top: 20px; border-left: 4px solid var(--danger);">
+      <h3>Dos semanas después...</h3>
+      <p>Andrea presenta su renuncia. Consecuencias organizacionales:</p>
+      <ul>
+        <li>💸 Costos de contratación de reemplazo.</li>
+        <li>⏳ Meses de curva de adaptación.</li>
+        <li>📉 Baja motivación generalizada en el equipo.</li>
+      </ul>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-path2')">Ver el otro camino</button>
+    </div>
+  </div>
+
+  <!-- CAMINO 2 -->
+  <div id="screen-path2" class="screen">
+    <h2 style="color: var(--success);">Camino 2: Feedback bien gestionado</h2>
+    <p>RRHH decide preparar previamente la sesión.</p>
+
+    <div class="card">
+      <h3>Checklist de Preparación de RRHH:</h3>
+      <ul class="checklist">
+        <li>✔️ Analiza tendencias de datos.</li>
+        <li>✔️ Identifica fortalezas y oportunidades.</li>
+        <li>✔️ Sintetiza ejemplos objetivos de conducta.</li>
+        <li>✔️ Diseña una propuesta de plan de mejora.</li>
+      </ul>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <h3>La Reunión Constructiva:</h3>
+      <p><strong>RRHH:</strong> "Gracias por participar. Esta evaluación busca ayudarte a desarrollarte."</p>
+      <p>Primero se destacan las fortalezas (Compromiso y Calidad técnica), y luego se abordan los patrones:</p>
+      <p><em>"Varias personas perciben dificultades para coordinar información entre áreas. ¿Qué crees que podría ayudarte?"</em></p>
+    </div>
+
+    <h3>Resultados a los 6 meses (Reevaluación):</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Competencia</th>
+          <th>Inicial</th>
+          <th>Post-Plan</th>
+          <th>Evolución</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comunicación</td>
+          <td>2.6</td>
+          <td>4.1</td>
+          <td style="color: var(--success);">+1.5</td>
+        </tr>
+        <tr>
+          <td>Coordinación</td>
+          <td>2.8</td>
+          <td>4.3</td>
+          <td style="color: var(--success);">+1.5</td>
+        </tr>
+        <tr>
+          <td>Trabajo colaborativo</td>
+          <td>3.0</td>
+          <td>4.4</td>
+          <td style="color: var(--success);">+1.4</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-comparison')">Ver Comparativa</button>
+    </div>
+  </div>
+
+  <!-- COMPARACIÓN -->
+  <div id="screen-comparison" class="screen">
+    <h2>Comparación de Impacto</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Dimensión</th>
+          <th>Sin Preparación</th>
+          <th>Con Preparación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Enfoque</td>
+          <td>Culpa y Castigo</td>
+          <td>Aprendizaje y Desarrollo</td>
+        </tr>
+        <tr>
+          <td>Emoción</td>
+          <td>Miedo y Confusión</td>
+          <td>Confianza y Compromiso</td>
+        </tr>
+        <tr>
+          <td>Resultado</td>
+          <td>Renuncia / Pérdida de talento</td>
+          <td>Mejora y Fortalecimiento</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-activities')">Ir a Actividades Prácticas</button>
+    </div>
+  </div>
+
+  <!-- ACTIVIDADES -->
+  <div id="screen-activities" class="screen">
+    <h2>Actividad Práctica: Transformación de Feedback</h2>
+    <p>Selecciona la frase que representa un feedback constructivo:</p>
+
+    <div class="interactive-option" onclick="checkAnswer(this, false)">
+      "No eres un buen líder."
+      <div class="feedback-msg" style="color: var(--danger);">Incorrecto: Ataca la personalidad sin indicar conductas observables.</div>
+    </div>
+
+    <div class="interactive-option" onclick="checkAnswer(this, true)">
+      "La evaluación muestra oportunidades para fortalecer la coordinación interdepartamental."
+      <div class="feedback-msg" style="color: var(--success);">¡Correcto! Plantea el desafío en términos de desarrollo y desempeño.</div>
+    </div>
+
+    <div class="interactive-option" onclick="checkAnswer(this, false)">
+      "Todos dicen que no escuchas a tu equipo."
+      <div class="feedback-msg" style="color: var(--danger);">Incorrecto: Usa generalizaciones destructivas sin síntesis profesional.</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-plan')">Ver Estructura del Plan de Mejora</button>
+    </div>
+  </div>
+
+  <!-- PLAN DE MEJORA -->
+  <div id="screen-plan" class="screen">
+    <h2>Estructura del Plan de Mejora</h2>
+    
+    <div class="diagram">
+      <div class="diagram-step">1. Problema Detectado</div>
+      <div class="diagram-arrow">↓</div>
+      <div class="diagram-step">2. Objetivo Específico (SMART)</div>
+      <div class="diagram-arrow">↓</div>
+      <div class="diagram-step">3. Acciones Concretas + Indicadores</div>
+      <div class="diagram-arrow">↓</div>
+      <div class="diagram-step">4. Seguimiento Mensual</div>
+      <div class="diagram-arrow">↓</div>
+      <div class="diagram-step">5. Nueva Evaluación 360°</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn" onclick="nextScreen('screen-final')">Finalizar Módulo</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA FINAL -->
+  <div id="screen-final" class="screen" style="text-align: center;">
+    <h2 style="font-size: 1.8rem; margin-bottom: 24px; color: var(--primary);">
+      "Una evaluación 360° no cambia a una organización por las respuestas que obtiene, sino por las conversaciones y acciones que genera después de analizarlas."
+    </h2>
+    <div class="btn-group" style="justify-content: center;">
+      <button class="btn" onclick="nextScreen('screen-1')">🔄 Volver a recorrer el caso</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function nextScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function checkAnswer(element, isCorrect) {
+    const msg = element.querySelector('.feedback-msg');
+    msg.style.display = 'block';
+    if(isCorrect) {
+      element.style.borderColor = 'var(--success)';
+      element.style.backgroundColor = '#f0fdf4';
+    } else {
+      element.style.borderColor = 'var(--danger)';
+      element.style.backgroundColor = '#fef2f2';
+    }
+  }
+</script>
+
+</body>
+</html>
