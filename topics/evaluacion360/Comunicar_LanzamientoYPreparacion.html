@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación 360° - Lanzamiento & Preparación de Evaluadores</title>
+    <style>
+        :root {
+            --bg-main: #08080a;
+            --bg-card: #121216;
+            --bg-card-hover: #1a1a22;
+            --bg-script: #0d0d12;
+            --bg-adapt: #141018;
+            --accent-red: #e50914;
+            --accent-red-bright: #ff2a2a;
+            --accent-red-glow: rgba(229, 9, 20, 0.35);
+            --accent-gold: #f39c12;
+            --accent-blue: #3498db;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #262630;
+            --border-red: rgba(229, 9, 20, 0.5);
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER & TOP BAR */
+        header {
+            background-color: rgba(18, 18, 22, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-tag {
+            background: var(--accent-red);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .central-banner {
+            background: linear-gradient(90deg, transparent, rgba(229, 9, 20, 0.15), transparent);
+            border-left: 2px solid var(--accent-red);
+            border-right: 2px solid var(--accent-red);
+            padding: 6px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent-red-glow);
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-nav {
+            background-color: #1a1a20;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-nav:hover {
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red-glow);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 3px;
+            background-color: #1a1a20;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-red-bright));
+            width: 12.5%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--accent-red);
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 20px;
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .slide-stage {
+            width: 100%;
+            display: none;
+            animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide-stage.active {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SLIDE VISUAL CONTENT BLOCK */
+        .visual-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .visual-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-red), transparent);
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 14px;
+        }
+
+        .slide-number-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-red-bright);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-top: 4px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        /* ITEM CARDS */
+        .content-box {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 18px;
+            transition: all 0.25s ease;
+        }
+
+        .content-box:hover {
+            border-color: var(--border-red);
+            background-color: var(--bg-card-hover);
+        }
+
+        .box-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+        }
+
+        .box-title.red { color: var(--accent-red-bright); }
+        .box-title.gold { color: var(--accent-gold); }
+        .box-title.blue { color: var(--accent-blue); }
+
+        .list-styled {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-styled li {
+            position: relative;
+            padding-left: 18px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .list-styled li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: var(--accent-red);
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        /* "LO QUE DEBES DECIR" BLOCK */
+        .script-card {
+            background-color: var(--bg-script);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-red);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .script-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .script-badge {
+            background-color: rgba(229, 9, 20, 0.15);
+            color: var(--accent-red-bright);
+            border: 1px solid var(--border-red);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .script-bullets {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .script-bullets li {
+            position: relative;
+            padding-left: 22px;
+            color: #e0e0e0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+        }
+
+        .script-bullets li::before {
+            content: "➔";
+            position: absolute;
+            left: 0;
+            color: var(--accent-red-bright);
+            font-weight: bold;
+        }
+
+        /* ADAPTATION CARD (JEFATURA VS TODOS) */
+        .adaptation-card {
+            background-color: var(--bg-adapt);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .adaptation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .adaptation-badge {
+            background-color: rgba(243, 156, 18, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid rgba(243, 156, 18, 0.4);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab-btn {
+            background-color: #1a1a24;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+        }
+
+        .tab-content {
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* FOOTER CONTROLS */
+        footer {
+            background-color: rgba(18, 18, 22, 0.95);
+            border-top: 1px solid var(--border-color);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .slide-counter {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .main-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            background-color: var(--accent-red);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-action:hover {
+            background-color: var(--accent-red-bright);
+            box-shadow: 0 0 15px var(--accent-red-glow);
+        }
+
+        .btn-action.secondary {
+            background-color: #22222a;
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-action.secondary:hover {
+            background-color: #2d2d38;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background-color: var(--bg-card);
+            border: 2px solid var(--accent-red);
+            border-radius: 10px;
+            max-width: 650px;
+            width: 100%;
+            padding: 28px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(229, 9, 20, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover { color: #fff; }
+
+        .index-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .index-item {
+            background-color: #121216;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .index-item:hover {
+            border-color: var(--accent-red);
+            background-color: var(--bg-card-hover);
+        }
+
+        .index-item-num {
+            font-size: 0.75rem;
+            color: var(--accent-red-bright);
+            font-weight: 800;
+        }
+
+        .index-item-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* QUIZ GAME STYLES */
+        .quiz-question {
+            background-color: #0b0b0e;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .btn-quiz {
+            padding: 14px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            background-color: #1a1a22;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-quiz.evidencia:hover {
+            border-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+
+        .btn-quiz.sesgo:hover {
+            border-color: var(--accent-red);
+            background-color: rgba(229, 9, 20, 0.15);
+            color: var(--accent-red-bright);
+        }
+
+        .quiz-feedback {
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .quiz-feedback.correct {
+            display: block;
+            background-color: rgba(46, 204, 113, 0.15);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+        }
+
+        .quiz-feedback.incorrect {
+            display: block;
+            background-color: rgba(229, 9, 20, 0.15);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red-bright);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .grid-2, .grid-3, .grid-4, .index-grid, .quiz-buttons {
+                grid-template-columns: 1fr;
+            }
+            .central-banner {
+                display: none;
+            }
+            main {
+                padding: 16px 10px;
+            }
+            .visual-card {
+                padding: 18px;
+            }
+            .slide-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header>
+        <div class="brand-container">
+            <span class="brand-tag">360°</span>
+            <span class="brand-title">01 + 02: LANZAMIENTO & PREPARACIÓN</span>
+        </div>
+
+        <div class="central-banner">
+            Alineación Cultural + Objetividad del Evaluador
+        </div>
+
+        <div class="top-controls">
+            <button class="btn-nav" onclick="toggleModal('modal-game')">
+                <span>🎯</span> Calibrador de Sesgos
+            </button>
+            <button class="btn-nav" onclick="toggleModal('modal-index')">
+                <span>☰</span> Índice
+            </button>
+        </div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- MAIN SLIDE CONTAINER -->
+    <main>
+
+        <!-- DIAPOSITIVA 1 -->
+        <div class="slide-stage active" id="slide-1">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 01 / 08 — Lanzamiento e Introducción</div>
+                        <h1 class="slide-title">¿Por qué implementamos la Evaluación 360°?</h1>
+                        <p class="subtitle">Propósito estratégico: Una herramienta para el desarrollo, no para la sanción</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="content-box">
+                        <div class="box-title red">
+                            <span>🚀</span> Foco en el Crecimiento
+                        </div>
+                        <ul class="list-styled">
+                            <li>Identificar fortalezas para potenciarlas y brechas para diseñar planes de desarrollo.</li>
+                            <li>Alinear los comportamientos cotidianos con los valores y la estrategia corporativa.</li>
+                            <li><strong>NO</strong> es un instrumento punitivo ni está ligado a decisiones de despido o ajuste salarial.</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title gold">
+                            <span>💡</span> La Cultura del Feedback
+                        </div>
+                        <ul class="list-styled">
+                            <li>Pasar de una evaluación unidireccional a una conversación transparente de equipo.</li>
+                            <li>Reconocer que todos tenemos "puntos ciegos" que solo la mirada externa permite descubrir.</li>
+                            <li>Fomentar la corresponsabilidad en el clima y el desempeño de la organización.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"Bienvenidos a todos. Hoy damos inicio formal al proceso de Evaluación 360° en nuestra organización, una iniciativa diseñada para impulsar nuestro crecimiento profesional continuo."</li>
+                    <li>"Quiero ser muy enfático y categórico desde el primer minuto: esta evaluación no es un examen, no es un ranking de empleados y no se utiliza para tomar medidas sancionatorias ni ajustes de sueldo."</li>
+                    <li>"Su objetivo real es brindarle a cada persona un espejo profesional completo que le permita descubrir sus principales fortalezas y detectar aquellas áreas donde puede seguir desarrollándose."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's1-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's1-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s1-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Transmitir total serenidad y desmitificar la prueba. Destacar que recibirán un insumo de valor personal para su propio plan de carrera y que el proceso busca apoyarlos, no fiscalizarlos.
+                </div>
+                <div class="tab-content" id="s1-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Enfatizar que el liderazgo es el primer modelo de rol. La jefatura debe proyectar entusiasmo hacia el feedback, usar esta herramienta para potenciar a su equipo y evitar ver los resultados como una amenaza a su autoridad.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 2 -->
+        <div class="slide-stage" id="slide-2">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 02 / 08 — Estructura del Modelo</div>
+                        <h1 class="slide-title">La Mirada 360°: 4 Dimensiones de Feedback</h1>
+                        <p class="subtitle">Superando la visión tradicional jerárquica hacia una perspectiva integral</p>
+                    </div>
+                </div>
+
+                <div class="grid-4">
+                    <div class="content-box">
+                        <div class="box-title red">1. Autoevaluación</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.4;">
+                            Cómo percibo mi propio desempeño y conductas en el día a día. Sirve como punto de partida para contrastar expectativas.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">2. Jefatura Directa</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.4;">
+                            La mirada estratégica y formal de cumplimiento de objetivos y alineación con el rol directivo.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">3. Pares (Co-workers)</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.4;">
+                            La perspectiva horizontal de colaboración, trabajo en equipo, empatía y coordinación operativa diaria.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">4. Colaboradores</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.4;">
+                            (Aplica a jefaturas): La mirada ascendente sobre liderazgo, delegación, apoyo y clima laboral generado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"En el pasado, la única opinión que contaba era la del jefe directo. El modelo 360° cambia esto porque reconoce que trabajamos en red con muchas personas."</li>
+                    <li>"Cada uno de ustedes participará desde distintas perspectivas: evaluándose a sí mismos, evaluando a su jefatura, a sus compañeros de equipo y, en caso de liderar personas, evaluando a sus colaboradores."</li>
+                    <li>"La riqueza del informe final proviene de comparar cómo me veo yo versus cómo me perciben las personas que interactúan conmigo todos los días."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's2-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's2-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s2-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Explicar que la autoevaluación no se suma directamente a la "nota" promedio para no distorsionar el informe, sino que sirve como una herramienta de contraste reflexivo.
+                </div>
+                <div class="tab-content" id="s2-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Subrayar la importancia estratégica de la mirada ascendente (de sus colaboradores). Explicar que recibir feedback de su equipo exige apertura, madurez y humildad directiva.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 3 -->
+        <div class="slide-stage" id="slide-3">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 03 / 08 — Confianza y Seguridad</div>
+                        <h1 class="slide-title">Garantías de Confidencialidad y Anonimato</h1>
+                        <p class="subtitle">Blindaje metodológico para garantizar la honestidad sin temor a represalias</p>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="content-box">
+                        <div class="box-title red">🔒 Regla del Mínimo</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            Para liberar los datos del grupo de Pares o Colaboradores se exige un mínimo de 3 respuestas completadas. Si hay menos, los datos se agrupan para proteger la identidad.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">📊 Reporte Promediado</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            El evaluado solo verá puntajes consolidados y promedios por categoría. Jamás podrá ver qué nota le puso una persona en particular.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">📌 Excepción Jerárquica</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            La evaluación de la Jefatura Directa es única por estructura organigráfica, por lo que su categoría aparece individualizada en el reporte.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"Un proceso 360° solo funciona si existe absoluta confianza para responder con la verdad. Por eso, la plataforma cuenta con controles estrictos de confidencialidad."</li>
+                    <li>"Salvo la jefatura directa —cuya mirada es identificable por estructura organizacional—, todas las demás respuestas de pares y colaboradores se consolidan de forma anónima en promedios grupales."</li>
+                    <li>"Nadie sabrá qué respondió un compañero específico. Queremos que respondan con la máxima tranquilidad y respeto."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's3-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's3-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s3-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Ofrecer garantías totales de anonimato para mitigar el temor a consecuencias o tensiones con compañeros de trabajo.
+                </div>
+                <div class="tab-content" id="s3-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Advertir explícitamente que queda estrictamente prohibido intentar "descubrir" o adivinar quién le asignó determinado puntaje en su equipo. La búsqueda de culpables destruye la confianza.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 4 -->
+        <div class="slide-stage" id="slide-4">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 04 / 08 — Criterio del Evaluador</div>
+                        <h1 class="slide-title">Preparación: Evaluación Basada en Evidencias</h1>
+                        <p class="subtitle">Cómo calibrar el juicio profesional antes de marcar una respuesta</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="content-box" style="border-color: rgba(229, 9, 20, 0.4);">
+                        <div class="box-title red">❌ Evaluación por Impresión Personal</div>
+                        <ul class="list-styled">
+                            <li>Basada en simpatías o antipatías individuales ("me cae bien / mal").</li>
+                            <li>Influenciada por el estado de ánimo del día o una discusión reciente.</li>
+                            <li>Basada en rumores o lo que comentan otros en el pasillo.</li>
+                        </ul>
+                    </div>
+                    <div class="content-box" style="border-color: rgba(46, 204, 113, 0.4);">
+                        <div class="box-title" style="color: #2ecc71;">✔️ Evaluación por Evidencia Laboral</div>
+                        <ul class="list-styled">
+                            <li>Basada en conductas concretas y observables en el trabajo.</li>
+                            <li>Considera el desempeño consistente de los últimos 6 a 12 meses.</li>
+                            <li>Se enfoca en hechos probados en proyectos, reuniones y entregables.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"Ahora pasamos a la preparación práctica como evaluadores. Evaluar a un compañero no es volcar nuestras emociones o preferencias personales."</li>
+                    <li>"Antes de responder cada pregunta, tómense un segundo y preguntense: '¿Tengo evidencias concretas y conductas observadas que respalden mi respuesta?'"</li>
+                    <li>"Si evaluamos basándonos en hechos y no en emociones, el informe resultante será sumamente útil y respetuoso para la persona."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's4-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's4-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s4-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Enseñar a separar la amistad o cercanía afectiva del rendimiento laboral objetivo. Se puede tener una excelente relación personal con alguien que requiere mejorar en organización.
+                </div>
+                <div class="tab-content" id="s4-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Exigir máxima rigurosidad técnica. Evitar evaluar solo según el cumplimiento de metas numéricas cuando se están midiendo competencias relacionales y de desarrollo.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 5 -->
+        <div class="slide-stage" id="slide-5">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 05 / 08 — Sesgos Cognitivos</div>
+                        <h1 class="slide-title">Neutralizando los Sesgos Más Frecuentes</h1>
+                        <p class="subtitle">Atajos mentales que debemos identificar y evitar al responder</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="content-box">
+                        <div class="box-title red">1. Sesgo de Reciencia</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+                            Juzgar a la persona solo por lo que ocurrió en las últimas semanas (un error reciente o un logro de ayer), olvidando el resto del año.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">2. Efecto Halo / Horns</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+                            Permitir que una sola característica que nos agrada (Halo) o nos disgusta (Horns) tiña negativamente todas las demás preguntas.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">3. Tendencia Central / Indulgencia</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+                            Marcar siempre la opción intermedia por "no complicarse" o la opción máxima a todos por evitar futuros conflictos.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">4. Sesgo de Similitud</div>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem;">
+                            Evaluar más favorablemente a quienes comparten nuestro estilo de trabajo, personalidad o forma de pensar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"Nuestro cerebro suele tomar atajos inconscientes llamados sesgos cognitivos. Es fundamental que conozcamos los cuatro más comunes para evitarlos."</li>
+                    <li>"Cuidado con la reciencia: no evalúen a alguien por la discusión que tuvieron el viernes pasado. Miren todo el período de trabajo."</li>
+                    <li>"Tampoco caigan en la indulgencia de calificar a todo el mundo con la nota máxima 'para no perjudicarlos'. La indulgencia le quita al profesional la oportunidad de crecer."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's5-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's5-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s5-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Enfocarse en romper el "Efecto Halo": que la simpatía por un compañero no impida señalar áreas donde su trabajo técnico genera retrasos.
+                </div>
+                <div class="tab-content" id="s5-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Alertar sobre la "Tendencia Central". Una jefatura que califica a todo su equipo en el punto medio invalida el diagnóstico corporativo y demuestra falta de compromiso con el desarrollo.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 6 -->
+        <div class="slide-stage" id="slide-6">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 06 / 08 — El Cuestionario</div>
+                        <h1 class="slide-title">Estructura del Instrumento y Escala</h1>
+                        <p class="subtitle">Comprensión clara del formato de preguntas y opciones de respuesta</p>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="content-box">
+                        <div class="box-title red">📋 Naturaleza de las Afirmaciones</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4; margin-bottom: 10px;">
+                            Cada ítem describe un comportamiento observable. Ejemplo:
+                        </p>
+                        <div style="background-color: #0b0b0e; padding: 12px; border-left: 3px solid var(--accent-red); font-style: italic; font-size: 0.88rem; color: #fff;">
+                            "Mantiene informados a los involucrados sobre los avances de los proyectos."
+                        </div>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title gold">📏 Escala de Frecuencia</div>
+                        <ul class="list-styled">
+                            <li><strong>1. Nunca / Casi nunca</strong> — Comportamiento ausente.</li>
+                            <li><strong>2. Rara vez</strong> — Ocurre de forma muy esporádica.</li>
+                            <li><strong>3. A veces</strong> — Frecuencia inconsistente.</li>
+                            <li><strong>4. Frecuentemente</strong> — Conducta habitual.</li>
+                            <li><strong>5. Siempre / Casi siempre</strong> — Consistencia total.</li>
+                            <li><strong>N/O (No Observado)</strong> — Sin oportunidad de evaluar.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"El cuestionario está compuesto por afirmaciones sobre conductas laborales muy concretas. No hay preguntas trampa."</li>
+                    <li>"Deben responder utilizando una escala de frecuencia que va desde 'Nunca' hasta 'Siempre'."</li>
+                    <li>"Uten la opción 'No Observado' únicamente si por la naturaleza de sus funciones realmente no han tenido oportunidad de presenciar esa conducta. No la utilicen para evitar responder."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's6-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's6-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s6-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Tranquilizar sobre el tiempo necesario (20 a 30 minutos) y recomendar responder en un bloque continuo sin interrupciones.
+                </div>
+                <div class="tab-content" id="s6-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Aclarar que como jefes directos, el uso de 'No Observado' debe ser excepcional, ya que se espera que conozcan la gestión de sus colaboradores de manera integral.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 7 -->
+        <div class="slide-stage" id="slide-7">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 07 / 08 — El Ciclo Posterior</div>
+                        <h1 class="slide-title">¿Qué sucede después de responder?</h1>
+                        <p class="subtitle">El camino desde el cierre de la encuesta hasta el Plan de Desarrollo</p>
+                    </div>
+                </div>
+
+                <div class="grid-4">
+                    <div class="content-box">
+                        <div class="box-title red">1. Procesamiento</div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                            Cierre de la plataforma y consolidación anónima de las respuestas por parte del equipo facilitador.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">2. Reporte Individual</div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                            Generación de informes confidenciales con gráficos de brechas entre autoevaluación y otros roles.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">3. Feedback</div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                            Reunión de devolución de resultados estructurada y enfocada en el diálogo profesional.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">4. Plan (PDI)</div>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+                            Acuerdo de compromisos y acciones concretas para potenciar el desarrollo durante el año.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"El proceso de Evaluación 360° no termina al hacer clic en 'Enviar'. De hecho, ahí es donde comienza la etapa más constructiva."</li>
+                    <li>"Una vez cerradas las respuestas, cada trabajador recibirá un informe confidencial y tendrá una sesión de retroalimentación para analizar sus resultados de forma serena."</li>
+                    <li>"El objetivo final es construir un Plan de Desarrollo Individual (PDI) con acciones concretas que impulsen su carrera en la organización."</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's7-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's7-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s7-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Asegurarles que no se les entregará un reporte de forma fría por correo sin acompañamiento, sino que habrá una conversación personalizada para interpretarlo.
+                </div>
+                <div class="tab-content" id="s7-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Preparar a las jefaturas para su rol clave posterior: liderar la reunión de feedback con sus colaboradores de manera constructiva, empática y orientada al futuro.
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 8 -->
+        <div class="slide-stage" id="slide-8">
+            <div class="visual-card">
+                <div class="slide-header">
+                    <div>
+                        <div class="slide-number-badge">Diapositiva 08 / 08 — Cierre e Inicio</div>
+                        <h1 class="slide-title">Compromisos para el Éxito del Proceso</h1>
+                        <p class="subtitle">Condiciones operativas y llamado a la acción para la etapa de respuesta</p>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="content-box">
+                        <div class="box-title red">🗓️ Plazos Clave</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            La plataforma estará abierta durante el período informado. No dejemos la respuesta para el último día.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">🧘 Entorno Tranquilo</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            Busca un espacio sin interrupciones para responder con la dedicación y reflexión que el proceso merece.
+                        </p>
+                    </div>
+                    <div class="content-box">
+                        <div class="box-title red">🤝 Compromiso Ético</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                            Honestidad, respeto y objetividad en cada respuesta para construir una mejor organización entre todos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card">
+                <div class="script-header">
+                    <span class="script-badge">🎙️ Lo que debes decir</span>
+                </div>
+                <ul class="script-bullets">
+                    <li>"Estamos listos para comenzar. Les pido que asumamos este compromiso con la máxima responsabilidad y generosidad hacia nuestros compañeros."</li>
+                    <li>"Recuerden planificar su tiempo, buscar un momento tranquilo en su jornada y responder con total objetividad."</li>
+                    <li>"¿Tienen alguna pregunta general sobre el sentido, el modelo o el proceso que acabamos de revisar antes de abrir el instrumento?"</li>
+                </ul>
+            </div>
+
+            <div class="adaptation-card">
+                <div class="adaptation-header">
+                    <span class="adaptation-badge">🔄 Adaptación de Comunicación por Audiencia</span>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab(this, 's8-todos')">👥 Todos los Trabajadores</button>
+                        <button class="tab-btn" onclick="switchTab(this, 's8-jefes')">👔 Exclusivo Jefaturas</button>
+                    </div>
+                </div>
+                <div class="tab-content active" id="s8-todos">
+                    <strong>Énfasis para Trabajadores:</strong> Recordar los canales de soporte disponibles por si surgen inconvenientes técnicos o dudas durante la aplicación.
+                </div>
+                <div class="tab-content" id="s8-jefes">
+                    <strong>Énfasis para Jefaturas:</strong> Instar a las jefaturas a otorgar los espacios de tiempo necesarios a sus equipos de trabajo dentro del horario laboral para completar la evaluación sin sobrecargas.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER NAVIGATION -->
+    <footer>
+        <div class="slide-counter" id="slideCounter">
+            DIAPOSITIVA 01 / 08
+        </div>
+
+        <div class="main-controls">
+            <button class="btn-action secondary" id="btnPrev" onclick="changeSlide(-1)">
+                ◀ Anterior
+            </button>
+            <button class="btn-action" id="btnNext" onclick="changeSlide(1)">
+                Siguiente ▶
+            </button>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: CALIBRADOR DE SESGOS GAME -->
+    <div class="modal-overlay" id="modal-game">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🎯</span> Calibrador de Objetividad: ¿Evidencia o Sesgo?
+                </div>
+                <button class="modal-close" onclick="toggleModal('modal-game')">✕</button>
+            </div>
+
+            <div class="quiz-question" id="quizQuestion">
+                Cargando caso práctico...
+            </div>
+
+            <div class="quiz-buttons">
+                <button class="btn-quiz evidencia" onclick="answerQuiz('EVIDENCIA')">🟢 EVIDENCIA OBJETIVA</button>
+                <button class="btn-quiz sesgo" onclick="answerQuiz('SESGO')">🔴 SESGO O IMPRESIÓN</button>
+            </div>
+
+            <div class="quiz-feedback" id="quizFeedback"></div>
+
+            <div style="margin-top: 18px; text-align: right;">
+                <button class="btn-action secondary" style="display: inline-flex;" onclick="nextQuizQuestion()">
+                    Siguiente Caso ➔
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: INDEX OVERVIEW -->
+    <div class="modal-overlay" id="modal-index">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>☰</span> Índice de la Presentación
+                </div>
+                <button class="modal-close" onclick="toggleModal('modal-index')">✕</button>
+            </div>
+
+            <div class="index-grid">
+                <div class="index-item" onclick="goToSlide(1)">
+                    <div class="index-item-num">01. PROPÓSITO</div>
+                    <div class="index-item-title">¿Por qué la Evaluación 360°?</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(2)">
+                    <div class="index-item-num">02. MODELO</div>
+                    <div class="index-item-title">Las 4 Dimensiones de Feedback</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(3)">
+                    <div class="index-item-num">03. SEGURIDAD</div>
+                    <div class="index-item-title">Confidencialidad y Anonimato</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(4)">
+                    <div class="index-item-num">04. PREPARACIÓN</div>
+                    <div class="index-item-title">Evaluación Basada en Evidencias</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(5)">
+                    <div class="index-item-num">05. NEUTRALIDAD</div>
+                    <div class="index-item-title">Neutralizando los 4 Sesgos Clave</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(6)">
+                    <div class="index-item-num">06. INSTRUMENTO</div>
+                    <div class="index-item-title">Estructura y Escala de Frecuencia</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(7)">
+                    <div class="index-item-num">07. ETAPA POSTERIOR</div>
+                    <div class="index-item-title">Feedback y Plan de Desarrollo</div>
+                </div>
+                <div class="index-item" onclick="goToSlide(8)">
+                    <div class="index-item-num">08. CIERRE</div>
+                    <div class="index-item-title">Compromisos de Lanzamiento</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        // Slide Navigation
+        function updateSlide() {
+            document.querySelectorAll('.slide-stage').forEach((slide, idx) => {
+                slide.classList.remove('active');
+                if (idx === currentSlide - 1) {
+                    slide.classList.add('active');
+                }
+            });
+
+            // Update Progress Bar
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            // Update Counter
+            document.getElementById('slideCounter').innerText = `DIAPOSITIVA 0${currentSlide} / 0${totalSlides}`;
+
+            // Buttons state
+            document.getElementById('btnPrev').disabled = (currentSlide === 1);
+            document.getElementById('btnNext').innerText = (currentSlide === totalSlides) ? 'Finalizar ➔' : 'Siguiente ▶';
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            updateSlide();
+        }
+
+        function goToSlide(slideNum) {
+            currentSlide = slideNum;
+            updateSlide();
+            toggleModal('modal-index');
+        }
+
+        // Tab Switcher for Adaptations
+        function switchTab(btn, targetId) {
+            const container = btn.closest('.adaptation-card');
+            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        }
+
+        // Modals Toggle
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            } else {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+                if (modalId === 'modal-game') {
+                    initQuiz();
+                }
+            }
+        }
+
+        // Quiz Logic
+        const quizQuestions = [
+            {
+                text: '"Le puse baja nota porque el viernes pasado tuvimos una discusión acalorada en la reunión."',
+                correct: 'SESGO',
+                explanation: 'Correcto. Esto es un Sesgo de Reciencia y contaminación emocional.'
+            },
+            {
+                text: '"Le asigné frecuencia alta porque en los 3 proyectos del año entregó los reportes a tiempo."',
+                correct: 'EVIDENCIA',
+                explanation: 'Correcto. Se basa en conductas observadas y consistentes en el tiempo.'
+            },
+            {
+                text: '"Prefiero ponerle un 5 a todo para no meterme en problemas con mis compañeros."',
+                correct: 'SESGO',
+                explanation: 'Correcto. Esto es Indulgencia excesiva por evasión de conflicto.'
+            },
+            {
+                text: '"Como es muy simpático y alegre en el café, asumí que también es muy organizado en sus tareas."',
+                correct: 'SESGO',
+                explanation: 'Correcto. Corresponde al Efecto Halo (confundir carisma con competencia técnica).'
+            },
+            {
+                text: '"Revisé las minutas de trabajo donde consta que coordinó las reuniones interárea semanalmente."',
+                correct: 'EVIDENCIA',
+                explanation: 'Correcto. Corresponde a hechos objetivos y verificables.'
+            }
+        ];
+
+        let currentQuizIdx = 0;
+
+        function initQuiz() {
+            currentQuizIdx = 0;
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const q = quizQuestions[currentQuizIdx];
+            document.getElementById('quizQuestion').innerText = q.text;
+            const feedback = document.getElementById('quizFeedback');
+            feedback.style.display = 'none';
+            feedback.className = 'quiz-feedback';
+        }
+
+        function answerQuiz(userChoice) {
+            const q = quizQuestions[currentQuizIdx];
+            const feedback = document.getElementById('quizFeedback');
+
+            if (userChoice === q.correct) {
+                feedback.innerText = `¡CORRECTO! — ${q.explanation}`;
+                feedback.className = 'quiz-feedback correct';
+            } else {
+                feedback.innerText = `INCORRECTO — ${q.explanation}`;
+                feedback.className = 'quiz-feedback incorrect';
+            }
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIdx = (currentQuizIdx + 1) % quizQuestions.length;
+            showQuizQuestion();
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>

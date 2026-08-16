@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia Empresarial & Medición de Desempeño 360°</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0a0c;
+            --bg-card: #121216;
+            --bg-card-hover: #1a1a22;
+            --border-color: #262630;
+            --red-primary: #dc2626;
+            --red-bright: #ff2a2a;
+            --red-glow: rgba(220, 38, 38, 0.25);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --text-dark: #71717a;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER FIX - TUTORA IDENTITUDE */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(10, 10, 12, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .header-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--red-bright);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: var(--red-bright);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--red-bright);
+        }
+
+        .tutor-signature {
+            text-align: right;
+        }
+
+        .tutor-name {
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .tutor-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* NAVIGATION BAR */
+        .nav-menu {
+            display: flex;
+            gap: 6px;
+            background: rgba(18, 18, 22, 0.8);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-item {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-main);
+            background: var(--red-primary);
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border-color);
+            z-index: 999;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--red-bright);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--red-bright);
+        }
+
+        /* SLIDE CONTAINER */
+        .viewport {
+            flex: 1;
+            margin-top: 73px;
+            margin-bottom: 60px;
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 133px);
+            overflow-y: auto;
+        }
+
+        .slide {
+            display: none;
+            padding: 2.5rem 3rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            min-height: 100%;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SLIDE HEADERS */
+        .slide-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .slide-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--red-bright);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .time-badge {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1px solid var(--red-primary);
+            color: var(--red-bright);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .slide-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* GRID & CARDS */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--red-primary);
+            box-shadow: 0 8px 24px var(--red-glow);
+        }
+
+        .card-accent {
+            border-left: 4px solid var(--red-bright);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* BIG NUMBERS & STATS */
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--red-bright);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-feature-settings: "tnum";
+        }
+
+        /* FLOW & PROCESS */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 2rem 0;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .flow-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            min-width: 140px;
+            flex: 1;
+            position: relative;
+        }
+
+        .flow-step.highlight {
+            border-color: var(--red-bright);
+            background: rgba(220, 38, 38, 0.08);
+        }
+
+        .flow-num {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--red-bright);
+            margin-bottom: 5px;
+        }
+
+        .flow-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .flow-arrow {
+            color: var(--red-primary);
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        /* TABLES & MATRICES */
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .table-custom th {
+            background: #181820;
+            color: var(--red-bright);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .table-custom td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            background: var(--bg-card);
+        }
+
+        .table-custom tr:hover td {
+            background: var(--bg-card-hover);
+            color: var(--text-main);
+        }
+
+        /* INTERACTIVE QUIZ & TOGGLES */
+        .quiz-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-btn:hover {
+            border-color: var(--red-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .quiz-btn.correct {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+
+        .quiz-btn.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* LIKERT SURVEY SIMULATOR */
+        .survey-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .survey-q {
+            font-size: 0.9rem;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .likert-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .likert-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #181820;
+            color: var(--text-muted);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .likert-btn:hover, .likert-btn.selected {
+            background: var(--red-primary);
+            color: white;
+            border-color: var(--red-bright);
+            box-shadow: 0 0 8px var(--red-glow);
+        }
+
+        /* ACCORDIONS */
+        .accordion {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+
+        .accordion-header {
+            padding: 1rem 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #181820;
+            color: var(--text-main);
+            transition: background 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: #20202a;
+        }
+
+        .accordion-content {
+            padding: 1.2rem;
+            display: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .accordion.open .accordion-content {
+            display: block;
+        }
+
+        /* FOOTER NAV */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(10, 10, 12, 0.95);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            border-color: var(--red-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .btn-primary {
+            background: var(--red-primary);
+            border-color: var(--red-bright);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--red-bright);
+            box-shadow: 0 0 12px var(--red-glow);
+        }
+
+        .slide-counter {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* HIGHLIGHT TEXT */
+        .text-red { color: var(--red-bright); }
+        .text-bold { font-weight: 700; }
+        .badge {
+            background: var(--border-color);
+            color: var(--text-main);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FIXED TUTOR HEADER -->
+    <header>
+        <div class="header-title">Estrategia & Medición de Desempeño</div>
+        <div class="nav-menu">
+            <button class="nav-item active" onclick="goToSlide(0)">Apertura</button>
+            <button class="nav-item" onclick="goToSlide(2)">SMART</button>
+            <button class="nav-item" onclick="goToSlide(5)">Indicadores</button>
+            <button class="nav-item" onclick="goToSlide(8)">Preguntas</button>
+            <button class="nav-item" onclick="goToSlide(11)">360°</button>
+            <button class="nav-item" onclick="goToSlide(13)">Caso Práctico</button>
+            <button class="nav-item" onclick="goToSlide(15)">Encuesta</button>
+            <button class="nav-item" onclick="goToSlide(19)">Cierre</button>
+        </div>
+        <div class="tutor-signature">
+            <div class="tutor-name">Constanza</div>
+            <div class="tutor-title">Tutora Preply: Estrategia empresarial</div>
+        </div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- MAIN VIEWPORT / SLIDES -->
+    <div class="viewport">
+
+        <!-- SLIDE 1: PORTADA Y PREGUNTA CENTRAL -->
+        <div class="slide active">
+            <div class="slide-meta">
+                <span class="slide-tag">01. Apertura y Problema</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <div style="text-align: center; margin: 3rem 0;">
+                <h1 style="font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;">
+                    “Tener una meta no significa <br><span class="text-red">estar cumpliéndola.</span>”
+                </h1>
+                <p style="font-size: 1.3rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 2.5rem auto;">
+                    ¿Cómo sabemos objetivamente si una persona realmente está cumpliendo sus objetivos estratégicos?
+                </p>
+                <div style="display: inline-block; background: var(--bg-card); border: 1px solid var(--red-primary); padding: 1.5rem 2.5rem; border-radius: 12px; box-shadow: 0 0 20px var(--red-glow);">
+                    <div style="font-size: 0.85rem; text-transform: uppercase; color: var(--red-bright); font-weight: 800; letter-spacing: 1px; margin-bottom: 8px;">El Desafío Ejecutivo</div>
+                    <div style="font-size: 1.1rem; font-weight: 600;">Evolucionar de redactar buenas metas a diseñar un <span class="text-red">sistema objetivo de comprobación y evaluación 360°</span>.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: PERCEPCIÓN VS EVIDENCIA -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">01. Apertura y Problema</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">El Dilema Organizacional</h2>
+            <p class="slide-subtitle">“Si mañana una jefatura dice que su equipo está cumpliendo sus objetivos, ¿cómo podríamos demostrarlo?”</p>
+
+            <div class="grid-2">
+                <div class="card card-accent">
+                    <div class="card-title"><span class="text-red">✕</span> Respuestas basadas en PERCEPCIÓN</div>
+                    <ul style="list-style: none; line-height: 2; margin-top: 1rem;">
+                        <li>⚠️ <em>“Porque trabajan mucho y se quedan hasta tarde.”</em></li>
+                        <li>⚠️ <em>“Porque están muy comprometidos con la empresa.”</em></li>
+                        <li>⚠️ <em>“Porque cumplen con todo lo que se les pide en el día a día.”</em></li>
+                        <li>⚠️ <em>“Porque siento que las cosas están funcionando mejor.”</em></li>
+                    </ul>
+                    <div style="margin-top: 1.5rem; background: rgba(239,68,68,0.1); padding: 0.8rem; border-radius: 6px; font-size: 0.85rem; color: #fca5a5;">
+                        <strong>Riesgo:</strong> Sesgos afectivos, desgaste sin impacto, subjetividad extrema en evaluaciones.
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #22c55e;">
+                    <div class="card-title" style="color: #4ade80;">✓ Respuestas basadas en EVIDENCIA</div>
+                    <ul style="list-style: none; line-height: 2; margin-top: 1rem;">
+                        <li>✅ <em>“Porque los indicadores de gestión muestran un avance del +18%.”</em></li>
+                        <li>✅ <em>“Porque existen registros auditables de entregables a tiempo.”</em></li>
+                        <li>✅ <em>“Porque la tasa de errores operativos disminuyó un 25%.”</em></li>
+                        <li>✅ <em>“Porque la evaluación 360° valida comportamientos clave.”</em></li>
+                    </ul>
+                    <div style="margin-top: 1.5rem; background: rgba(34,197,94,0.1); padding: 0.8rem; border-radius: 6px; font-size: 0.85rem; color: #86efac;">
+                        <strong>Ventaja:</strong> Objetividad, foco en resultados ejecutivos, métricas auditables y justa retroalimentación.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: SMART REVISITADO -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">02. Qué significa realmente SMART</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 8 min</span>
+            </div>
+            <h2 class="slide-title">Redefiniendo SMART para Alta Gerencia</h2>
+            <p class="slide-subtitle">No basta con conocer la acrónimo; necesitamos comprender qué error evita y qué evidencia exige cada letra.</p>
+
+            <div class="grid-3">
+                <div class="card card-accent">
+                    <div class="stat-number">S</div>
+                    <div class="card-title">Specific (Específico)</div>
+                    <div class="card-body">
+                        <p><strong>Error que evita:</strong> Ambigüedad y metas vagas como "mejorar el desempeño".</p>
+                        <p style="margin-top: 0.5rem;"><strong>Evidencia:</strong> Delimitación clara del proceso o entregable concreto.</p>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="stat-number">M</div>
+                    <div class="card-title">Measurable (Medible)</div>
+                    <div class="card-body">
+                        <p><strong>Error que evita:</strong> Discusiones subjetivas sobre el grado de cumplimiento.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Evidencia:</strong> Un indicador duro (KPI) numérico o porcentaje observable.</p>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="stat-number">A</div>
+                    <div class="card-title">Achievable (Alcanzable)</div>
+                    <div class="card-body">
+                        <p><strong>Error que evita:</strong> Desmotivación por metas inalcanzables o irrealistas.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Evidencia:</strong> Análisis de capacidad instalada y recursos asignados.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card card-accent">
+                    <div class="stat-number">R</div>
+                    <div class="card-title">Relevant (Relevante)</div>
+                    <div class="card-body">
+                        <p><strong>Error que evita:</strong> Trabajar duro en cosas que no mueven la aguja del negocio.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Evidencia:</strong> Alineación directa con el Plan Estratégico de la empresa.</p>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="stat-number">T</div>
+                    <div class="card-title">Time-bound (Acotado)</div>
+                    <div class="card-body">
+                        <p><strong>Error que evita:</strong> Procrastinación y compromisos sin fecha límite.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Evidencia:</strong> Fecha de corte o cronograma de hitos verificado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: TRANSFOMACIÓN SMART - EJEMPLO -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">02. Qué significa realmente SMART</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 8 min</span>
+            </div>
+            <h2 class="slide-title">Transformación Práctica de una Meta</h2>
+            <p class="slide-subtitle">De la intención vaga al compromiso estratégico auditable.</p>
+
+            <div class="card" style="margin-bottom: 2rem; background: rgba(239,68,68,0.08); border-color: var(--red-primary);">
+                <div class="card-title" style="color: var(--red-bright);">❌ Redacción Vaga Frecuente</div>
+                <div style="font-size: 1.3rem; font-weight: 700; font-style: italic;">“Mejorar la comunicación del equipo durante el año.”</div>
+            </div>
+
+            <div class="card" style="background: rgba(34,197,94,0.08); border-color: #22c55e;">
+                <div class="card-title" style="color: #4ade80;">✅ Transformación SMART Ejecutiva</div>
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">
+                    “Reducir en un 20% los errores asociados a problemas de coordinación operativa durante el segundo semestre.”
+                </div>
+                <div class="grid-4" style="margin-top: 1.5rem;">
+                    <div>
+                        <span class="badge">Específico</span>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Errores de coordinación operativa</div>
+                    </div>
+                    <div>
+                        <span class="badge">Medible</span>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Reducción del 20% en tasa de error</div>
+                    </div>
+                    <div>
+                        <span class="badge">Relevante</span>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Impacto directo en calidad y costos</div>
+                    </div>
+                    <div>
+                        <span class="badge">Plazo</span>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Durante el segundo semestre</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: EL EL CONCEPTO CENTRAL (EL FLUJO) -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">02. Concepto Central de la Clase</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 8 min</span>
+            </div>
+            <h2 class="slide-title">El Sistema Integrado de Medición</h2>
+            <p class="slide-subtitle">La conexión metodológica indispensable entre los Objetivos SMART y la Evaluación 360°.</p>
+
+            <div class="flow-container">
+                <div class="flow-step highlight">
+                    <div class="flow-num">01</div>
+                    <div class="flow-text">OBJETIVO SMART</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="flow-num">02</div>
+                    <div class="flow-text">INDICADOR DURO (KPI)</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="flow-num">03</div>
+                    <div class="flow-text">META & EVIDENCIA</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="flow-num">04</div>
+                    <div class="flow-text">PERCEPCIÓN JEFATURA / AUTO</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step highlight">
+                    <div class="flow-num">05</div>
+                    <div class="flow-text">EVALUACIÓN 360°</div>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                    <div class="flow-num">06</div>
+                    <div class="flow-text">PLAN DE MEJORA</div>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 2rem;">
+                <div class="card">
+                    <div class="card-title"><span class="text-red">📊</span> El Indicador Duro (KPI) responde:</div>
+                    <p class="card-body"><strong>“¿Qué resultado observable y cuantificable produjo la persona?”</strong> Mide el impacto directo y la cuota de cumplimiento sin sesgos de simpatía.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="text-red">🔄</span> La Evaluación 360° responde:</div>
+                    <p class="card-body"><strong>“¿Cómo se comportó la persona para lograr ese resultado?”</strong> Evalúa conductas, colaboración, liderazgo y estilo de trabajo con pares y clientes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: INDICADORES DUROS - DEFINICIÓN Y MATRIZ -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">03. De SMART a Indicadores Duros</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 10 min</span>
+            </div>
+            <h2 class="slide-title">¿Qué es un Indicador Duro (Hard KPI)?</h2>
+            <p class="slide-subtitle">Datos observables, registrables y verificables independientemente de la opinión o percepción de un individuo.</p>
+
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Tipo de Objetivo</th>
+                        <th>Indicadores Duros Posibles</th>
+                        <th>Fuente de Evidencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ingresos / Ventas</strong></td>
+                        <td>Monto facturado, tasa de conversión, ticket promedio, margen bruto.</td>
+                        <td>CRM / Sistema de Facturación</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Productividad</strong></td>
+                        <td>Unidades producidas, tiempo promedio por proceso, tareas cerradas.</td>
+                        <td>ERP / Software de Gestión de Tareas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Calidad</strong></td>
+                        <td>% de productos/servicios defectuosos, número de reclamos, índice de retrabajo.</td>
+                        <td>Sistema de Control de Calidad</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Proyectos</strong></td>
+                        <td>% de avance de hitos, días de desviación sobre plazo, presupuesto ejecutado.</td>
+                        <td>Gantt / Project Management Tool</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gestión de Personas</strong></td>
+                        <td>Tasa de rotación, índice de ausentismo, tiempo promedio de contratación.</td>
+                        <td>Portal RRHH / Nómina</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Finanzas</strong></td>
+                        <td>% de varianza presupuestaria, ahorro de costos ($), flujo de caja.</td>
+                        <td>Reportes de Contabilidad</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 7: OBJETIVOS CONDUCTUALES O CULTURALES -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">03. De SMART a Indicadores Duros</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 10 min</span>
+            </div>
+            <h2 class="slide-title">¿Y si el Objetivo no tiene un KPI Obvio?</h2>
+            <p class="slide-subtitle">Cuando el objetivo es cualitativo, conductual o cultural, la medición requiere fuentes complementarias.</p>
+
+            <div class="grid-2">
+                <div class="card card-accent">
+                    <div class="card-title">Fuentes de Verificación Alternativas</div>
+                    <ul style="list-style: none; line-height: 1.8; margin-top: 1rem;" class="card-body">
+                        <li>📌 <strong>Cumplimiento de Hitos:</strong> Entregables intermedios formalmente aprobados.</li>
+                        <li>📄 <strong>Evidencia Documental:</strong> Manuales redactados, minutas de reuniones, acuerdos firmados.</li>
+                        <li>📊 <strong>Encuestas de Satisfacción Interna:</strong> Evaluación del servicio prestado a otras áreas.</li>
+                        <li>🔍 <strong>Observación Estructurada:</strong> Pautas de cotejo en situaciones reales de trabajo.</li>
+                        <li>📈 <strong>Indicadores Indirectos:</strong> Reducción de incidentes o escalamientos a la jefatura.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="background: rgba(220,38,38,0.05); border-color: var(--border-color);">
+                    <div class="card-title" style="color: var(--red-bright);">Principio Clave de Gestión</div>
+                    <p style="font-size: 1.1rem; line-height: 1.6; margin-top: 1rem; font-weight: 500;">
+                        “Si no puedes obtener una cifra automática del sistema, debes construir un <span class="text-red">estándar claro de aceptación</span> y verificar su cumplimiento mediante la Evaluación 360°.”
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: DISEÑO DE PREGUNTAS POR FUENTE -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">04. Medir SMART mediante Preguntas</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 12 min</span>
+            </div>
+            <h2 class="slide-title">Multi-Fuente: La Cuadriangulación del Desempeño</h2>
+            <p class="slide-subtitle">Una meta no se mide preguntando de forma vaga. Se requiere indagar desde 4 perspectivas clave.</p>
+
+            <div class="grid-4">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👔</div>
+                    <div class="card-title" style="justify-content: center;">1. Jefatura</div>
+                    <div class="card-body">Evalúa el grado de logro final, calidad y autonomía del trabajador.</div>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👤</div>
+                    <div class="card-title" style="justify-content: center;">2. Trabajador</div>
+                    <div class="card-body">Autoevalúa su claridad, esfuerzo, barreras y uso de recursos.</div>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</div>
+                    <div class="card-title" style="justify-content: center;">3. Pares / Equipos</div>
+                    <div class="card-body">Evalúan conductas observables de apoyo, coordinación y clima.</div>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📈</div>
+                    <div class="card-title" style="justify-content: center;">4. KPIs Objetivos</div>
+                    <div class="card-body">Demuestran la realidad cuantificable generada en el período.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: PREGUNTAS PARA JEFATURAS -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">04. Medir SMART mediante Preguntas</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 12 min</span>
+            </div>
+            <h2 class="slide-title">Preguntas Ejecutivas para Jefaturas Directas</h2>
+            <p class="slide-subtitle">Sustituir preguntas ambiguas (“¿Trabaja bien?”) por dimensiones rigurosas de evaluación.</p>
+
+            <div class="grid-2">
+                <div class="accordion open">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>1. Logro de Resultados (Escala 1–5)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <em>“¿En qué medida la persona alcanzó la meta específica definida para el período en el objetivo asignado?”</em>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>2. Cumplimiento de Plazos</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <em>“¿En qué medida los entregables e hitos comprometidos se completaron dentro de los plazos estipulados?”</em>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>3. Estándar de Calidad</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <em>“¿Los resultados entregados cumplieron con los niveles de precisión y calidad requeridos sin requerir re-trabajo significativo?”</em>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>4. Gestor de Desviaciones</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <em>“Ante imprevistos o desviaciones, ¿la persona identificó el problema a tiempo y propuso soluciones correctivas oportunas?”</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: PREGUNTAS PARA TRABAJADORES (AUTOEVALUACIÓN) -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">04. Medir SMART mediante Preguntas</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 12 min</span>
+            </div>
+            <h2 class="slide-title">Preguntas de Autoevaluación del Trabajador</h2>
+            <p class="slide-subtitle">Fomentar la corresponsabilidad y la identificación objetiva de barreras operativas.</p>
+
+            <div class="grid-2">
+                <div class="card card-accent">
+                    <div class="card-title">Claridad de Metas</div>
+                    <p class="card-body"><em>“¿Tenía claridad total sobre el indicador duro y la meta específica que debía alcanzar en este período?”</em></p>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Monitoreo y Seguimiento</div>
+                    <p class="card-body"><em>“¿Pude realizar un seguimiento periódico de mi propio avance para tomar acciones correctivas antes del cierre?”</em></p>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Disponibilidad de Recursos</div>
+                    <p class="card-body"><em>“¿Conté con las herramientas, información y apoyo de otras áreas necesarios para lograr el objetivo?”</em></p>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Evidencia de Logro</div>
+                    <p class="card-body"><em>“¿Puedo presentar datos o documentos concretos que respalden el nivel de cumplimiento que declaro?”</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: SMART + 360° RESULTADOS VS CONDUCTAS -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">05. SMART + Evaluación 360°</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 10 min</span>
+            </div>
+            <h2 class="slide-title">SMART vs 360°: Instrumentos Complementarios</h2>
+            <p class="slide-subtitle">Una meta mide RESULTADOS; la evaluación 360° mide CONDUCTAS. Jamás deben competir.</p>
+
+            <div class="grid-2">
+                <div class="card card-accent">
+                    <div class="card-title" style="color: var(--red-bright);">🎯 OBJETIVO SMART (Resultado)</div>
+                    <div class="card-body" style="margin-top: 1rem;">
+                        <p><strong>Ejemplo de Meta:</strong> “Aumentar la satisfacción del cliente interno en un 15%.”</p>
+                        <p style="margin-top: 0.8rem;"><strong>Métrica Dura:</strong> Puntaje NPS interno en la encuesta trimestral.</p>
+                        <p style="margin-top: 0.8rem;"><strong>Qué determina:</strong> Si la meta de negocio se logró o no.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #3b82f6;">
+                    <div class="card-title" style="color: #60a5fa;">🔄 EVALUACIÓN 360° (Conducta)</div>
+                    <div class="card-body" style="margin-top: 1rem;">
+                        <p><strong>Pregunta a Pares:</strong> “¿Adapta proactivamente sus prioridades cuando otra área le solicita ayuda urgente?”</p>
+                        <p style="margin-top: 0.8rem;"><strong>Métrica Cualitativa:</strong> Promedio de valoración de pares y colaboradores.</p>
+                        <p style="margin-top: 0.8rem;"><strong>Qué determina:</strong> Cómo se comporta la persona mientras persigue el objetivo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: MATRIZ MATRIZ INTEGRADA SMART + 360° -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">05. SMART + Evaluación 360°</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 10 min</span>
+            </div>
+            <h2 class="slide-title">Matriz Integrada de Evaluación</h2>
+            <p class="slide-subtitle">Visión holística: Vincular lo que pasó con cómo ocurrió.</p>
+
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Qué Mide Exactamente</th>
+                        <th>Fuente Primaria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Objetivo SMART</strong></td>
+                        <td>Resultado estratégico esperado</td>
+                        <td>Plan Operativo / Jefatura</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Indicador Duro (KPI)</strong></td>
+                        <td>Cumplimiento numérico cuantitativo</td>
+                        <td>ERP / CRM / Sistemas de Datos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autoevaluación</strong></td>
+                        <td>Percepción interna y autoexigencia</td>
+                        <td>Encuesta del Trabajador</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluación 360° Pares</strong></td>
+                        <td>Trabajo en equipo y coordinación interárea</td>
+                        <td>Encuesta de Pares</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluación 360° Reportes</strong></td>
+                        <td>Liderazgo, delegación y empatía</td>
+                        <td>Encuesta de Subordinados Directos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evidencia Auditable</strong></td>
+                        <td>Documentos, entregables y reportes</td>
+                        <td>Repositorios / Auditoría de Proyectos</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 13: ACTIVIDAD INTERACTIVA - SMART VS NO SMART -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">06. Aplicación y Práctica</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">Actividad Práctica: Identifica el Objetivo SMART</h2>
+            <p class="slide-subtitle">Haz clic en la opción que consideras verdaderamente SMART:</p>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <button class="quiz-btn" onclick="checkQuiz(1, false, this)">
+                    A) “Ser más proactivo y demostrar mayor iniciativa con los clientes.”
+                </button>
+                <button class="quiz-btn" onclick="checkQuiz(1, false, this)">
+                    B) “Mejorar de manera sustancial la relación operativa con otras áreas.”
+                </button>
+                <button class="quiz-btn" onclick="checkQuiz(1, true, this)">
+                    C) “Reducir en un 15% el tiempo promedio de respuesta a solicitudes internas durante el próximo trimestre.”
+                </button>
+
+                <div id="feedback-1" class="feedback-box"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: DETECTAR UNA MALA META - QUIZ -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">06. Aplicación y Práctica</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">Taller Rápido: ¿SMART o NO SMART?</h2>
+            <p class="slide-subtitle">Analiza las siguientes declaraciones de metas corporativas:</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <p style="font-weight: 700; margin-bottom: 1rem;">1. “Aumentar las ventas en un 10% durante el Q3.”</p>
+                    <button class="quiz-btn" onclick="checkQuiz(2, true, this)">✓ Es SMART</button>
+                    <button class="quiz-btn" onclick="checkQuiz(2, false, this)">✕ NO es SMART</button>
+                    <div id="feedback-2" class="feedback-box"></div>
+                </div>
+
+                <div class="card">
+                    <p style="font-weight: 700; margin-bottom: 1rem;">2. “Demostrar un liderazgo más participativo.”</p>
+                    <button class="quiz-btn" onclick="checkQuiz(3, false, this)">✓ Es SMART</button>
+                    <button class="quiz-btn" onclick="checkQuiz(3, true, this)">✕ NO es SMART</button>
+                    <div id="feedback-3" class="feedback-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: PLANTILLA FINAL DE ENCUESTA SMART (INTERACTIVA) -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">07. Plantilla Encuesta SMART</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: Formulario Utilizable</span>
+            </div>
+            <h2 class="slide-title">Encuesta Estándar de Cumplimiento SMART (10 Preguntas)</h2>
+            <p class="slide-subtitle">Escala Likert: 1 (Totalmente en Desacuerdo) a 5 (Totalmente de Acuerdo)</p>
+
+            <div style="max-height: 450px; overflow-y: auto; padding-right: 10px;">
+                <div class="survey-item">
+                    <span class="survey-q">1. Tengo claridad absoluta sobre el objetivo estratégico asignado para este período.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">2. El objetivo contaba con un indicador duro claro para medir cuantitativamente su éxito.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">3. Conocía exactamente la meta numérica o estándar exigido antes de iniciar el período.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">4. El plazo fijado era desafiante pero razonable y alcanzable con los recursos asignados.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">5. Pude monitorear mi avance de forma periódica mediante tableros o reportes de gestión.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">6. Considero que alcancé o superé el nivel de cumplimiento esperado.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">7. Dispongo de evidencia documental auditable que valida mi nivel de cumplimiento.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">8. Al detectar desviaciones en el camino, ejecuté oportunamente planes de corrección.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">9. El objetivo aportó directamente a la estrategia global del área y de la organización.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+
+                <div class="survey-item">
+                    <span class="survey-q">10. Recibí retroalimentación continua y oportuna de mi jefatura durante el proceso.</span>
+                    <div class="likert-options">
+                        <button class="likert-btn" onclick="selectLikert(this)">1</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">2</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">3</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">4</button>
+                        <button class="likert-btn" onclick="selectLikert(this)">5</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: ADAPTACIONES POR ÁREA -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">07. Versiones por Área</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">Personalización de Indicadores por Área</h2>
+            <p class="slide-subtitle">Las 10 preguntas base se complementan con 2–4 preguntas específicas según el departamento.</p>
+
+            <div class="grid-3">
+                <div class="card card-accent">
+                    <div class="card-title">Área Comercial</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>Facturación ($) vs Cuota</li>
+                        <li>Tasa de Conversión de Leads</li>
+                        <li>Margen Bruto por Venta</li>
+                    </ul>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Operaciones</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>Cumplimiento de SLA (%)</li>
+                        <li>Tasa de Errores / Retrabajo</li>
+                        <li>Costo Unitario de Procesamiento</li>
+                    </ul>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Recursos Humanos</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>Índice de Rotación Temprana</li>
+                        <li>Tiempo Medio de Cobertura</li>
+                        <li>Asistencia a Capacitaciones</li>
+                    </ul>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Marketing</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>Costo de Adquisición (CAC)</li>
+                        <li>Engagement Rate en Campañas</li>
+                        <li>MQLs Cualificados Generados</li>
+                    </ul>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Proyectos</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>SPI / CPI (Índices de Plazo y Costo)</li>
+                        <li>Hitos Entregados a Tiempo</li>
+                        <li>Varianza Presupuestaria</li>
+                    </ul>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-title">Atención / Servicio</div>
+                    <ul class="card-body" style="list-style: square; padding-left: 1rem;">
+                        <li>Resolución en 1er Contacto (FCR)</li>
+                        <li>CSAT / NPS de Cliente</li>
+                        <li>Tiempo de Primera Respuesta</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: LA ENCUESTA SOLA NO BASTA - FÓRMULA -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">08. Evaluación Integral</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">La Encuesta sola NO basta</h2>
+            <p class="slide-subtitle">Un sistema robusto exige integrar percepción con evidencia dura de negocio.</p>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <div style="display: inline-flex; align-items: center; gap: 15px; background: var(--bg-card); border: 1px solid var(--red-primary); padding: 1.5rem; border-radius: 12px;">
+                    <span style="font-weight: 700; color: var(--red-bright);">EVALUACIÓN INTEGRAL =</span>
+                    <span class="badge">Resultado Objetivo (KPI)</span> + 
+                    <span class="badge">Percepción (Encuesta)</span> + 
+                    <span class="badge">Conducta Observable (360°)</span>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 2rem;">
+                <div class="card card-accent">
+                    <div class="card-title">¿Por qué fallan los sistemas tradicionales?</div>
+                    <p class="card-body">Porque confían 100% en la percepción anual del jefe, generando favoritismo o castigo por eventos recientes (Efecto Recencia).</p>
+                </div>
+                <div class="card card-accent">
+                    <div class="card-title">La Solución Integrada de Medición</div>
+                    <p class="card-body">Vincular los tableros de BI (datos duros) con encuestas de proceso y retroalimentación 360° constante.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: INTERPRETACIÓN DE RESULTADOS & DIAGNÓSTICO -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">08. Interpretación de Resultados</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 5 min</span>
+            </div>
+            <h2 class="slide-title">Matriz de Diagnóstico e Inconsistencias</h2>
+            <p class="slide-subtitle">Aprender a leer cuando los datos y las opiniones no coinciden.</p>
+
+            <div class="grid-3">
+                <div class="card" style="border-top: 4px solid #22c55e;">
+                    <div class="card-title" style="color: #4ade80;">Caso 1: Consistencia Alta</div>
+                    <ul class="card-body" style="list-style: none; line-height: 1.8;">
+                        <li><strong>KPI Duro:</strong> 95% Logro</li>
+                        <li><strong>Autoevaluación:</strong> 5.0 / 5</li>
+                        <li><strong>Jefatura:</strong> 5.0 / 5</li>
+                        <li><strong>360° Pares:</strong> 4.8 / 5</li>
+                    </ul>
+                    <div style="margin-top: 1rem; color: #86efac; font-size: 0.85rem; font-weight: 700;">➔ Desempeño Sobresaliente y Sostenible.</div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--red-bright);">
+                    <div class="card-title" style="color: var(--red-bright);">Caso 2: Logro Tóxico</div>
+                    <ul class="card-body" style="list-style: none; line-height: 1.8;">
+                        <li><strong>KPI Duro:</strong> 98% Logro</li>
+                        <li><strong>Autoevaluación:</strong> 5.0 / 5</li>
+                        <li><strong>Jefatura:</strong> 5.0 / 5</li>
+                        <li><strong>360° Pares:</strong> <span class="text-red">2.3 / 5</span></li>
+                    </ul>
+                    <div style="margin-top: 1rem; color: #fca5a5; font-size: 0.85rem; font-weight: 700;">➔ Logra metas quemando al equipo o destruyendo el clima.</div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid #eab308;">
+                    <div class="card-title" style="color: #fde047;">Caso 3: Desconexión Perceptiva</div>
+                    <ul class="card-body" style="list-style: none; line-height: 1.8;">
+                        <li><strong>KPI Duro:</strong> <span class="text-red">52% Logro</span></li>
+                        <li><strong>Autoevaluación:</strong> 5.0 / 5</li>
+                        <li><strong>Jefatura:</strong> 2.0 / 5</li>
+                        <li><strong>360° Pares:</strong> 3.0 / 5</li>
+                    </ul>
+                    <div style="margin-top: 1rem; color: #fef08a; font-size: 0.85rem; font-weight: 700;">➔ Falta total de alineación y ceguera sobre estándares.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: QUÉ RESCATAR DEL FRAMEWORK ORIGINAL -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">09. Integración con el Framework</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 3 min</span>
+            </div>
+            <h2 class="slide-title">¿Qué Rescatamos del Framework Base?</h2>
+            <p class="slide-subtitle">“No reemplazamos el framework base de la organización: lo convertimos en un sistema de medición activo.”</p>
+
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Elemento del Framework</th>
+                        <th>Cómo lo Transformamos en Medición Ejecutiva</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Objetivos SMART</strong></td>
+                        <td>Definición rigurosa del qué y estándar de aceptación.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Indicadores (KPIs)</strong></td>
+                        <td>Métricas objetivas extraídas de sistemas de información.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metas e Hitos</strong></td>
+                        <td>Línea base y umbrales de éxito esperados.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seguimiento Continuo</strong></td>
+                        <td>Monitoreo mediante encuestas de proceso y tableros.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluación 360°</strong></td>
+                        <td>Comprobación de conductas, colaboración y liderazgo.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feedback Efectivo</strong></td>
+                        <td>Conversación estructurada basada en datos e inconsistencias.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 20: CIERRE PODEROSO -->
+        <div class="slide">
+            <div class="slide-meta">
+                <span class="slide-tag">10. Cierre y Pregunta Final</span>
+                <span class="time-badge">⏱️ Tiempo sugerido: 2 min</span>
+            </div>
+            <div style="text-align: center; margin: 2rem 0;">
+                <h1 style="font-size: 3.5rem; font-weight: 900; color: var(--red-bright); line-height: 1.1; margin-bottom: 2rem;">
+                    “Lo que no podemos medir, difícilmente podemos gestionar.”
+                </h1>
+
+                <div class="grid-2" style="max-width: 900px; margin: 0 auto; text-align: left; gap: 1.5rem;">
+                    <div class="card card-accent">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">1. SMART define el resultado.</div>
+                    </div>
+                    <div class="card card-accent">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">2. Los KPIs aportan la evidencia.</div>
+                    </div>
+                    <div class="card card-accent">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">3. El 360° revela la conducta.</div>
+                    </div>
+                    <div class="card card-accent">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">4. La conversación genera mejora.</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 900px; margin-left: auto; margin-right: auto;">
+                    <div style="font-size: 0.85rem; text-transform: uppercase; color: var(--red-bright); font-weight: 800; letter-spacing: 1px; margin-bottom: 10px;">Pregunta Final para Reflexión</div>
+                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">
+                        “Si mañana tuvieras que evaluar el cumplimiento de un objetivo en tu organización, ¿qué indicador mirarías primero y a quién le preguntarías?”
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER NAV CONTROLS -->
+    <footer>
+        <button class="btn" onclick="prevSlide()">◀ Anterior</button>
+        <span class="slide-counter" id="slideCounter">Diapositiva 1 de 20</span>
+        <button class="btn btn-primary" onclick="nextSlide()">Siguiente ▶</button>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function updateSlide() {
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentSlide);
+            });
+
+            // Update Progress Bar
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+
+            // Update Counter
+            slideCounter.textContent = `Diapositiva ${currentSlide + 1} de ${slides.length}`;
+
+            // Update Nav highlighting
+            updateNav();
+        }
+
+        function updateNav() {
+            navItems.forEach(item => item.classList.remove('active'));
+            if (currentSlide <= 1) navItems[0].classList.add('active');
+            else if (currentSlide <= 4) navItems[1].classList.add('active');
+            else if (currentSlide <= 7) navItems[2].classList.add('active');
+            else if (currentSlide <= 10) navItems[3].classList.add('active');
+            else if (currentSlide <= 12) navItems[4].classList.add('active');
+            else if (currentSlide <= 14) navItems[5].classList.add('active');
+            else if (currentSlide <= 17) navItems[6].classList.add('active');
+            else navItems[7].classList.add('active');
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                updateSlide();
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Quiz Mechanics
+        function checkQuiz(id, isCorrect, btn) {
+            const container = btn.parentElement;
+            const buttons = container.querySelectorAll('.quiz-btn');
+            const feedback = document.getElementById('feedback-' + id);
+
+            buttons.forEach(b => b.classList.remove('correct', 'incorrect'));
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedback.className = 'feedback-box show';
+                feedback.style.background = 'rgba(34, 197, 94, 0.15)';
+                feedback.style.color = '#4ade80';
+                feedback.innerHTML = '<strong>¡Correcto!</strong> Esta opción define claramente la cantidad, el indicador, el ámbito y el marco de tiempo auditable.';
+            } else {
+                btn.classList.add('incorrect');
+                feedback.className = 'feedback-box show';
+                feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+                feedback.style.color = '#fca5a5';
+                feedback.innerHTML = '<strong>Incorrecto.</strong> Esta declaración es ambigua y carece de una meta numérica concreta o un plazo definido para su verificación.';
+            }
+        }
+
+        // Accordion Mechanism
+        function toggleAccordion(header) {
+            const accordion = header.parentElement;
+            accordion.classList.toggle('open');
+        }
+
+        // Likert Selection Simulator
+        function selectLikert(btn) {
+            const options = btn.parentElement;
+            options.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
