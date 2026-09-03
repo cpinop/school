@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Del feedback a la acción: Plan de Mejora 360</title>
+    <style>
+        :root {
+            /* Colores base - Modo Claro */
+            --rojo: #d32f2f;
+            --rojo-hover: #b71c1c;
+            --rojo-claro: #ffebee;
+            --negro: #1a1a1a;
+            --sidebar-bg: #141416;
+            --sidebar-border: rgba(255, 255, 255, 0.08);
+            --sidebar-width: 68px;
+            --gris-oscuro: #424242;
+            --gris-claro: #e0e0e0;
+            --fondo: #f9f9f6;
+            --blanco: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: var(--gris-claro);
+            --table-header: #1a1a1a;
+            --table-header-text: #ffffff;
+            --quote-box-bg: #1a1a1a;
+            --quote-box-text: #ffffff;
+            --tag-bg: #1a1a1a;
+            --tag-text: #ffffff;
+            --interactive-box-bg: rgba(211, 47, 47, 0.03);
+            --fuente: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            
+            /* Escala de fuente */
+            --font-scale: 1;
+        }
+
+        /* Variables para MODO OSCURO (Fondo negro y elementos negros/grises a color crema) */
+        body.dark-mode {
+            --fondo: #0f0f12;
+            --negro: #f4eedb; /* Color crema */
+            --gris-oscuro: #dfd7c2; /* Color crema suave */
+            --gris-claro: #2c2c34;
+            --blanco: #19191d;
+            --card-bg: #19191d;
+            --card-border: #32323c;
+            --table-header: #26262e;
+            --table-header-text: #f4eedb;
+            --quote-box-bg: #19191d;
+            --quote-box-text: #f4eedb;
+            --tag-bg: #f4eedb;
+            --tag-text: #0f0f12;
+            --interactive-box-bg: rgba(211, 47, 47, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            background-color: var(--fondo);
+            color: var(--negro);
+            font-family: var(--fuente);
+            line-height: 1.35;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Barra de progreso superior */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            height: 4px;
+            background-color: var(--gris-claro);
+            z-index: 1000;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--rojo);
+            width: 0%;
+            transition: width 0.35s ease;
+        }
+
+        /* Barra vertical izquierda de navegación */
+        .sidebar-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            z-index: 1100;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-badge {
+            background-color: var(--rojo);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 5px 7px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(211, 47, 47, 0.35);
+        }
+
+        .sidebar-middle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .sidebar-btn:hover:not(:disabled) {
+            background-color: var(--rojo);
+            border-color: var(--rojo);
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(211, 47, 47, 0.4);
+        }
+        .sidebar-btn:disabled {
+            opacity: 0.22;
+            cursor: not-allowed;
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .sidebar-btn svg {
+            stroke: currentColor;
+            transition: transform 0.2s;
+        }
+
+        .sidebar-counter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 0;
+            font-family: inherit;
+        }
+        .sidebar-num {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .sidebar-line {
+            width: 16px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 3px 0;
+        }
+        .sidebar-total {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+
+        .sidebar-tools {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .sidebar-tool-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 7px;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        .sidebar-font-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .font-indicator {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+        }
+
+        /* Contenedor de diapositivas */
+        #slides-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            box-sizing: border-box;
+            padding: clamp(12px, 2.2vh, 26px) clamp(18px, 3vw, 42px) clamp(12px, 2.2vh, 26px) calc(var(--sidebar-width) + clamp(18px, 3vw, 42px));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+            overflow: hidden;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Tipografía y estructura fluida con control de tamaño */
+        h1 {
+            font-size: calc(var(--font-scale) * clamp(1.6rem, 2.6vw, 2.3rem));
+            line-height: 1.15;
+            margin-bottom: clamp(6px, 1.2vh, 12px);
+            color: var(--negro);
+            letter-spacing: -0.5px;
+        }
+        h2 {
+            font-size: calc(var(--font-scale) * clamp(1.2rem, 1.9vw, 1.65rem));
+            line-height: 1.2;
+            margin-bottom: clamp(8px, 1.4vh, 14px);
+            color: var(--negro);
+            border-left: 5px solid var(--rojo);
+            padding-left: 12px;
+        }
+        h3 {
+            font-size: calc(var(--font-scale) * clamp(0.9rem, 1.15vw, 1.12rem));
+            margin-bottom: clamp(4px, 0.8vh, 8px);
+            color: var(--gris-oscuro);
+        }
+        p {
+            font-size: calc(var(--font-scale) * clamp(0.82rem, 1vw, 1rem));
+            color: var(--gris-oscuro);
+            margin-bottom: clamp(6px, 1vh, 10px);
+            line-height: 1.38;
+        }
+
+        .destacado-rojo { color: var(--rojo); font-weight: bold; }
+        .etiqueta-ficticio {
+            display: inline-block;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: calc(var(--font-scale) * 0.72rem);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-bottom: clamp(6px, 1vh, 10px);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            align-self: flex-start;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Layouts y cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(12px, 1.8vw, 24px);
+            align-items: center;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 1.5vw, 18px);
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: clamp(10px, 1.5vh, 16px);
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            border: 1px solid var(--card-border);
+            border-top: 4px solid var(--card-border);
+            transition: transform 0.2s, border-color 0.2s, background 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); }
+        .card.interactive { cursor: pointer; border-top-color: var(--rojo); }
+
+        body.dark-mode .card[style*="#ffebee"] {
+            background: #2a1518 !important;
+            border-color: #59252a !important;
+        }
+        body.dark-mode .card[style*="#e8f5e9"] {
+            background: #142817 !important;
+            border-color: #245229 !important;
+        }
+        body.dark-mode .card[style*="#fffafb"] {
+            background: #20181a !important;
+            border-color: #4a2b30 !important;
+        }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.4s forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .big-number {
+            font-size: calc(var(--font-scale) * clamp(2.3rem, 3.8vw, 3.3rem));
+            font-weight: bold;
+            color: var(--rojo);
+            line-height: 1;
+        }
+
+        /* Botones de acción */
+        .btn-action {
+            background-color: var(--rojo);
+            color: #ffffff;
+            border: none;
+            padding: clamp(7px, 1.1vh, 11px) clamp(14px, 1.6vw, 22px);
+            font-size: calc(var(--font-scale) * clamp(0.85rem, 0.95vw, 1rem));
+            font-weight: bold;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.2s, color 0.2s;
+            box-shadow: 0 3px 6px rgba(211, 47, 47, 0.25);
+            margin-top: clamp(6px, 1vh, 10px);
+        }
+        .btn-action:hover {
+            background-color: var(--rojo-hover);
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .btn-action[style*="var(--negro)"] {
+            background: #2b2b34 !important;
+            color: #f4eedb !important;
+        }
+        body.dark-mode .btn-action[style*="var(--gris-oscuro)"] {
+            background: #3a3a46 !important;
+            color: #f4eedb !important;
+        }
+
+        /* Bar Chart */
+        .bar-chart {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 0.9vh, 9px);
+        }
+        .bar-row { display: flex; align-items: center; gap: 12px; }
+        .bar-label {
+            width: clamp(130px, 15vw, 180px);
+            font-weight: bold;
+            font-size: calc(var(--font-scale) * clamp(0.82rem, 0.95vw, 1rem));
+            text-align: right;
+            color: var(--negro);
+        }
+        .bar-track {
+            flex-grow: 1;
+            background: var(--gris-claro);
+            height: clamp(15px, 1.8vh, 20px);
+            border-radius: 10px;
+            position: relative;
+        }
+        .bar-fill {
+            height: 100%;
+            background: var(--negro);
+            border-radius: 10px;
+            transition: width 0.8s ease-out;
+        }
+        .bar-fill.warning { background: var(--rojo); }
+        .bar-value {
+            width: 45px;
+            font-weight: bold;
+            font-size: calc(var(--font-scale) * clamp(0.82rem, 0.95vw, 1rem));
+            color: var(--negro);
+        }
+        .bar-target-line {
+            position: absolute;
+            left: 74%;
+            top: -4px;
+            bottom: -4px;
+            width: 2px;
+            background: var(--rojo);
+            z-index: 10;
+            border-left: 2px dashed rgba(255,255,255,0.7);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: clamp(10px, 1.8vh, 18px);
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gris-claro);
+            z-index: 1;
+        }
+        .time-node {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            width: 14%;
+            text-align: center;
+        }
+        .time-dot {
+            width: 36px;
+            height: 36px;
+            background: var(--card-bg);
+            border: 3px solid var(--negro);
+            color: var(--negro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+        }
+        .time-node:hover .time-dot, .time-node.active .time-dot {
+            background: var(--rojo);
+            color: #ffffff;
+            border-color: var(--rojo);
+        }
+        .time-label {
+            font-weight: bold;
+            font-size: calc(var(--font-scale) * clamp(0.78rem, 0.9vw, 0.92rem));
+            color: var(--negro);
+        }
+        .time-content {
+            display: none;
+            background: var(--card-bg);
+            color: var(--negro);
+            border: 1px solid var(--card-border);
+            padding: 10px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-top: 8px;
+            width: 200%;
+            text-align: left;
+            font-size: calc(var(--font-scale) * 0.82rem);
+            line-height: 1.35;
+        }
+        .time-node.active .time-content {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Tablas */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: clamp(6px, 1vh, 14px) 0;
+            font-size: calc(var(--font-scale) * clamp(0.8rem, 0.92vw, 0.94rem));
+            background: var(--card-bg);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        .styled-table th {
+            background-color: var(--table-header);
+            color: var(--table-header-text);
+            text-align: left;
+            padding: clamp(6px, 0.9vh, 9px) clamp(8px, 1.1vw, 14px);
+        }
+        .styled-table td {
+            padding: clamp(6px, 0.9vh, 9px) clamp(8px, 1.1vw, 14px);
+            border-bottom: 1px solid var(--gris-claro);
+            color: var(--negro);
+        }
+        .styled-table tr:last-child td { border-bottom: none; }
+
+        /* Interactive Areas */
+        .interactive-box {
+            border: 2px dashed var(--rojo);
+            border-radius: 10px;
+            padding: clamp(10px, 1.6vh, 18px);
+            text-align: center;
+            background: var(--interactive-box-bg);
+            margin-top: clamp(6px, 1.2vh, 14px);
+        }
+
+        body.dark-mode .interactive-box[style*="#f1f8e9"] {
+            background: #17291a !important;
+            border-color: #3b7440 !important;
+        }
+        body.dark-mode .interactive-box[style*="var(--blanco)"] {
+            background: var(--card-bg) !important;
+        }
+        body.dark-mode #respuesta-21 {
+            background: #142436 !important;
+            border-color: #0288d1 !important;
+            color: #f4eedb !important;
+        }
+
+        /* Flujo visual */
+        .flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(5px, 0.9vw, 9px);
+            margin-top: clamp(8px, 1.5vh, 16px);
+            align-items: center;
+        }
+        .flow-step {
+            background: var(--card-bg);
+            color: var(--negro);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: calc(var(--font-scale) * clamp(0.72rem, 0.85vw, 0.85rem));
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1.5px solid var(--negro);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .flow-step .num {
+            background: var(--rojo);
+            color: #ffffff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+        }
+
+        /* Caja de cita final */
+        .quote-box {
+            background: var(--quote-box-bg);
+            color: var(--quote-box-text);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            text-align: center;
+            padding: clamp(14px, 2.2vh, 24px);
+            margin-top: clamp(12px, 2.2vh, 22px);
+            transition: background 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progreso superior -->
+    <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+
+    <!-- Barra vertical de navegación izquierda -->
+    <aside class="sidebar-nav" aria-label="Navegación y controles de presentación">
+        <!-- Parte Superior: Badge y Navegación Anterior -->
+        <div class="sidebar-top">
+            <div class="sidebar-badge" title="Evaluación 360°">360°</div>
+            <button class="sidebar-btn" id="sidebar-btn-prev" onclick="prevSlide()" title="Diapositiva anterior (↑ / ← / PageUp)" aria-label="Anterior">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </button>
+        </div>
+
+        <!-- Parte Central: Contador y Navegación Siguiente -->
+        <div class="sidebar-middle">
+            <div class="sidebar-counter">
+                <span id="sidebar-current" class="sidebar-num">01</span>
+                <div class="sidebar-line"></div>
+                <span id="sidebar-total" class="sidebar-total">22</span>
+            </div>
+
+            <button class="sidebar-btn" id="sidebar-btn-next" onclick="nextSlide()" title="Siguiente diapositiva (↓ / → / Espacio / PageDown)" aria-label="Siguiente">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+        </div>
+
+        <!-- Parte Inferior: Herramientas (Modo Oscuro, Tamaño de Letra, Pantalla Completa) -->
+        <div class="sidebar-tools">
+            <!-- Botón Modo Claro / Modo Oscuro -->
+            <button class="sidebar-btn sidebar-tool-btn" id="btn-theme-toggle" onclick="toggleTheme()" title="Alternar Modo Oscuro / Claro" aria-label="Modo oscuro o claro">
+                <span id="theme-icon">🌙</span>
+            </button>
+
+            <!-- Control de Tamaño de Letra -->
+            <div class="sidebar-font-group">
+                <button class="sidebar-btn sidebar-tool-btn" id="btn-font-scale" onclick="cycleFontSize()" title="Ajustar tamaño de letra (Agrandar/Achicar)" aria-label="Tamaño de letra">
+                    <span style="font-weight: 800; font-size: 0.9rem;">A<span id="font-scale-symbol" style="font-size: 0.65rem;">+</span></span>
+                </button>
+                <span class="font-indicator" id="font-indicator-text">100%</span>
+            </div>
+
+            <!-- Botón Pantalla Completa -->
+            <button class="sidebar-btn sidebar-tool-btn" onclick="toggleFullScreen()" title="Pantalla Completa (F)" aria-label="Pantalla completa">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            </button>
+        </div>
+    </aside>
+
+    <div id="slides-container">
+
+        <!-- DIAPOSITIVA 1: PORTADA -->
+        <div class="slide active">
+            <h1 class="destacado-rojo">Del feedback a la acción</h1>
+            <h2>Cómo convertir una evaluación 360 en un plan de mejora de 6 meses</h2>
+            <div class="grid-3" style="gap: 10px; text-align: center; margin: clamp(8px, 1.8vh, 16px) 0;">
+                <div class="card" style="background: var(--quote-box-bg); color: var(--quote-box-text); padding: 14px;">360</div>
+                <div class="card" style="background: var(--gris-claro); color: var(--negro); padding: 14px;">DIAGNÓSTICO</div>
+                <div class="card" style="background: var(--rojo); color: #ffffff; padding: 14px;">ACCIÓN &rarr; CAMBIO</div>
+            </div>
+            <p style="font-size: calc(var(--font-scale) * clamp(1.05rem, 1.3vw, 1.3rem)); font-style: italic; text-align: center; border-top: 1px solid var(--gris-claro); padding-top: clamp(8px, 1.5vh, 16px); margin-top: 8px;">
+                “Una buena evaluación identifica la brecha.<br>Un buen plan de mejora consigue cerrarla.”
+            </p>
+        </div>
+
+        <!-- DIAPOSITIVA 2: LA PREGUNTA CLAVE -->
+        <div class="slide">
+            <h2>¿Qué hacemos después de entregar el informe 360?</h2>
+            <p>¿Cuál de estos tres escenarios realmente produce gestión del talento? <em>(Haz clic en cada uno)</em></p>
+            <div class="grid-3">
+                <div class="card interactive" onclick="revealElement('expl-a', this)">
+                    <h3>Escenario A</h3>
+                    <p>"Recibe sus resultados."</p>
+                    <div id="expl-a" class="hidden fade-in" style="margin-top: 8px; color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.85rem);">
+                        Solo genera impacto emocional, no acción.
+                    </div>
+                </div>
+                <div class="card interactive" onclick="revealElement('expl-b', this)">
+                    <h3>Escenario B</h3>
+                    <p>"Recibe sus resultados + una conversación."</p>
+                    <div id="expl-b" class="hidden fade-in" style="margin-top: 8px; color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.85rem);">
+                        Genera conciencia, pero el impulso se pierde en semanas.
+                    </div>
+                </div>
+                <div class="card interactive" onclick="revealElement('expl-c', this)" style="border-top-color: var(--rojo); border-width: 4px;">
+                    <h3>Escenario C</h3>
+                    <p>"Resultados + diagnóstico + plan + seguimiento + reevaluación."</p>
+                    <div id="expl-c" class="hidden fade-in" style="margin-top: 8px; color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.85rem);">
+                        ✅ El proceso completo. Produce cambio observable.
+                    </div>
+                </div>
+            </div>
+            <div class="interactive-box hidden fade-in" id="concl-2" style="margin-top: clamp(8px, 1.8vh, 16px); padding: 10px 18px;">
+                <p style="margin:0; font-size: calc(var(--font-scale) * clamp(0.95rem, 1.15vw, 1.15rem));"><strong>El feedback sin acción puede generar conciencia, pero no necesariamente genera cambio.</strong></p>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 3: EL MODELO COMPLETO -->
+        <div class="slide">
+            <h2>El Modelo Completo</h2>
+            <p>Cada etapa responde una pregunta diferente. <em>(Haz clic para revelar)</em></p>
+            <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.7vh, 7px); max-width: 740px; margin: 0 auto; width: 100%;">
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px;" onclick="document.getElementById('q1').classList.remove('hidden')">EVALUACIÓN 360 &nbsp; <span id="q1" class="hidden">&rarr; ¿Cómo me perciben?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px;" onclick="document.getElementById('q2').classList.remove('hidden')">FEEDBACK &nbsp; <span id="q2" class="hidden">&rarr; ¿Qué significan mis resultados?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px; background: var(--negro);" onclick="document.getElementById('q3').classList.remove('hidden')">DIAGNÓSTICO &nbsp; <span id="q3" class="hidden">&rarr; ¿Qué necesito mejorar?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px; background: var(--negro);" onclick="document.getElementById('q4').classList.remove('hidden')">PRIORIZACIÓN &nbsp; <span id="q4" class="hidden">&rarr; ¿Qué voy a trabajar primero?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px; background: var(--negro);" onclick="document.getElementById('q5').classList.remove('hidden')">PLAN DE MEJORA &nbsp; <span id="q5" class="hidden">&rarr; ¿Cómo lo voy a cambiar?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px; background: var(--gris-oscuro);" onclick="document.getElementById('q6').classList.remove('hidden')">SEGUIMIENTO &nbsp; <span id="q6" class="hidden">&rarr; ¿Estoy cambiando?</span></button>
+                <button class="btn-action" style="margin: 0; width: 100%; text-align: left; padding: 7px 14px; background: var(--gris-oscuro);" onclick="document.getElementById('q7').classList.remove('hidden')">REEVALUACIÓN &nbsp; <span id="q7" class="hidden">&rarr; ¿El cambio fue observable?</span></button>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 4: PRIMER ERROR -->
+        <div class="slide">
+            <h2>Error #1: Intentar mejorar todo</h2>
+            <div class="grid-2">
+                <div>
+                    <ul style="font-size: calc(var(--font-scale) * clamp(0.85rem, 1.05vw, 1.05rem)); color: var(--gris-oscuro); columns: 2; line-height: 1.65; padding-left: 15px;">
+                        <li>Comunicación</li><li>Liderazgo</li><li>Trabajo en equipo</li><li>Organización</li><li>Innovación</li>
+                        <li>Delegación</li><li>Orientación cliente</li><li>Gestión del tiempo</li><li>Confianza</li><li>Resolución conflictos</li>
+                    </ul>
+                </div>
+                <div class="card" style="text-align: center; border: 3px solid var(--rojo); padding: 14px;">
+                    <div style="font-size: calc(var(--font-scale) * clamp(2.3rem, 3.2vw, 3rem));">⚠️</div>
+                    <h3 class="destacado-rojo">10 debilidades &ne; 10 planes de mejora</h3>
+                    <p style="margin-top: 8px;">Un plan de mejora efectivo debe priorizar pocas conductas críticas.</p>
+                    <div style="background: var(--tag-bg); color: var(--tag-text); padding: 8px; border-radius: 7px; font-weight: bold; font-size: calc(var(--font-scale) * clamp(0.9rem, 1vw, 1.05rem)); margin-top: 8px;">
+                        Regla: 1 a 3 áreas prioritarias
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 5: CÓMO LEER EL 360 -->
+        <div class="slide">
+            <h2>No mires solamente la puntuación</h2>
+            <p>Una puntuación aislada no basta. Hay que observar múltiples perspectivas.</p>
+            <table class="styled-table">
+                <tr>
+                    <th style="background: var(--rojo); color: #ffffff;">Elemento</th>
+                    <th style="background: var(--rojo); color: #ffffff;">Pregunta que responde</th>
+                </tr>
+                <tr><td><strong>Autopercepción</strong></td><td>¿Cómo me veo?</td></tr>
+                <tr><td><strong>Jefatura</strong></td><td>¿Cómo me ve mi jefe?</td></tr>
+                <tr><td><strong>Pares</strong></td><td>¿Cómo me ven mis colegas?</td></tr>
+                <tr><td><strong>Colaboradores</strong></td><td>¿Cómo me perciben quienes trabajan conmigo?</td></tr>
+                <tr><td><strong>Comentarios</strong></td><td>¿Qué ejemplos concretos aparecen?</td></tr>
+            </table>
+            <div style="text-align: center; font-size: calc(var(--font-scale) * clamp(0.9rem, 1.1vw, 1.08rem)); font-weight: bold; background: var(--card-bg); color: var(--negro); padding: 8px 14px; border-radius: 8px; border: 2px dashed var(--rojo);">
+                Fórmula de lectura: Nivel + Brecha + Consistencia + Comentarios + Impacto
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 6: CASO CAMILA -->
+        <div class="slide">
+            <span class="etiqueta-ficticio">Caso Práctico</span>
+            <h2>Conozcamos a Camila</h2>
+            <div class="grid-2">
+                <div>
+                    <p><strong>Cargo:</strong> Jefa de Proyectos</p>
+                    <p><strong>Contexto:</strong> Lidera un equipo de 7 personas en una organización cultural.</p>
+                    <p><strong>Coordinación requerida:</strong> Equipo interno, administración, comunicaciones, dirección y proveedores externos.</p>
+                    <p><strong>Situación:</strong> Camila tiene buen desempeño técnico, pero la organización ha detectado dificultades en coordinación y comunicación.</p>
+                </div>
+                <div class="interactive-box">
+                    <h3>¿Qué debería hacer RR.HH.?</h3>
+                    <p>Ya recibimos los resultados de su evaluación.</p>
+                    <button class="btn-action" onclick="nextSlide()">Ver evaluación 360 de Camila</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 7: RESULTADOS 360 DE CAMILA -->
+        <div class="slide">
+            <span class="etiqueta-ficticio">Resultados 360</span>
+            <h2>Dashboard de Evaluación</h2>
+            <p>Promedio Organizacional esperado: <span class="destacado-rojo" style="font-size: 1.15rem;">7.4</span> (Línea punteada roja)</p>
+            
+            <div class="bar-chart" style="background: var(--card-bg); padding: clamp(12px, 1.8vh, 20px); border-radius: 10px; border: 1px solid var(--card-border); box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                <div class="bar-row">
+                    <div class="bar-label">Responsabilidad</div>
+                    <div class="bar-track"><div class="bar-fill" style="width: 88%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value">8.8</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Orientación Result.</div>
+                    <div class="bar-track"><div class="bar-fill" style="width: 86%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value">8.6</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Liderazgo</div>
+                    <div class="bar-track"><div class="bar-fill warning" style="width: 67%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value" style="color: var(--rojo);">6.7</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Trabajo Colaborativo</div>
+                    <div class="bar-track"><div class="bar-fill warning" style="width: 64%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value" style="color: var(--rojo);">6.4</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Comunicación</div>
+                    <div class="bar-track"><div class="bar-fill warning" style="width: 59%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value" style="color: var(--rojo);">5.9</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">Delegación</div>
+                    <div class="bar-track"><div class="bar-fill warning" style="width: 58%;"></div><div class="bar-target-line"></div></div>
+                    <div class="bar-value" style="color: var(--rojo);">5.8</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 8: LA BRECHA MÁS IMPORTANTE -->
+        <div class="slide">
+            <h2>No toda brecha merece un objetivo</h2>
+            <p>Para priorizar, evaluamos tres variables:</p>
+            <div class="grid-3" style="margin-bottom: 10px;">
+                <div class="card" style="text-align: center; padding: 8px;"><h3>Puntuación</h3><p style="margin:0;">¿Qué tan baja es?</p></div>
+                <div class="card" style="text-align: center; padding: 8px;"><h3>Impacto</h3><p style="margin:0;">¿Qué consecuencias tiene?</p></div>
+                <div class="card" style="text-align: center; padding: 8px;"><h3>Controlabilidad</h3><p style="margin:0;">¿La puede modificar?</p></div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card" style="border-left: 4px solid var(--rojo); padding: 10px 14px;">
+                    <h3 style="color: var(--rojo);">Delegación: 5.8</h3>
+                    <p style="margin: 3px 0;">Impacto: Alto &bull; Control: Alta</p>
+                    <p style="margin:0;"><strong>&rarr; Prioridad ALTA</strong></p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--rojo); padding: 10px 14px;">
+                    <h3 style="color: var(--rojo);">Comunicación: 5.9</h3>
+                    <p style="margin: 3px 0;">Impacto: Muy Alto &bull; Control: Alta</p>
+                    <p style="margin:0;"><strong>&rarr; Prioridad MUY ALTA</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 9: AUTOPERCEPCIÓN -->
+        <div class="slide">
+            <h2>La autopercepción también importa</h2>
+            <div class="grid-2" style="align-items: stretch;">
+                <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; padding: 12px;">
+                    <p style="margin:0;">Camila se evalúa en Comunicación:</p>
+                    <div class="big-number" style="color: var(--negro);">8.2</div>
+                    <p style="margin-top: 8px; margin-bottom: 0;">Los demás la evalúan:</p>
+                    <div class="big-number">5.9</div>
+                    <p style="margin-top: 8px; margin-bottom:0; font-weight: bold; background: var(--rojo); color: white; padding: 5px; border-radius: 5px; font-size: calc(var(--font-scale) * 0.85rem);">Brecha: -2.3</p>
+                </div>
+                <div class="interactive-box" style="margin: 0; display: flex; flex-direction: column; justify-content: center;">
+                    <h3>¿Le dirías directamente a Camila "eres mala comunicando"?</h3>
+                    <button class="btn-action" onclick="revealElement('resp-9', this)" style="align-self: center;">NO</button>
+                    <div id="resp-9" class="hidden fade-in" style="margin-top: 10px;">
+                        <p style="font-size: calc(var(--font-scale) * clamp(0.95rem, 1.1vw, 1.15rem)); font-weight: bold; color: var(--rojo);">"No evaluamos la identidad de la persona. Evaluamos conductas observables."</p>
+                        <p style="font-size: calc(var(--font-scale) * 0.85rem);">Una brecha grande indica que la persona no está viendo el comportamiento que los demás experimentan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 10: PUNTUACIÓN -> CONDUCTA -->
+        <div class="slide">
+            <h2>La puntuación no es el problema.<br>La conducta sí puede serlo.</h2>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span style="font-size: calc(var(--font-scale) * clamp(1.15rem, 1.5vw, 1.5rem)); font-weight: bold; color: var(--rojo);">5.9 en Comunicación</span> &rarr; <em>¿Qué está ocurriendo?</em>
+            </div>
+            
+            <span class="etiqueta-ficticio">Comentarios del equipo (Ficticios)</span>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div class="card" style="border-left: 4px solid var(--gris-oscuro); padding: 8px 12px;">"En reuniones suele entregar instrucciones sin verificar si fueron comprendidas."</div>
+                <div class="card" style="border-left: 4px solid var(--gris-oscuro); padding: 8px 12px;">"Cuando hay cambios, comunica la decisión, pero no siempre explica el porqué."</div>
+                <div class="card" style="border-left: 4px solid var(--gris-oscuro); padding: 8px 12px;">"En ocasiones responde antes de que los demás terminen de plantear sus ideas."</div>
+            </div>
+            <div style="margin-top: 12px; font-size: calc(var(--font-scale) * clamp(0.9rem, 1.1vw, 1.12rem)); font-weight: bold; text-align: center; color: var(--negro);">
+                💡 Pasamos de "mejorar comunicación" a <span class="destacado-rojo">conductas específicas</span>.
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 11: DEBILIDAD -> CONDUCTA OBSERVABLE -->
+        <div class="slide">
+            <h2>De debilidad a conducta observable</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                
+                <div class="card" style="display: grid; grid-template-columns: 1fr auto 1.5fr; gap: 12px; align-items: center; background: #fffafb; border: 1px solid #ffcdd2; padding: 10px;">
+                    <div>
+                        <div style="color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.95rem);">❌ "Mejorar comunicación"</div>
+                        <p style="font-size: calc(var(--font-scale) * 0.8rem); color: var(--gris-oscuro); margin:0;">Demasiado amplio</p>
+                    </div>
+                    <div style="font-size: 1.4rem; color: var(--negro);">&rarr;</div>
+                    <div>
+                        <div style="color: green; font-weight: bold; font-size: calc(var(--font-scale) * 0.95rem);">✅ Conducta observable:</div>
+                        <p style="font-size: calc(var(--font-scale) * 0.85rem); margin: 0;">"Antes de cerrar una reunión, confirmar que las personas comprendieron acuerdos, responsables y plazos."</p>
+                    </div>
+                </div>
+
+                <div class="card" style="display: grid; grid-template-columns: 1fr auto 1.5fr; gap: 12px; align-items: center; background: #fffafb; border: 1px solid #ffcdd2; padding: 10px;">
+                    <div>
+                        <div style="color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.95rem);">❌ "Ser mejor líder"</div>
+                        <p style="font-size: calc(var(--font-scale) * 0.8rem); color: var(--gris-oscuro); margin:0;">Subjetivo</p>
+                    </div>
+                    <div style="font-size: 1.4rem; color: var(--negro);">&rarr;</div>
+                    <div>
+                        <div style="color: green; font-weight: bold; font-size: calc(var(--font-scale) * 0.95rem);">✅ Conducta observable:</div>
+                        <p style="font-size: calc(var(--font-scale) * 0.85rem); margin: 0;">"Solicitar al menos una opinión del equipo antes de tomar decisiones que afecten directamente su trabajo."</p>
+                    </div>
+                </div>
+
+            </div>
+            <div style="text-align: center; font-size: calc(var(--font-scale) * clamp(0.95rem, 1.15vw, 1.25rem)); font-weight: bold; margin-top: 12px; color: var(--negro); background: var(--gris-claro); padding: 8px; border-radius: 8px;">
+                "Si no podemos observarlo, difícilmente podemos medirlo."
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 12: PRIORIZAMOS EL PLAN DE CAMILA -->
+        <div class="slide">
+            <h2>Priorizamos el plan de Camila</h2>
+            <p>No vamos a intentar cambiar 10 cosas. 2 áreas principales y 1 complementaria.</p>
+            <div class="grid-3" style="align-items: stretch;">
+                <div class="card" style="border-top: 5px solid var(--rojo); padding: 10px;">
+                    <h3 style="color: var(--negro); font-size: calc(var(--font-scale) * 1.05rem);">ÁREA 1: COMUNICACIÓN</h3>
+                    <p style="color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.75rem); margin-bottom: 6px;">🔴 PRIORIDAD ALTA</p>
+                    <ul style="padding-left: 15px; font-size: calc(var(--font-scale) * 0.82rem); line-height: 1.45;">
+                        <li>Escuchar antes de responder.</li>
+                        <li>Explicar el contexto de los cambios.</li>
+                        <li>Verificar comprensión de acuerdos.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 5px solid var(--rojo); padding: 10px;">
+                    <h3 style="color: var(--negro); font-size: calc(var(--font-scale) * 1.05rem);">ÁREA 2: DELEGACIÓN</h3>
+                    <p style="color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.75rem); margin-bottom: 6px;">🔴 PRIORIDAD ALTA</p>
+                    <ul style="padding-left: 15px; font-size: calc(var(--font-scale) * 0.82rem); line-height: 1.45;">
+                        <li>Asignar responsabilidades claramente.</li>
+                        <li>Definir autonomía.</li>
+                        <li>Hacer seguimiento sin microgestionar.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 5px solid #FFC107; padding: 10px;">
+                    <h3 style="color: var(--negro); font-size: calc(var(--font-scale) * 1.05rem);">ÁREA 3: LIDERAZGO</h3>
+                    <p style="color: #FF9800; font-weight: bold; font-size: calc(var(--font-scale) * 0.75rem); margin-bottom: 6px;">🟡 PRIORIDAD MEDIA</p>
+                    <ul style="padding-left: 15px; font-size: calc(var(--font-scale) * 0.82rem); line-height: 1.45;">
+                        <li>Generar espacios regulares para recoger opiniones del equipo.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 13: OBJETIVO DE MEJORA -->
+        <div class="slide">
+            <h2>Ahora convertimos la brecha en un objetivo</h2>
+            <div class="interactive-box" style="margin-top: 0; background: var(--card-bg); padding: 8px 14px;">
+                <div style="font-size: calc(var(--font-scale) * 1.05rem); color: var(--rojo); font-weight: bold; margin-bottom: 4px;">❌ El objetivo tradicional:</div>
+                <p style="font-size: calc(var(--font-scale) * 0.95rem); margin:0;">"Mejorar mi comunicación durante los próximos seis meses."</p>
+            </div>
+            
+            <div style="text-align: center; font-size: 1.2rem; margin: 4px 0; color: var(--negro);">&downarrow;</div>
+
+            <div class="interactive-box" style="margin-top: 0; background: #f1f8e9; border-color: #7cb342; padding: 10px 16px;">
+                <div style="font-size: calc(var(--font-scale) * 1.05rem); color: #558b2f; font-weight: bold; margin-bottom: 5px;">✅ El objetivo SMART:</div>
+                <p style="font-size: calc(var(--font-scale) * 0.92rem); color: var(--negro); margin:0;">
+                    "Durante los próximos seis meses, mejorar la claridad de la comunicación con el equipo, aumentando la evaluación promedio de comunicación <strong style="background: rgba(255, 235, 59, 0.4); padding: 0 4px; border-radius: 3px;">desde 5.9 hasta al menos 7.2</strong> en la próxima medición 360 y <strong style="background: rgba(255, 235, 59, 0.4); padding: 0 4px; border-radius: 3px;">demostrando consistentemente tres conductas</strong> comunicacionales acordadas."
+                </p>
+            </div>
+            <p style="text-align: center; margin-top: 8px; margin-bottom: 0; font-weight: bold; font-size: calc(var(--font-scale) * 0.9rem);">Específico + Medible + Temporal + Observable</p>
+        </div>
+
+        <!-- DIAPOSITIVA 14: LÍNEA DE TIEMPO -->
+        <div class="slide">
+            <h2>El plan de mejora de 6 meses</h2>
+            <p>Haz clic en los meses para ver las acciones clave.</p>
+            <div class="timeline">
+                <div class="time-node" onclick="activateTimeline(this, 0)">
+                    <div class="time-dot">0</div><div class="time-label">Mes 0</div>
+                    <div class="time-content"><strong>Feedback y diagnóstico.</strong><br>Análisis del informe 360 y priorización.</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 1)">
+                    <div class="time-dot">1</div><div class="time-label">Mes 1</div>
+                    <div class="time-content"><strong>Entrenamiento + definición.</strong><br>Diseño de conductas observables y capacitación inicial si es necesaria.</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 2)">
+                    <div class="time-dot">2</div><div class="time-label">Mes 2</div>
+                    <div class="time-content"><strong>Aplicación + seguimiento.</strong><br>Puesta en práctica en el trabajo real. Primer acompañamiento (1:1).</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 3)">
+                    <div class="time-dot">3</div><div class="time-label">Mes 3</div>
+                    <div class="time-content"><strong>Medición intermedia.</strong><br>Check-in con el equipo o encuestas breves (pulso).</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 4)">
+                    <div class="time-dot">4</div><div class="time-label">Mes 4</div>
+                    <div class="time-content"><strong>Ajuste del plan.</strong><br>Corregir lo que no está funcionando en base al pulso.</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 5)">
+                    <div class="time-dot">5</div><div class="time-label">Mes 5</div>
+                    <div class="time-content"><strong>Consolidación.</strong><br>La conducta empieza a volverse hábito.</div>
+                </div>
+                <div class="time-node" onclick="activateTimeline(this, 6)">
+                    <div class="time-dot">6</div><div class="time-label">Mes 6</div>
+                    <div class="time-content"><strong>Nueva evaluación.</strong><br>Aplicación de nuevo 360 (completo o reducido a las áreas foco).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 15: PLAN CONCRETO DE CAMILA -->
+        <div class="slide">
+            <h2>El plan de acciones concretas</h2>
+            <p>No basta con decir “hará un curso”. El plan debe contener conductas que ocurran en el trabajo real.</p>
+            
+            <table class="styled-table">
+                <tr>
+                    <th style="background: var(--rojo); color: #ffffff;">Objetivo (Qué)</th>
+                    <th style="background: var(--rojo); color: #ffffff;">Acción Observable (Cómo)</th>
+                    <th style="background: var(--rojo); color: #ffffff;">Frecuencia (Cuándo)</th>
+                    <th style="background: var(--rojo); color: #ffffff;">Evidencia (KPI)</th>
+                </tr>
+                <tr>
+                    <td>Mejorar comunicación</td>
+                    <td>Confirmar acuerdos al cierre</td>
+                    <td>Cada reunión relevante</td>
+                    <td>Minuta / Checklist</td>
+                </tr>
+                <tr>
+                    <td>Mejorar escucha</td>
+                    <td>Preguntar antes de responder</td>
+                    <td>2 veces por reunión</td>
+                    <td>Auto-registro</td>
+                </tr>
+                <tr>
+                    <td>Mejorar delegación</td>
+                    <td>Definir responsable + autonomía</td>
+                    <td>Cada asignación</td>
+                    <td>Matriz de tareas (Asana/Trello)</td>
+                </tr>
+                <tr>
+                    <td>Mejorar seguimiento</td>
+                    <td>Revisión breve con cada colaborador</td>
+                    <td>Quincenal</td>
+                    <td>Registro de 1:1 en RRHH</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- DIAPOSITIVA 16: KPI -->
+        <div class="slide">
+            <h2>¿Cómo sabemos si realmente está mejorando?</h2>
+            <div class="grid-3">
+                <div class="card" style="border-top: 4px solid var(--negro);">
+                    <div class="big-number" style="font-size: calc(var(--font-scale) * 2.2rem);">1</div>
+                    <h3 style="color: var(--negro);">CONDUCTA</h3>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); color: var(--rojo); font-weight: bold; margin-bottom: 3px;">¿Está haciendo lo acordado?</p>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); margin:0;">Ej: % de reuniones donde verifica comprensión y levanta acta.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--negro);">
+                    <div class="big-number" style="font-size: calc(var(--font-scale) * 2.2rem);">2</div>
+                    <h3 style="color: var(--negro);">PERCEPCIÓN</h3>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); color: var(--rojo); font-weight: bold; margin-bottom: 3px;">¿Los demás lo notan?</p>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); margin:0;">Ej: Encuesta breve mensual de 3 preguntas al equipo.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--negro);">
+                    <div class="big-number" style="font-size: calc(var(--font-scale) * 2.2rem);">3</div>
+                    <h3 style="color: var(--negro);">RESULTADO</h3>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); color: var(--rojo); font-weight: bold; margin-bottom: 3px;">¿Tiene impacto en el negocio?</p>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); margin:0;">Ej: Reducción de errores derivados de instrucciones poco claras.</p>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: calc(var(--font-scale) * clamp(1.05rem, 1.3vw, 1.3rem)); font-weight: bold; margin-top: 14px; color: var(--negro);">
+                Conducta &rarr; Percepción &rarr; Resultado
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 17: CHECKPOINT MES 3 -->
+        <div class="slide">
+            <h2>Tres meses después: ¿seguimos igual?</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Pulso Intermedio (Mes 3)</h3>
+                    <div style="margin: 10px 0; font-size: calc(var(--font-scale) * clamp(0.95rem, 1.15vw, 1.18rem));">
+                        <strong>Comunicación:</strong> 5.9 &rarr; <strong>6.8</strong> 🟢<br>
+                        <strong>Delegación:</strong> 5.8 &rarr; <strong>6.5</strong> 🟢
+                    </div>
+                    <p style="color: var(--rojo); font-weight: bold; font-size: calc(var(--font-scale) * 0.85rem); margin: 0;">⚠️ Tendencia positiva, PERO todavía no alcanzamos el objetivo (7.2).</p>
+                </div>
+                <div class="interactive-box" style="margin: 0; padding: 12px;">
+                    <h3 style="margin-bottom: 8px;">¿Qué debería hacer RR.HH.?</h3>
+                    <div style="display: flex; flex-direction: column; gap: 7px;">
+                        <button class="btn-action" style="background: var(--card-bg); color: var(--negro); border: 1.5px solid var(--gris-claro); margin:0; font-size: calc(var(--font-scale) * 0.85rem); padding: 7px 10px; text-align: left;" onclick="checkA(this)">A) Dar por terminado el plan.</button>
+                        <button class="btn-action" style="background: var(--card-bg); color: var(--negro); border: 1.5px solid var(--gris-claro); margin:0; font-size: calc(var(--font-scale) * 0.85rem); padding: 7px 10px; text-align: left;" onclick="checkA(this)">B) Mantener exactamente las mismas acciones.</button>
+                        <button class="btn-action" style="background: var(--card-bg); color: var(--negro); border: 1.5px solid var(--gris-claro); margin:0; font-size: calc(var(--font-scale) * 0.85rem); padding: 7px 10px; text-align: left;" onclick="checkC(this)">C) Revisar qué funciona y ajustar el plan.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 18: MES 6 NUEVA EVALUACIÓN -->
+        <div class="slide">
+            <h2>Mes 6: Nueva Evaluación</h2>
+            <table class="styled-table" style="text-align: center;">
+                <tr>
+                    <th style="text-align: center;">Competencia</th>
+                    <th style="text-align: center;">Mes 0</th>
+                    <th style="text-align: center;">Mes 6</th>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-weight: bold;">Comunicación</td>
+                    <td style="color: var(--rojo);">5.9</td>
+                    <td style="color: green; font-weight: bold;">7.4 &uarr;</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-weight: bold;">Delegación</td>
+                    <td style="color: var(--rojo);">5.8</td>
+                    <td style="color: green; font-weight: bold;">7.1 &uarr;</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-weight: bold;">Liderazgo</td>
+                    <td style="color: var(--negro);">6.7</td>
+                    <td style="color: green; font-weight: bold;">7.3 &uarr;</td>
+                </tr>
+            </table>
+            <div class="quote-box" style="margin-top: 12px; font-size: calc(var(--font-scale) * clamp(1rem, 1.25vw, 1.3rem)); padding: 12px;">
+                Objetivo de Comunicación: &ge; 7.2<br>
+                Resultado: <span style="color: #4CAF50; font-weight: bold;">7.4 &rarr; OBJETIVO CUMPLIDO</span>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 19: PERO... MEJORÓ REALMENTE? -->
+        <div class="slide">
+            <h2>Pero... ¿mejoró realmente?</h2>
+            <p>Una subida de puntuación aislada no necesariamente demuestra una transformación completa.</p>
+            <div class="grid-2">
+                <div class="card" style="background: #ffebee; padding: 10px;">
+                    <h3 style="color: var(--rojo); text-align: center;">ANTES</h3>
+                    <p style="font-size: calc(var(--font-scale) * clamp(0.85rem, 1.05vw, 1.1rem)); text-align: center; font-style: italic; margin:0;">"Camila comunica las decisiones."</p>
+                </div>
+                <div class="card" style="background: #e8f5e9; padding: 10px;">
+                    <h3 style="color: green; text-align: center;">DESPUÉS</h3>
+                    <p style="font-size: calc(var(--font-scale) * clamp(0.85rem, 1.05vw, 1.1rem)); text-align: center; font-style: italic; margin:0;">"Camila explica el contexto, pregunta por dudas y confirma responsables y plazos."</p>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 14px; text-align: center; display: flex; justify-content: space-around; align-items: center; border: 2px solid var(--card-border); padding: 10px;">
+                <div style="font-size: calc(var(--font-scale) * 0.98rem); font-weight: bold;">Puntuación &uarr;</div>
+                <div style="font-size: 1.3rem; color: var(--rojo);">+</div>
+                <div style="font-size: calc(var(--font-scale) * 0.98rem); font-weight: bold;">Conducta observable &uarr;</div>
+                <div style="font-size: 1.3rem; color: var(--rojo);">+</div>
+                <div style="font-size: calc(var(--font-scale) * 0.98rem); font-weight: bold;">Percepción del equipo &uarr;</div>
+                <div style="font-size: 1.3rem; color: var(--rojo);">=</div>
+                <div style="font-size: calc(var(--font-scale) * 1.02rem); font-weight: bold; background: var(--rojo); color: #ffffff; padding: 5px 12px; border-radius: 7px;">Mejora real y creíble</div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 20: CIERRE EL MÉTODO -->
+        <div class="slide">
+            <h2>Síntesis: El Método</h2>
+            <div class="flow-container">
+                <div class="flow-step"><div class="num">1</div> MEDIR</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">2</div> INTERPRETAR</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">3</div> PRIORIZAR</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">4</div> DEFINIR CONDUCTAS</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">5</div> OBJETIVOS SMART</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">6</div> ACTUAR</div> <span>&rarr;</span>
+                <div class="flow-step"><div class="num">7</div> SEGUIR</div> <span>&rarr;</span>
+                <div class="flow-step" style="background: var(--rojo); color: #ffffff; border-color: var(--rojo);"><div class="num" style="background: #ffffff; color: var(--rojo);">8</div> REEVALUAR</div>
+            </div>
+            <div class="quote-box" style="margin-top: clamp(12px, 2.2vh, 22px); padding: clamp(14px, 2.2vh, 24px);">
+                <p style="font-size: calc(var(--font-scale) * clamp(1.1rem, 1.5vw, 1.55rem)); margin: 0; font-weight: bold; line-height: 1.3;">
+                    “El objetivo del 360 no es decirle a una persona cómo la ven.<br>
+                    <span class="destacado-rojo" style="color: #ff5252;">Es darle información suficiente para que pueda cambiar cómo trabaja.</span>”
+                </p>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 21: AHORA HAZLO TÚ -->
+        <div class="slide">
+            <h2>Ahora hazlo tú (Actividad)</h2>
+            <div class="grid-2" style="align-items: flex-start;">
+                <div class="card" style="padding: 12px;">
+                    <h3>Caso: Nuevo Jefe</h3>
+                    <p style="margin-bottom: 5px;">Resultados 360:</p>
+                    <ul style="margin-left: 16px; margin-bottom: 6px; font-size: calc(var(--font-scale) * 0.85rem);">
+                        <li>Comunicación: 6.1</li>
+                        <li>Trabajo colaborativo: 7.8</li>
+                        <li>Liderazgo: 6.4</li>
+                        <li>Responsabilidad: 8.7</li>
+                    </ul>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); margin-bottom: 3px;"><strong>Comentario Jefe:</strong> "Entrega resultados, pero suele comunicar cambios sin explicar suficientemente el contexto."</p>
+                    <p style="font-size: calc(var(--font-scale) * 0.82rem); margin: 0;"><strong>Comentario Pares:</strong> "Eficiente, pero toma decisiones rápidamente sin escuchar opiniones."</p>
+                </div>
+                <div class="interactive-box" style="margin:0; text-align: left; background: var(--card-bg); padding: 12px;">
+                    <h3 style="font-size: calc(var(--font-scale) * 0.98rem);">Diseña un objetivo de mejora (6 meses)</h3>
+                    <button class="btn-action" onclick="revealElement('respuesta-21', this)" style="display: block; margin: 6px auto; padding: 5px 12px; font-size: calc(var(--font-scale) * 0.82rem);">Ver una posible respuesta</button>
+                    <div id="respuesta-21" class="hidden fade-in" style="background: #f0f8ff; color: #1a1a1a; padding: 8px; border-radius: 7px; border-left: 4px solid #0288d1; font-size: calc(var(--font-scale) * 0.82rem); line-height: 1.35;">
+                        "Durante los próximos seis meses, mejorar la comunicación y participación del equipo mediante la explicación del contexto de los cambios, la verificación de comprensión y la incorporación de al menos una instancia de opinión antes de decisiones relevantes, buscando aumentar la evaluación de comunicación desde 6.1 a un mínimo de 7.2."
+                    </div>
+
+                    <h3 style="margin-top: 8px; font-size: calc(var(--font-scale) * 0.98rem);">¿Qué KPI utilizarías?</h3>
+                    <div style="display: flex; gap: 6px; margin-top: 5px;">
+                        <button class="btn-action" style="font-size: calc(var(--font-scale) * 0.76rem); padding: 5px 8px; background: var(--gris-claro); color: var(--negro); margin: 0;" onclick="this.style.background='red'; this.style.color='white';">1. Cursos realizados</button>
+                        <button class="btn-action" style="font-size: calc(var(--font-scale) * 0.76rem); padding: 5px 8px; background: var(--gris-claro); color: var(--negro); margin: 0;" onclick="this.style.background='green'; this.style.color='white';">2. % reuniones con conductas</button>
+                        <button class="btn-action" style="font-size: calc(var(--font-scale) * 0.76rem); padding: 5px 8px; background: var(--gris-claro); color: var(--negro); margin: 0;" onclick="this.style.background='green'; this.style.color='white';">3. Percepción del equipo</button>
+                    </div>
+                    <p style="font-size: calc(var(--font-scale) * 0.75rem); color: var(--gris-oscuro); margin-top: 6px; margin-bottom: 0;"><em>(Haz clic para verificar. Un curso demuestra actividad, una conducta demuestra aplicación, la percepción demuestra impacto.)</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 22: DETECTOR DE MALOS PLANES -->
+        <div class="slide">
+            <h2>Detector de malos planes de mejora</h2>
+            <p>Haz clic en el botón para analizar frases comunes en los planes de mejora.</p>
+            
+            <div style="text-align: center; margin-top: 8px;">
+                <button class="btn-action" style="font-size: calc(var(--font-scale) * 1.02rem); padding: 8px 20px; border-radius: 20px;" onclick="generarMalPlan()">Escanear Plan</button>
+            </div>
+
+            <div id="detector-result" class="hidden fade-in" style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="card" style="background: #ffebee; border: 2px solid var(--rojo); text-align: center; padding: 12px;">
+                    <div style="font-size: 1.8rem;">❌</div>
+                    <h3 style="color: var(--rojo);">Plan Deficiente</h3>
+                    <p id="mal-plan-texto" style="font-size: calc(var(--font-scale) * 0.98rem); font-style: italic; font-weight: bold; margin: 6px 0; color: var(--negro);">"..."</p>
+                    <p style="color: var(--rojo); font-weight: bold; background: var(--card-bg); display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: calc(var(--font-scale) * 0.76rem); margin:0;">Demasiado ambiguo / Inmedible</p>
+                </div>
+                
+                <div class="card" style="background: #e8f5e9; border: 2px solid #4CAF50; text-align: center; padding: 12px;">
+                    <div style="font-size: 1.8rem;">✅</div>
+                    <h3 style="color: #2E7D32;">Alternativa Concreta</h3>
+                    <p id="buen-plan-texto" style="font-size: calc(var(--font-scale) * 0.9rem); font-style: italic; margin: 6px 0; color: var(--negro);">"..."</p>
+                    <p style="color: #2E7D32; font-weight: bold; background: var(--card-bg); display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: calc(var(--font-scale) * 0.76rem); margin:0;">Observable y medible</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Navegación ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        function formatNumber(num) {
+            return num < 10 ? '0' + num : num;
+        }
+
+        function updateUI() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // Actualizar contadores
+            const curStr = formatNumber(currentSlide + 1);
+            const totStr = formatNumber(totalSlides);
+            document.getElementById('sidebar-current').innerText = curStr;
+            document.getElementById('sidebar-total').innerText = totStr;
+            
+            // Actualizar barra de progreso
+            document.getElementById('progress-bar').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            
+            // Actualizar botones de navegación lateral
+            const btnPrev = document.getElementById('sidebar-btn-prev');
+            const btnNext = document.getElementById('sidebar-btn-next');
+            if (btnPrev) btnPrev.disabled = currentSlide === 0;
+            if (btnNext) btnNext.disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        // --- Modo Oscuro / Claro ---
+        function applyTheme(isDark) {
+            const themeIcon = document.getElementById('theme-icon');
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                if (themeIcon) themeIcon.innerText = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                if (themeIcon) themeIcon.innerText = '🌙';
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = !document.body.classList.contains('dark-mode');
+            applyTheme(isDark);
+            try {
+                localStorage.setItem('presentation-theme', isDark ? 'dark' : 'light');
+            } catch(e) {}
+        }
+
+        // --- Control de Tamaño de Letra ---
+        const fontScales = [
+            { scale: 0.90, label: '90%', symbol: '-' },
+            { scale: 1.00, label: '100%', symbol: '=' },
+            { scale: 1.10, label: '110%', symbol: '+' },
+            { scale: 1.20, label: '120%', symbol: '++' }
+        ];
+        let currentFontIndex = 1; // 100% por defecto
+
+        function applyFontScale(index) {
+            currentFontIndex = index % fontScales.length;
+            const current = fontScales[currentFontIndex];
+            document.documentElement.style.setProperty('--font-scale', current.scale);
+            
+            const textIndicator = document.getElementById('font-indicator-text');
+            const symbolIndicator = document.getElementById('font-scale-symbol');
+            if (textIndicator) textIndicator.innerText = current.label;
+            if (symbolIndicator) symbolIndicator.innerText = current.symbol;
+        }
+
+        function cycleFontSize() {
+            const nextIndex = (currentFontIndex + 1) % fontScales.length;
+            applyFontScale(nextIndex);
+            try {
+                localStorage.setItem('presentation-font-scale', nextIndex);
+            } catch(e) {}
+        }
+
+        // --- Atajos de Teclado ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key.toLowerCase() === 'f') {
+                toggleFullScreen();
+            } else if (e.key.toLowerCase() === 'd' || e.key.toLowerCase() === 't') {
+                toggleTheme();
+            } else if (e.key === '+' || e.key === '=') {
+                cycleFontSize();
+            }
+        });
+
+        // --- Pantalla Completa ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error activando pantalla completa: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // --- Interacciones específicas de diapositivas ---
+        function revealElement(id, btnElement) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
+            if (btnElement) btnElement.style.borderColor = 'var(--rojo)';
+        }
+
+        function activateTimeline(node, index) {
+            document.querySelectorAll('.time-node').forEach(n => n.classList.remove('active'));
+            node.classList.add('active');
+        }
+
+        function checkA(btn) {
+            btn.style.background = 'rgba(211, 47, 47, 0.15)';
+            btn.style.borderColor = 'var(--rojo)';
+            btn.style.color = 'var(--rojo)';
+            if (!btn.innerText.startsWith('❌')) {
+                btn.innerText = '❌ ' + btn.innerText;
+            }
+        }
+        
+        function checkC(btn) {
+            btn.style.background = 'rgba(46, 125, 50, 0.15)';
+            btn.style.borderColor = '#4CAF50';
+            btn.style.color = '#4CAF50';
+            if (!btn.innerText.startsWith('✅')) {
+                btn.innerText = '✅ ' + btn.innerText + ' (¡Correcto! El plan es dinámico)';
+            }
+        }
+
+        const malosPlanes = [
+            { mal: "Tomará un curso de liderazgo.", bien: "Diseñará e implementará un nuevo protocolo de delegación de tareas (quién, qué, cuándo) usando la herramienta Asana tras la capacitación." },
+            { mal: "Mejorará su comunicación.", bien: "Enviará una minuta resumen con los 3 acuerdos clave y responsables en los 30 minutos posteriores a cada reunión de equipo." },
+            { mal: "Será más proactiva.", bien: "Propondrá al menos una solución analizada antes de elevar un problema a la gerencia." },
+            { mal: "Trabajará en sus habilidades blandas.", bien: "Realizará sesiones de feedback 1:1 quincenales de 15 minutos con cada integrante de su equipo." },
+            { mal: "Intentará escuchar más.", bien: "En las reuniones, realizará al menos una pregunta abierta al equipo antes de presentar su propia solución y cerrará confirmando acuerdos." }
+        ];
+
+        function generarMalPlan() {
+            const index = Math.floor(Math.random() * malosPlanes.length);
+            const plan = malosPlanes[index];
+            const el = document.getElementById('detector-result');
+            el.classList.remove('hidden');
+            document.getElementById('mal-plan-texto').innerText = `"${plan.mal}"`;
+            document.getElementById('buen-plan-texto').innerText = `"${plan.bien}"`;
+            
+            // Trigger animation reflow
+            el.style.animation = 'none';
+            el.offsetHeight; /* trigger reflow */
+            el.style.animation = null; 
+        }
+
+        // --- Inicialización ---
+        try {
+            const savedTheme = localStorage.getItem('presentation-theme');
+            if (savedTheme === 'dark') {
+                applyTheme(true);
+            }
+            const savedFontIndex = localStorage.getItem('presentation-font-scale');
+            if (savedFontIndex !== null) {
+                applyFontScale(parseInt(savedFontIndex, 10));
+            } else {
+                applyFontScale(1);
+            }
+        } catch(e) {
+            applyFontScale(1);
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
