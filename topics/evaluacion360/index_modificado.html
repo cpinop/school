@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cartas Astrales de Jan: dos métodos</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap');
+
+:root {
+    --vino: #641f2b;
+    --vino-oscuro: #42131d;
+    --crema: #f5eddf;
+    --crema-claro: #fbf7ef;
+    --vino-suave: #8a4653;
+    --gris: #665b58;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--vino);
+    color: var(--vino);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.page {
+    width: min(1180px, 94vw);
+    min-height: calc(100vh - 40px);
+    margin: 20px auto;
+    background: var(--crema);
+    border: 2px solid var(--vino);
+    position: relative;
+    box-shadow: 0 12px 50px rgba(0,0,0,.25);
+}
+
+.page-inner {
+    min-height: calc(100vh - 44px);
+    padding: 55px 7% 90px;
+}
+
+/* CABECERA */
+
+.header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 500;
+    letter-spacing: .03em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.header .byline {
+    margin-top: 10px;
+    font-size: 25px;
+    font-style: italic;
+}
+
+.ornament {
+    width: 110px;
+    height: 1px;
+    background: var(--vino);
+    margin: 25px auto;
+}
+
+/* PANTALLAS */
+
+.screen {
+    display: none;
+    animation: fadeIn .45s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* INTRO */
+
+.intro {
+    max-width: 850px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.intro-title {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.intro p {
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--gris);
+}
+
+.methods {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px;
+    margin: 45px auto;
+    max-width: 900px;
+}
+
+.method-card {
+    text-align: center;
+}
+
+.method-button {
+    width: 100%;
+    padding: 24px 18px;
+    border: 2px solid var(--vino);
+    background: var(--vino);
+    color: var(--crema);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 28px;
+    cursor: pointer;
+    letter-spacing: .04em;
+    transition: .25s;
+}
+
+.method-button:hover {
+    background: var(--crema);
+    color: var(--vino);
+}
+
+.method-description {
+    padding: 20px 15px 5px;
+    font-size: 18px;
+    line-height: 1.45;
+    color: var(--gris);
+}
+
+.download-btn {
+    margin-top: 18px;
+    padding: 10px 18px;
+    background: transparent;
+    border: 1px solid var(--vino);
+    color: var(--vino);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.download-btn:hover {
+    background: var(--vino);
+    color: var(--crema);
+}
+
+/* COMPARACIÓN */
+
+.comparison-entry {
+    text-align: center;
+    margin-top: 55px;
+    padding-top: 35px;
+    border-top: 1px solid var(--vino);
+}
+
+.comparison-entry h2 {
+    font-size: 31px;
+    font-weight: 500;
+}
+
+.comparison-entry p {
+    font-size: 18px;
+    color: var(--gris);
+}
+
+.secondary-button {
+    padding: 14px 28px;
+    border: 1px solid var(--vino);
+    background: transparent;
+    color: var(--vino);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.secondary-button:hover {
+    background: var(--vino);
+    color: var(--crema);
+}
+
+/* CABECERA DE CADA CARTA */
+
+.method-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.method-header h2 {
+    font-size: 42px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.method-header .subtitle {
+    font-size: 20px;
+    font-style: italic;
+    color: var(--gris);
+    margin-top: 5px;
+}
+
+.progress {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    margin: 20px 0 35px;
+    color: var(--vino-suave);
+}
+
+/* CONTENIDO DE INTERPRETACIÓN */
+
+.interpretation {
+    max-width: 900px;
+    margin: auto;
+}
+
+.interpretation h3 {
+    font-size: 37px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.interpretation h4 {
+    font-size: 25px;
+    margin-top: 30px;
+    margin-bottom: 8px;
+}
+
+.interpretation p {
+    font-size: 20px;
+    line-height: 1.58;
+    color: #504744;
+}
+
+.planet-line {
+    text-align: center;
+    font-size: 24px;
+    letter-spacing: .08em;
+    margin: 30px 0;
+}
+
+.quote {
+    margin: 30px auto;
+    padding: 22px 30px;
+    border-left: 3px solid var(--vino);
+    background: rgba(100,31,43,.06);
+    font-size: 23px;
+    font-style: italic;
+    line-height: 1.45;
+}
+
+.simple-box {
+    margin: 30px 0;
+    padding: 20px 25px;
+    border: 1px solid rgba(100,31,43,.45);
+    background: var(--crema-claro);
+}
+
+.simple-box strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 21px;
+}
+
+.simple-box p {
+    margin: 0;
+}
+
+.warning {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: .04em;
+    color: var(--gris);
+    margin-top: 20px;
+}
+
+/* TARJETAS */
+
+.mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.mini-card {
+    border: 1px solid var(--vino);
+    padding: 20px;
+    text-align: center;
+}
+
+.mini-card .symbol {
+    font-size: 31px;
+}
+
+.mini-card strong {
+    display: block;
+    font-size: 21px;
+    margin-top: 5px;
+}
+
+.mini-card span {
+    font-size: 17px;
+    color: var(--gris);
+}
+
+/* KARMA */
+
+.karma-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.karma-box {
+    padding: 22px;
+    text-align: center;
+    border: 1px solid var(--vino);
+}
+
+.karma-box .arrow {
+    font-size: 25px;
+    margin: 10px 0;
+}
+
+.karma-box strong {
+    font-size: 22px;
+}
+
+/* RESUMEN */
+
+.summary {
+    border-top: 2px solid var(--vino);
+    margin-top: 40px;
+    padding-top: 30px;
+}
+
+.summary h3 {
+    text-align: center;
+    font-size: 37px;
+}
+
+.summary-main {
+    text-align: center;
+    font-size: 27px;
+    font-style: italic;
+    line-height: 1.4;
+    margin: 25px auto;
+    max-width: 750px;
+}
+
+.summary-list {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 15px;
+}
+
+.summary-item {
+    padding: 18px;
+    border: 1px solid rgba(100,31,43,.45);
+}
+
+.summary-item strong {
+    display: block;
+    font-size: 21px;
+    margin-bottom: 5px;
+}
+
+/* NAVEGACIÓN */
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(100,31,43,.4);
+}
+
+.nav-button {
+    border: 1px solid var(--vino);
+    background: var(--vino);
+    color: var(--crema);
+    padding: 12px 25px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    background: var(--crema);
+    color: var(--vino);
+}
+
+.home-button {
+    background: transparent;
+    color: var(--vino);
+}
+
+/* COMPARACIÓN */
+
+.comparison {
+    max-width: 1050px;
+    margin: auto;
+}
+
+.comparison h2 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 500;
+}
+
+.comparison-intro {
+    text-align: center;
+    font-size: 21px;
+    color: var(--gris);
+    margin-bottom: 40px;
+}
+
+.coincidences {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+    margin-bottom: 45px;
+}
+
+.coincidence {
+    border: 1px solid var(--vino);
+    padding: 25px;
+}
+
+.coincidence h3 {
+    font-size: 28px;
+    margin-top: 0;
+}
+
+.coincidence p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--gris);
+}
+
+.axis {
+    text-align: center;
+    font-size: 21px;
+    margin: 15px 0;
+    letter-spacing: .03em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    font-size: 17px;
+}
+
+th, td {
+    border: 1px solid rgba(100,31,43,.5);
+    padding: 13px 12px;
+    vertical-align: top;
+}
+
+th {
+    background: var(--vino);
+    color: var(--crema);
+    font-size: 19px;
+    font-weight: 500;
+}
+
+td:first-child {
+    font-weight: 600;
+    background: rgba(100,31,43,.06);
+}
+
+/* FIRMA */
+
+.signature {
+    position: absolute;
+    right: 7%;
+    bottom: 28px;
+    text-align: right;
+    color: var(--vino);
+}
+
+.signature .name {
+    font-size: 23px;
+    font-style: italic;
+}
+
+.signature .mail {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+.signature .profession {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    max-width: 260px;
+    margin-top: 3px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .page {
+        width: 96vw;
+        margin: 10px auto;
+    }
+
+    .page-inner {
+        padding: 35px 6% 120px;
+    }
+
+    .methods,
+    .coincidences,
+    .karma-grid,
+    .summary-list,
+    .mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .method-header h2,
+    .comparison h2 {
+        font-size: 34px;
+    }
+
+    .interpretation h3 {
+        font-size: 30px;
+    }
+
+    .interpretation p {
+        font-size: 18px;
+    }
+
+    table {
+        font-size: 14px;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .signature {
+        position: absolute;
+        right: 6%;
+        bottom: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+<div class="page-inner">
+
+<!-- ================= INICIO ================= -->
+
+<section id="home" class="screen active">
+
+    <header class="header">
+        <h1>Cartas Astrales de Jan: dos métodos</h1>
+        <div class="byline">por Constanza Valentina</div>
+        <div class="ornament"></div>
+    </header>
+
+    <div class="intro">
+
+        <div class="intro-title">Una misma persona, dos perspectivas</div>
+
+        <p>
+            Esta lectura presenta la carta de Jan desde dos sistemas astrológicos:
+            el método sideral y el método tropical. Cada uno utiliza un marco
+            diferente para interpretar la relación entre signos, planetas y casas.
+        </p>
+
+        <p>
+            La intención no es determinar cuál método es "el verdadero", sino
+            observar qué temas aparecen al mirar la misma persona desde ambas
+            perspectivas.
+        </p>
+
+    </div>
+
+    <div class="methods">
+
+        <div class="method-card">
+
+            <button class="method-button" onclick="showScreen('sid1')">
+                CARTA ASTRAL SIDERAL
+            </button>
+
+            <div class="method-description">
+
+                <strong>Metodología sideral · Whole Sign</strong><br><br>
+
+                Utiliza un zodíaco sideral que busca mantener los signos vinculados
+                a una referencia estelar mediante un ajuste denominado ayanamsa.
+                Es utilizada principalmente en la astrología india.
+                <br><br>
+                En esta lectura se utiliza el sistema de casas Whole Sign,
+                donde cada signo completo constituye una casa.
+
+            </div>
+
+        </div>
+
+
+        <div class="method-card">
+
+            <button class="method-button" onclick="showScreen('tro1')">
+                CARTA ASTRAL TROPICAL
+            </button>
+
+            <div class="method-description">
+
+                <strong>Metodología tropical · Placidus</strong><br><br>
+
+                Es la metodología predominante en la astrología occidental.
+                Define el zodíaco tomando como referencia los puntos estacionales,
+                como los equinoccios y solsticios.
+                <br><br>
+                En esta lectura se utiliza Placidus, uno de los sistemas de casas
+                más utilizados en la astrología occidental contemporánea.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="comparison-entry">
+
+        <h2>Comparación entre ambas cartas</h2>
+
+        <p>
+            ¿Qué temas permanecen cuando observamos la carta desde ambos métodos?
+        </p>
+
+        <button class="secondary-button" onclick="showScreen('comparison')">
+            Ver comparación completa
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- ================= CARTA SIDERAL ========================= -->
+<!-- ========================================================= -->
+
+<section id="sid1" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+    <div class="subtitle">Lectura de Jan · metodología sideral + Whole Sign</div>
+</div>
+
+<div class="progress">01 / 09</div>
+
+<div class="interpretation">
+
+<h3>Tu esencia — Sol en Leo, casa 4</h3>
+
+<p>
+El Sol representa simbólicamente aquello que permite a una persona acercarse
+a su esencia y desarrollar una identidad propia. Leo se relaciona con la
+creatividad, la expresión personal, la identidad y la capacidad de convertir
+la propia experiencia en algo significativo.
+</p>
+
+<p>
+Al encontrarse en casa 4, esta expresión no necesariamente necesita ser pública
+o masiva. Puede desarrollarse especialmente en el mundo íntimo: hogar, familia,
+raíces y vínculos cercanos.
+</p>
+
+<div class="quote">
+Tu mejor versión puede aparecer cuando construyes una identidad propia y
+eres capaz de convertir tu experiencia en una forma de expresión y legado,
+especialmente para las personas que forman parte de tu mundo cercano.
+</div>
+
+<div class="simple-box">
+<strong>En palabras simples</strong>
+<p>
+No necesitas necesariamente "brillar" frente a muchas personas. Tu forma de
+Leo puede expresarse construyendo algo propio y dejando una huella significativa
+en quienes realmente importan para ti.
+</p>
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button home-button" onclick="showScreen('home')">← Inicio</button>
+    <button class="nav-button" onclick="showScreen('sid2')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid2" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">02 / 09</div>
+
+<div class="interpretation">
+
+<h3>Cómo enfrentas la vida — Ascendente en Tauro</h3>
+
+<p>
+El Ascendente representa la manera en que la persona se aproxima al mundo.
+Tauro aporta una tendencia hacia la estabilidad, el pragmatismo, la
+perseverancia y la construcción gradual.
+</p>
+
+<p>
+Puede existir una preferencia por consolidar una decisión antes de actuar,
+buscar seguridad material y construir resultados que puedan sostenerse en el
+tiempo.
+</p>
+
+<h4>Sol en Leo + Ascendente Tauro</h4>
+
+<p>
+La combinación une identidad y materialización: una necesidad de construir
+una narrativa propia que no permanezca solamente en el plano de las ideas,
+sino que pueda convertirse en logros concretos.
+</p>
+
+<div class="quote">
+Identidad + estabilidad + materialización.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid1')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid3')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid3" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">03 / 09</div>
+
+<div class="interpretation">
+
+<h3>El gran núcleo — Stellium en Virgo, casa 5</h3>
+
+<div class="planet-line">
+    ♀ VENUS &nbsp; · &nbsp; ♂ MARTE &nbsp; · &nbsp; ☿ MERCURIO &nbsp; · &nbsp; ♇ PLUTÓN
+</div>
+
+<p>
+Existe una concentración muy importante de energía en Virgo. Esto hace que
+los temas de la casa 5 —creatividad, expresión personal, placer, romance y
+creación— estén atravesados por una lógica de análisis, perfeccionamiento,
+orden y utilidad.
+</p>
+
+<div class="mini-grid">
+
+<div class="mini-card">
+    <div class="symbol">♀</div>
+    <strong>Venus</strong>
+    <span>Amor mediante el cuidado concreto</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">♂</div>
+    <strong>Marte</strong>
+    <span>Acción mediante la resolución</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">☿</div>
+    <strong>Mercurio</strong>
+    <span>Mente práctica y analítica</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">♇</div>
+    <strong>Plutón</strong>
+    <span>Transformación mediante el orden</span>
+</div>
+
+</div>
+
+<div class="quote">
+Hay una fuerte tendencia a hacer, ordenar, mejorar, resolver y convertir
+las ideas en acciones concretas.
+</div>
+
+<p>
+La sombra de esta concentración puede aparecer cuando la necesidad de orden
+hace difícil aceptar cambios o distintas maneras de hacer las cosas.
+El desafío es conservar la capacidad de organizar sin convertir el orden
+en una necesidad de control.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid2')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid4')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid4" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">04 / 09</div>
+
+<div class="interpretation">
+
+<h3>Amor y vínculos</h3>
+
+<h4>Venus en Virgo</h4>
+
+<p>
+El afecto puede expresarse mediante acciones concretas: ayudar, solucionar
+problemas, acompañar y entregar estabilidad.
+</p>
+
+<h4>Marte en Virgo</h4>
+
+<p>
+La energía de acción se orienta hacia lo práctico. Puede existir atracción
+hacia personas competentes, responsables o que demuestran afecto mediante
+acciones más que mediante grandes declaraciones.
+</p>
+
+<h4>Luna en casa 7</h4>
+
+<p>
+Los vínculos importantes pueden convertirse en espejos emocionales a través
+de los cuales la persona comprende mejor sus propias emociones.
+</p>
+
+<div class="quote">
+La profundidad del vínculo puede ser más importante que la cantidad de
+relaciones.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid3')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid5')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid5" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">05 / 09</div>
+
+<div class="interpretation">
+
+<h3>Tu mundo emocional — Luna entre Escorpio y Libra, casa 7</h3>
+
+<p>
+La Luna representa el mundo emocional. Escorpio introduce intensidad,
+profundidad y una disposición a mirar aquello que resulta difícil de
+procesar superficialmente.
+</p>
+
+<p>
+La cercanía simbólica con Libra agrega la búsqueda de equilibrio y comprensión.
+La persona puede intentar procesar emocionalmente las experiencias buscando
+entenderlas, ponerlas en perspectiva y encontrar una explicación.
+</p>
+
+<p>
+Al encontrarse en casa 7, las relaciones significativas pueden desempeñar un
+papel importante en la elaboración de experiencias emocionales.
+</p>
+
+<div class="simple-box">
+<strong>Una clave de integración</strong>
+<p>
+Combinar intuición y profundidad emocional con observación de los hechos,
+evitando tanto la desconfianza automática como la idealización excesiva.
+</p>
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid4')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid6')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid6" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">06 / 09</div>
+
+<div class="interpretation">
+
+<h3>Hacia dónde creces — Nodo Norte + Urano en Libra, casa 6</h3>
+
+<p class="warning">
+LECTURA SIMBÓLICA / KÁRMICA
+</p>
+
+<p>
+Desde una interpretación kármica, el eje Tauro–Escorpio y la presencia de
+Libra pueden leerse como un aprendizaje relacionado con la seguridad,
+la cooperación y la capacidad de vincularse sin perder autonomía.
+</p>
+
+<div class="karma-grid">
+
+<div class="karma-box">
+<strong>De</strong>
+<div class="arrow">↓</div>
+Autosuficiencia extrema
+</div>
+
+<div class="karma-box">
+<strong>Hacia</strong>
+<div class="arrow">↓</div>
+Cooperación y reciprocidad
+</div>
+
+<div class="karma-box">
+<strong>De</strong>
+<div class="arrow">↓</div>
+Necesidad de hacerlo todo sola
+</div>
+
+<div class="karma-box">
+<strong>Hacia</strong>
+<div class="arrow">↓</div>
+Capacidad de recibir apoyo
+</div>
+
+</div>
+
+<p>
+Urano agrega una dimensión de ruptura de patrones: la vida puede invitar a
+construir formas de relacionarse diferentes a las aprendidas previamente.
+</p>
+
+<div class="quote">
+El aprendizaje no sería dejar de ser independiente, sino aprender que
+independencia y reciprocidad pueden coexistir.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid5')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid7')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid7" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">07 / 09</div>
+
+<div class="interpretation">
+
+<h3>La herida que puede convertirse en fortaleza — Quirón en Aries, casa 12</h3>
+
+<p>
+Quirón puede utilizarse simbólicamente para explorar heridas profundas y
+aquello que, una vez integrado, puede convertirse en una fuente de sabiduría.
+</p>
+
+<p>
+En Aries y casa 12 puede interpretarse como una tensión relacionada con la
+identidad, la autosuficiencia y la sensación de tener que enfrentar ciertas
+experiencias por cuenta propia.
+</p>
+
+<h4>La pregunta de fondo</h4>
+
+<div class="quote">
+¿Puedo confiar en los demás sin perder mi identidad?
+</div>
+
+<h4>La integración</h4>
+
+<p>
+La clave no sería cerrarse frente a los demás, sino aprender a distinguir
+qué personas pueden sostener vínculos profundos respetando simultáneamente
+la autonomía y la identidad propia.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid6')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid8')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid8" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">08 / 09</div>
+
+<div class="interpretation">
+
+<h3>Otras áreas importantes</h3>
+
+<h4>Casa 2 — Géminis</h4>
+
+<p>
+La generación de recursos puede vincularse simbólicamente con información,
+comunicación, aprendizaje e intercambio intelectual. También puede existir
+apertura a más de una fuente de ingresos.
+</p>
+
+<h4>Casa 9 — Capricornio</h4>
+
+<p>
+Los estudios y la construcción de una visión de mundo pueden desarrollarse
+mediante disciplina, trabajo sostenido y aplicación práctica del conocimiento.
+</p>
+
+<h4>Casa 11 — Piscis</h4>
+
+<p>
+El mundo colectivo puede despertar una fuerte sensibilidad hacia las
+necesidades de otros. El desafío consiste en participar sin perder los
+propios límites.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid7')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('sid9')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="sid9" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral sideral</h2>
+</div>
+
+<div class="progress">09 / 09 · SÍNTESIS</div>
+
+<div class="interpretation">
+
+<div class="summary">
+
+<h3>Los grandes temas de tu carta</h3>
+
+<div class="summary-main">
+Construir seguridad interna para poder vincularte profundamente,
+transformarte sin perderte y expresar una identidad propia.
+</div>
+
+<div class="summary-list">
+
+<div class="summary-item">
+<strong>Identidad</strong>
+Construir una narrativa propia y sentir seguridad en quién eres.
+</div>
+
+<div class="summary-item">
+<strong>Vínculos</strong>
+Aprender reciprocidad sin abandonar la autonomía.
+</div>
+
+<div class="summary-item">
+<strong>Transformación</strong>
+Aceptar el cambio sin necesitar controlar completamente el entorno.
+</div>
+
+<div class="summary-item">
+<strong>Expresión</strong>
+Convertir lo aprendido en algo concreto que pueda ser compartido.
+</div>
+
+<div class="summary-item">
+<strong>Fortaleza</strong>
+Analizar, ordenar, mejorar y transformar mediante acciones concretas.
+</div>
+
+<div class="summary-item">
+<strong>Desafío</strong>
+Permitir que otras personas también puedan cuidar, sostener y aportar.
+</div>
+
+</div>
+
+</div>
+
+<div class="quote">
+Tu camino no parece pedirte que abandones tu independencia,
+sino que construyas una seguridad interna suficientemente fuerte como
+para permitirte depender de otros cuando sea necesario.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('sid8')">← Anterior</button>
+    <button class="nav-button home-button" onclick="showScreen('home')">
+        Volver al inicio
+    </button>
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- ================= CARTA TROPICAL ======================== -->
+<!-- ========================================================= -->
+
+<section id="tro1" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+    <div class="subtitle">Lectura de Jan · metodología tropical + Placidus</div>
+</div>
+
+<div class="progress">01 / 10</div>
+
+<div class="interpretation">
+
+<h3>Tu esencia — Sol en Virgo, casa 3</h3>
+
+<p>
+El Sol puede utilizarse simbólicamente para explorar aquello mediante lo cual
+una persona encuentra sentido, desarrolla identidad y se acerca a su mejor
+versión.
+</p>
+
+<p>
+Virgo se relaciona con análisis, utilidad, organización, perfeccionamiento,
+servicio y resolución de problemas concretos. La casa 3 incorpora comunicación,
+aprendizaje, pensamiento cotidiano y entorno cercano.
+</p>
+
+<div class="quote">
+Tu mejor versión puede aparecer cuando utilizas tu capacidad de analizar,
+organizar y resolver problemas para comunicar conocimiento y hacerlo útil
+para otras personas.
+</div>
+
+<div class="simple-box">
+<strong>En palabras simples</strong>
+<p>
+Hay una tendencia a encontrar calma cuando las cosas tienen estructura y
+cuando puedes transformar información o problemas concretos en soluciones.
+</p>
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button home-button" onclick="showScreen('home')">← Inicio</button>
+    <button class="nav-button" onclick="showScreen('tro2')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro2" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">02 / 10</div>
+
+<div class="interpretation">
+
+<h3>Tu mundo emocional — Luna en Escorpio, casa 6</h3>
+
+<p>
+La Luna en Escorpio puede simbolizar una emocionalidad intensa, profunda y
+orientada a comprender aquello que permanece oculto.
+</p>
+
+<p>
+No es necesario interpretar esta posición como un diagnóstico psicológico.
+Desde el lenguaje simbólico de la astrología, puede hablar de una persona que
+no se conforma fácilmente con explicaciones superficiales sobre lo que siente.
+</p>
+
+<p>
+La casa 6 conecta esta profundidad emocional con las rutinas, el trabajo
+cotidiano, los hábitos y el servicio.
+</p>
+
+<div class="quote">
+Puede existir una capacidad especial para acompañar situaciones complejas
+cuando se requiere profundidad, observación y tolerancia frente a emociones
+difíciles.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro1')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro3')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro3" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">03 / 10</div>
+
+<div class="interpretation">
+
+<h3>El gran núcleo — Libra y casa 4</h3>
+
+<div class="planet-line">
+    ♀ VENUS &nbsp; · &nbsp; ♂ MARTE &nbsp; · &nbsp; ☿ MERCURIO &nbsp; · &nbsp; ♇ PLUTÓN
+</div>
+
+<p>
+Existe una concentración muy importante de energía en Libra y casa 4.
+Esto convierte el hogar, la familia, la intimidad y la manera de construir
+vínculos cercanos en uno de los grandes escenarios de desarrollo.
+</p>
+
+<div class="mini-grid">
+
+<div class="mini-card">
+    <div class="symbol">♀</div>
+    <strong>Venus</strong>
+    <span>Amor expresado mediante cuidado</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">♂</div>
+    <strong>Marte</strong>
+    <span>Acción orientada al equilibrio</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">☿</div>
+    <strong>Mercurio</strong>
+    <span>Perspectiva, negociación y análisis</span>
+</div>
+
+<div class="mini-card">
+    <div class="symbol">♇</div>
+    <strong>Plutón</strong>
+    <span>Transformación en raíces y hogar</span>
+</div>
+
+</div>
+
+<div class="quote">
+La construcción del hogar y la manera de relacionarte íntimamente pueden
+ser uno de los grandes escenarios de aprendizaje de tu vida.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro2')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro4')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro4" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">04 / 10</div>
+
+<div class="interpretation">
+
+<h3>Cómo amas y construyes hogar</h3>
+
+<h4>Venus en Virgo, casa 4</h4>
+
+<p>
+El amor puede expresarse mediante acciones concretas: solucionar problemas,
+ayudar, organizar y cuidar de manera práctica.
+</p>
+
+<h4>Marte en Libra, casa 4</h4>
+
+<p>
+La energía de acción se dirige hacia el hogar y los vínculos íntimos.
+Puede existir una fuerte necesidad de equilibrio, negociación y cooperación
+en la vida doméstica.
+</p>
+
+<p>
+Esto no permite afirmar que la persona haya tenido necesariamente una relación
+larga ni determinar un perfil exacto de pareja. Para interpretar ese ámbito
+con mayor precisión habría que integrar la casa 7, su regente, Venus, Marte y
+sus aspectos.
+</p>
+
+<div class="quote">
+Cuidar a otros puede ser una forma natural de expresar amor; el desafío
+consiste en no convertir el cuidado en una responsabilidad absoluta sobre
+los problemas ajenos.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro3')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro5')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro5" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">05 / 10</div>
+
+<div class="interpretation">
+
+<h3>Tu mente y tu comunicación</h3>
+
+<h4>Mercurio en Libra</h4>
+
+<p>
+La mente tiende a comparar perspectivas, buscar equilibrio, negociar y
+considerar diferentes lados de una situación.
+</p>
+
+<h4>Saturno en Leo, entre casa 2 y 3</h4>
+
+<p>
+Si Saturno se encuentra efectivamente próximo a la cúspide entre ambas casas,
+puede interpretarse como una tensión entre la expresión de la identidad propia,
+la comunicación y la relación con los recursos o el valor personal.
+</p>
+
+<div class="quote">
+Una pregunta simbólica que puede aparecer aquí es:
+"¿Puedo permitirme expresar lo que quiero y reconocer el valor de mi propia
+historia?"
+</div>
+
+<p>
+Esta lectura puede vincularse con autoestima, merecimiento y capacidad de
+ocupar espacio con una narrativa propia, especialmente si Saturno tiene
+influencia relevante sobre la casa 2.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro4')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro6')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro6" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">06 / 10</div>
+
+<div class="interpretation">
+
+<h3>Transformación — Plutón, Neptuno y Nodo Norte</h3>
+
+<h4>Plutón en Libra, casa 4</h4>
+
+<p>
+Puede simbolizar procesos profundos de transformación asociados al hogar,
+las raíces y la familia. Las experiencias familiares pueden funcionar como
+escenarios de aprendizaje y reconstrucción de creencias.
+</p>
+
+<h4>Neptuno + Nodo Norte en Escorpio, casa 5</h4>
+
+<p>
+Desde una lectura simbólica y kármica, el eje Tauro–Escorpio puede representar
+un tránsito desde la búsqueda de seguridad, estabilidad y control hacia una
+mayor disposición a atravesar cambios, vulnerabilidad y transformación.
+</p>
+
+<p>
+Al encontrarse el Nodo Norte en casa 5, este aprendizaje también puede
+relacionarse con creatividad, expresión personal, romance y capacidad de crear
+algo propio.
+</p>
+
+<div class="quote">
+No se trata de abandonar la seguridad, sino de desarrollar la capacidad
+de permanecer estable incluso cuando la vida está cambiando.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro5')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro7')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro7" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">07 / 10</div>
+
+<div class="interpretation">
+
+<h3>Tus vínculos — Casa 7 en Sagitario</h3>
+
+<p>
+La casa 7 representa las relaciones de igual a igual más significativas:
+pareja, asociaciones y vínculos importantes.
+</p>
+
+<p>
+Sagitario puede aportar una necesidad de libertad, honestidad, crecimiento
+y amplitud de horizontes. Puede existir resistencia frente a relaciones que
+se vivan como excesivamente restrictivas.
+</p>
+
+<h4>Urano entre casa 6 y 7</h4>
+
+<p>
+Urano simboliza ruptura de patrones y cambios inesperados. En esta zona puede
+señalar una necesidad de transformar las formas tradicionales de relacionarse,
+especialmente cuando una situación deja de permitir libertad o autenticidad.
+</p>
+
+<div class="quote">
+Los cambios en los vínculos pueden convertirse en oportunidades para aprender
+qué tipo de relación permite conservar simultáneamente intimidad y libertad.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro6')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro8')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro8" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">08 / 10</div>
+
+<div class="interpretation">
+
+<h3>La herida de pertenencia — Quirón en Tauro, casa 11</h3>
+
+<p>
+Quirón puede utilizarse simbólicamente para explorar una herida que,
+al ser comprendida, puede convertirse en una fuente de sabiduría.
+</p>
+
+<p>
+Tauro y casa 11 pueden relacionarse con seguridad, pertenencia, estabilidad
+y participación en grupos o redes sociales.
+</p>
+
+<div class="quote">
+Una pregunta simbólica podría ser:
+"¿Puedo sentirme segura y pertenecer sin tener que adaptarme completamente
+a las necesidades del grupo?"
+</div>
+
+<p>
+La integración consistiría en construir vínculos desde la seguridad propia,
+eligiendo conscientemente aquellas relaciones donde exista profundidad,
+reciprocidad y respeto por los límites personales.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro7')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro9')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro9" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">09 / 10</div>
+
+<div class="interpretation">
+
+<h3>Otras áreas de vida</h3>
+
+<h4>Ascendente en Géminis</h4>
+
+<p>
+La persona puede mostrarse inicialmente desde la curiosidad, la comunicación,
+el conocimiento y la capacidad de intercambiar información. Puede proyectar
+una imagen más espontánea o intelectual de lo que revela su estructura
+interior.
+</p>
+
+<h4>Casa 9 — Piscis / Acuario</h4>
+
+<p>
+Los estudios y la visión de mundo pueden combinar innovación, pensamiento
+diferente, intuición y sensibilidad hacia aquello que existe detrás de lo
+visible. Puede existir interés por temas simbólicos o esotéricos.
+</p>
+
+<h4>Casa 10 — Aries / Piscis</h4>
+
+<p>
+El desarrollo del legado puede relacionarse con integrar iniciativa y
+sensibilidad: actuar desde lo que nace internamente sin permitir que el
+sobreanálisis bloquee la acción.
+</p>
+
+<h4>Casa 8 — Capricornio / Acuario</h4>
+
+<p>
+Los procesos de transformación pueden implicar revisar estructuras rígidas
+y abrir espacio a nuevas formas de comprender el progreso y el cambio.
+</p>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro8')">← Anterior</button>
+    <button class="nav-button" onclick="showScreen('tro10')">Siguiente →</button>
+</div>
+
+</section>
+
+
+<section id="tro10" class="screen">
+
+<div class="method-header">
+    <h2>Carta astral tropical</h2>
+</div>
+
+<div class="progress">10 / 10 · SÍNTESIS</div>
+
+<div class="interpretation">
+
+<div class="summary">
+
+<h3>Los grandes temas de tu carta</h3>
+
+<div class="summary-main">
+Aprender a relacionarte sin perderte y construir un lugar seguro
+dentro de ti para poder elegir vínculos que te nutran.
+</div>
+
+<div class="summary-list">
+
+<div class="summary-item">
+<strong>Identidad</strong>
+Desarrollar una narrativa propia y aprender a ocupar espacio con ella.
+</div>
+
+<div class="summary-item">
+<strong>Hogar</strong>
+La familia, las raíces y la intimidad constituyen un escenario importante
+de transformación.
+</div>
+
+<div class="summary-item">
+<strong>Vínculos</strong>
+Aprender a cuidar sin absorber los problemas de los demás.
+</div>
+
+<div class="summary-item">
+<strong>Comunicación</strong>
+Utilizar análisis y perspectiva para comprender, negociar y comunicar.
+</div>
+
+<div class="summary-item">
+<strong>Transformación</strong>
+Pasar de la necesidad de seguridad absoluta hacia una mayor tolerancia
+al cambio.
+</div>
+
+<div class="summary-item">
+<strong>Pertenencia</strong>
+Construir vínculos desde la seguridad propia y no desde la necesidad
+de ser aceptada.
+</div>
+
+</div>
+
+</div>
+
+<div class="quote">
+El gran aprendizaje transversal parece estar en construir seguridad dentro
+de ti para poder relacionarte profundamente sin perder tu identidad.
+</div>
+
+</div>
+
+<div class="navigation">
+    <button class="nav-button" onclick="showScreen('tro9')">← Anterior</button>
+    <button class="nav-button home-button" onclick="showScreen('home')">
+        Volver al inicio
+    </button>
+</div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- ================= COMPARACIÓN ============================ -->
+<!-- ========================================================= -->
+
+<section id="comparison" class="screen">
+
+<div class="comparison">
+
+<h2>Dos métodos, una misma persona</h2>
+
+<p class="comparison-intro">
+¿Qué temas permanecen cuando observamos la carta de Jan desde ambos sistemas?
+</p>
+
+<div class="coincidences">
+
+<div class="coincidence">
+<h3>🌿 Virgo</h3>
+
+<p>
+<strong>Tropical:</strong> Sol + Venus<br>
+<strong>Sideral:</strong> Venus + Marte + Mercurio + Plutón
+</p>
+
+<p>
+En ambos métodos, Virgo aparece como una energía fundamental:
+analizar, ordenar, mejorar, servir y concretar.
+</p>
+</div>
+
+
+<div class="coincidence">
+<h3>🏠 Hogar e intimidad</h3>
+
+<p>
+<strong>Tropical:</strong> fuerte concentración en casa 4<br>
+<strong>Sideral:</strong> Sol en casa 4
+</p>
+
+<p>
+La construcción del hogar, las raíces y la intimidad aparecen como escenarios
+importantes para la identidad y el desarrollo personal.
+</p>
+</div>
+
+
+<div class="coincidence">
+<h3>♡ Vínculos</h3>
+
+<p>
+Ambas cartas ponen énfasis en pareja, vínculos profundos, reciprocidad,
+confianza y límites.
+</p>
+
+<p>
+La relación con los demás aparece como uno de los grandes escenarios
+de aprendizaje.
+</p>
+</div>
+
+
+<div class="coincidence">
+<h3>🦂 Estabilidad ↔ Transformación</h3>
+
+<div class="axis">
+    SEGURIDAD
+    <br>↓<br>
+    TRANSFORMACIÓN
+</div>
+
+<div class="axis">
+    AUTOSUFICIENCIA
+    <br>↓<br>
+    RECIPROCIDAD
+</div>
+
+<p>
+El hilo conductor puede entenderse como aprender a construir seguridad
+interna sin necesitar controlar completamente el entorno.
+</p>
+
+</div>
+
+</div>
+
+
+<h2 style="font-size:34px;">Comparación completa</h2>
+
+<table>
+
+<thead>
+<tr>
+    <th>Tema</th>
+    <th>Tropical + Placidus</th>
+    <th>Sideral + Whole Sign</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>Identidad</td>
+<td>Ascendente Géminis: intelectual, curiosa, comunicativa.</td>
+<td>Ascendente Tauro: estable, pragmática, perseverante.</td>
+</tr>
+
+<tr>
+<td>Sol</td>
+<td>Virgo, casa 3.</td>
+<td>Leo, casa 4.</td>
+</tr>
+
+<tr>
+<td>Esencia</td>
+<td>Encontrar sentido mediante utilidad, análisis y comunicación.</td>
+<td>Encontrar esencia mediante identidad, creatividad y legado.</td>
+</tr>
+
+<tr>
+<td>Amor</td>
+<td>Venus en Virgo, casa 4: cuidar mediante acciones concretas.</td>
+<td>Venus en Virgo, casa 5: expresar amor mediante cuidado y acción.</td>
+</tr>
+
+<tr>
+<td>Acción / deseo</td>
+<td>Marte en Libra, casa 4: negociación, equilibrio y hogar.</td>
+<td>Marte en Virgo, casa 5: acción práctica, perfeccionamiento y creación.</td>
+</tr>
+
+<tr>
+<td>Mente</td>
+<td>Mercurio en Libra: comparar perspectivas y buscar equilibrio.</td>
+<td>Mercurio en Virgo: analizar, ordenar y resolver.</td>
+</tr>
+
+<tr>
+<td>Transformación</td>
+<td>Plutón en Libra, casa 4: transformación familiar.</td>
+<td>Plutón en Virgo, casa 5: transformación mediante creación y perfeccionamiento.</td>
+</tr>
+
+<tr>
+<td>Emocionalidad</td>
+<td>Luna en Escorpio, casa 6: profundidad aplicada a rutinas y servicio.</td>
+<td>Luna entre Escorpio y Libra, casa 7: profundidad procesada mediante vínculos.</td>
+</tr>
+
+<tr>
+<td>Relaciones</td>
+<td>Casa 7 en Sagitario + Urano cercano: libertad, verdad y ruptura de patrones.</td>
+<td>Luna en casa 7 + énfasis Libra: vínculos como herramienta de aprendizaje emocional.</td>
+</tr>
+
+<tr>
+<td>Nodo Norte</td>
+<td>Escorpio, casa 5: transformación, vulnerabilidad y expresión personal.</td>
+<td>Libra, casa 6: cooperación, reciprocidad y servicio.</td>
+</tr>
+
+<tr>
+<td>Herida</td>
+<td>Quirón en Tauro, casa 11: pertenencia y seguridad dentro de lo colectivo.</td>
+<td>Quirón en Aries, casa 12: identidad y autosuficiencia.</td>
+</tr>
+
+<tr>
+<td>Dinero</td>
+<td>Saturno cerca de casa 2: tensión simbólica entre valor propio, recursos y expresión.</td>
+<td>Casa 2 en Géminis: comunicación e información como recursos.</td>
+</tr>
+
+<tr>
+<td>Estudios</td>
+<td>Casa 9 Piscis/Acuario: pensamiento intuitivo, innovador y simbólico.</td>
+<td>Casa 9 Capricornio: estudio disciplinado y aplicado.</td>
+</tr>
+
+</tbody>
+</table>
+
+
+<div class="summary">
+
+<h3>La síntesis de ambas lecturas</h3>
+
+<div class="summary-main">
+Construir seguridad interna para poder vincularte profundamente,
+transformarte sin perderte y expresar una identidad propia.
+</div>
+
+<p style="font-size:20px; line-height:1.6; text-align:center;">
+Aunque los dos métodos distribuyen los signos y casas de manera diferente,
+aparecen temas recurrentes: Virgo, el hogar y la intimidad, los vínculos,
+la tensión entre seguridad y transformación, y el aprendizaje de relacionarse
+sin abandonar la identidad propia.
+</p>
+
+</div>
+
+<div style="text-align:center; margin-top:45px;">
+    <button class="secondary-button" onclick="showScreen('home')">
+        ← Volver al inicio
+    </button>
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ================= FIRMA ================= -->
+
+<div class="signature">
+    <div class="name">Constanza Valentina</div>
+    <div class="mail">cpinop@fen.uchile.cl</div>
+    <div class="profession">
+        ingeniera y terapeuta holística: tarot · gemoterapia · astrología
+    </div>
+</div>
+
+</div>
+
+
+<script>
+
+/* ============================================================
+   NAVEGACIÓN
+============================================================ */
+
+function showScreen(id) {
+
+    const screens = document.querySelectorAll('.screen');
+
+    screens.forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    const target = document.getElementById(id);
+
+    if (target) {
+        target.classList.add('active');
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+}
+
+
+/* ============================================================
+   DESCARGAS WORD
+============================================================
+
+   Los documentos Word definitivos se mantienen en la carpeta
+   Cartas astrales y las rutas se resuelven desde este HTML.
+
+   Referencia:
+
+   const wordFiles = {
+       sideral: "../../constanza_valentina/Cartas astrales/Jan_Sideral.docx",
+       tropical: "../../constanza_valentina/Cartas astrales/Jan_tropical.docx"
+   };
+
+============================================================ */
+
+function downloadWord(type) {
+
+    const wordFiles = {
+        sideral: "../../constanza_valentina/Cartas astrales/Jan_Sideral.docx",
+        tropical: "../../constanza_valentina/Cartas astrales/Jan_tropical.docx"
+    };
+
+    const file = wordFiles[type];
+
+    if (!file) {
+        return;
+    }
+
+    // Los documentos Word están junto a este archivo HTML.
+    const link = document.createElement('a');
+    link.href = file;
+    link.setAttribute('download', file);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+}
+
+</script>
+
+</body>
+</html>
