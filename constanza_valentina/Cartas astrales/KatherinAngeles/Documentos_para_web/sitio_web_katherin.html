@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitio Web Katherin - Carta Astral & Oráculo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- docx library for export -->
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Calibri', 'Candara', 'Segoe UI', optima, sans-serif;
+            font-size: 16px; /* 12pt equivalent */
+            line-height: 1.6;
+            background-color: #fcf9f2;
+            color: #2b2b2b;
+        }
+
+        .title-cursive {
+            font-family: 'Alex Brush', 'Dancing Script', cursive;
+            color: #23022e;
+        }
+
+        .signature-cursive {
+            font-family: 'Dancing Script', 'Alex Brush', cursive;
+            color: #23022e;
+        }
+
+        .bg-sidebar {
+            background-color: #2b082e;
+        }
+
+        .bg-purple-dark {
+            background-color: #2b082e;
+        }
+
+        .bg-purple-dark:hover {
+            background-color: #3d0c42;
+        }
+
+        .text-aged-gold {
+            color: #c5a059;
+        }
+
+        .border-aged-gold {
+            border-color: #c5a059;
+        }
+
+        .bg-cream-card {
+            background-color: #f7f3e8;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1ebd9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c5a059;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a38140;
+        }
+    </style>
+</head>
+<body class="bg-[#fcf9f2] text-gray-800 min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+
+    <!-- Sidebar Left Navigation -->
+    <aside class="w-full md:w-20 lg:w-24 bg-sidebar flex md:flex-col justify-between items-center py-4 px-3 md:py-8 shadow-xl z-30 shrink-0">
+        <div class="flex md:flex-col items-center gap-6 w-full justify-around md:justify-start">
+            <!-- Home Icon -->
+            <button onclick="navigateTo('home')" class="p-3 rounded-xl hover:bg-[#3d0c42] transition-colors group flex flex-col items-center" title="Inicio / Categorías">
+                <i class="fa-solid fa-house text-2xl text-aged-gold group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-[#f7f3e8] mt-1 hidden md:block">Inicio</span>
+            </button>
+
+            <!-- Oracle / Dice Icon -->
+            <button onclick="navigateTo('oracle')" class="p-3 rounded-xl hover:bg-[#3d0c42] transition-colors group flex flex-col items-center" title="Oráculo de 25 Frases">
+                <i class="fa-solid fa-dice-d20 text-2xl text-aged-gold group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-[#f7f3e8] mt-1 hidden md:block">Oráculo</span>
+            </button>
+
+            <!-- Contact Icon -->
+            <button onclick="navigateTo('contact')" class="p-3 rounded-xl hover:bg-[#3d0c42] transition-colors group flex flex-col items-center" title="Contacto & Autoría">
+                <i class="fa-solid fa-address-book text-2xl text-aged-gold group-hover:scale-110 transition-transform"></i>
+                <span class="text-[10px] text-[#f7f3e8] mt-1 hidden md:block">Contacto</span>
+            </button>
+        </div>
+
+        <div class="hidden md:flex flex-col items-center text-center">
+            <span class="text-aged-gold text-xs font-serif tracking-widest uppercase">KV</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-h-screen p-3 md:p-8 max-w-7xl mx-auto w-full">
+        
+        <!-- Header banner -->
+        <header class="text-center mb-6 pt-2 pb-4 border-b border-[#e2d7be]">
+            <h1 class="title-cursive text-5xl md:text-6xl font-normal tracking-wide drop-shadow-sm mb-1">
+                Sitio Web Katherin
+            </h1>
+            <p class="signature-cursive text-2xl md:text-3xl font-medium tracking-wider">
+                por Constanza Valentina
+            </p>
+        </header>
+
+        <!-- VIEW: HOME CATEGORIES -->
+        <section id="view-home" class="flex-1 flex flex-col justify-center items-center">
+            <div class="text-center max-w-2xl mb-8">
+                <h2 class="text-2xl font-bold text-[#23022e] mb-2">Explora tu Carta Astral</h2>
+                <p class="text-gray-700">Selecciona uno de los documentos para recorrer los aspectos astrológicos con detalle exhaustivo o consultar tu mensaje oracular.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+                <!-- Card 1: General -->
+                <div onclick="openDocument('general')" class="bg-cream-card p-6 rounded-2xl shadow-md border border-[#e5dcc5] hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fa-solid fa-compass text-3xl text-aged-gold group-hover:rotate-45 transition-transform duration-300"></i>
+                            <h3 class="text-xl font-bold text-[#23022e]">Carta Astral General</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed">Análisis completo de todos los planetas, casas, signos y elementos de tu mapa natal.</p>
+                    </div>
+                    <button class="mt-6 w-full py-2.5 bg-purple-dark text-[#f7f3e8] rounded-xl font-medium shadow transition-colors flex items-center justify-center gap-2">
+                        <span>Iniciar Recorrido</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Amor y Familia -->
+                <div onclick="openDocument('amor')" class="bg-cream-card p-6 rounded-2xl shadow-md border border-[#e5dcc5] hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fa-solid fa-heart text-3xl text-aged-gold group-hover:scale-110 transition-transform duration-300"></i>
+                            <h3 class="text-xl font-bold text-[#23022e]">Amor y Familia</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed">Reciprocidad, vínculos, identidad, pareja y dinámicas familiares transgeneracionales.</p>
+                    </div>
+                    <button class="mt-6 w-full py-2.5 bg-purple-dark text-[#f7f3e8] rounded-xl font-medium shadow transition-colors flex items-center justify-center gap-2">
+                        <span>Iniciar Recorrido</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3: Dinero y Desarrollo Profesional -->
+                <div onclick="openDocument('dinero')" class="bg-cream-card p-6 rounded-2xl shadow-md border border-[#e5dcc5] hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fa-solid fa-coins text-3xl text-aged-gold group-hover:scale-110 transition-transform duration-300"></i>
+                            <h3 class="text-xl font-bold text-[#23022e]">Dinero y Desarrollo Profesional</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed">Vocación, expansión económica, trabajo, liderazgo y proyección de tu legado.</p>
+                    </div>
+                    <button class="mt-6 w-full py-2.5 bg-purple-dark text-[#f7f3e8] rounded-xl font-medium shadow transition-colors flex items-center justify-center gap-2">
+                        <span>Iniciar Recorrido</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 4: Salud y Desarrollo Personal -->
+                <div onclick="openDocument('salud')" class="bg-cream-card p-6 rounded-2xl shadow-md border border-[#e5dcc5] hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fa-solid fa-seedling text-3xl text-aged-gold group-hover:scale-110 transition-transform duration-300"></i>
+                            <h3 class="text-xl font-bold text-[#23022e]">Salud y Desarrollo Personal</h3>
+                        </div>
+                        <p class="text-sm text-gray-700 leading-relaxed">Autocuidado, bienestar cotidiano, maduración emocional y desbloqueo personal.</p>
+                    </div>
+                    <button class="mt-6 w-full py-2.5 bg-purple-dark text-[#f7f3e8] rounded-xl font-medium shadow transition-colors flex items-center justify-center gap-2">
+                        <span>Iniciar Recorrido</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: DOCUMENT READER (LÁMINAS/DIAPOSITIVAS) -->
+        <section id="view-doc" class="hidden flex-1 flex flex-col max-w-5xl mx-auto w-full">
+            <!-- Top Controls -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-[#e2d7be]">
+                <button onclick="navigateTo('home')" class="px-4 py-2 bg-[#eae1cb] hover:bg-[#ded1b6] text-[#23022e] font-semibold rounded-xl transition-colors flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Volver al Menú</span>
+                </button>
+
+                <div class="text-center flex-1">
+                    <h2 id="doc-title" class="text-xl font-bold text-[#23022e]"></h2>
+                    <span id="doc-counter" class="text-xs text-gray-600 font-semibold"></span>
+                </div>
+
+                <button onclick="exportToWord()" class="px-4 py-2 bg-purple-dark text-[#f7f3e8] font-semibold rounded-xl transition-colors shadow flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-file-word text-aged-gold"></i>
+                    <span>Descargar Word</span>
+                </button>
+            </div>
+
+            <!-- Slide Content Card Frame -->
+            <div class="flex-1 bg-cream-card rounded-2xl p-6 md:p-10 shadow-lg border-2 border-[#e5dcc5] flex flex-col justify-between relative overflow-hidden">
+                <!-- Scrollable Slide Text Area -->
+                <div id="slide-container" class="overflow-y-auto max-h-[58vh] pr-2 custom-scrollbar text-gray-800 space-y-4">
+                    <!-- Dynamic Slide HTML inserted here -->
+                </div>
+
+                <!-- Navigation Bar at Bottom -->
+                <div class="mt-6 pt-4 border-t border-[#e5dcc5] flex items-center justify-between gap-4">
+                    <button id="btn-prev" onclick="changeSlide(-1)" class="px-5 py-2.5 bg-purple-dark text-[#f7f3e8] font-medium rounded-xl hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Anterior</span>
+                    </button>
+
+                    <div id="dots-container" class="flex gap-2 flex-wrap justify-center max-w-[50%]">
+                        <!-- Dots rendered dynamically -->
+                    </div>
+
+                    <button id="btn-next" onclick="changeSlide(1)" class="px-5 py-2.5 bg-purple-dark text-[#f7f3e8] font-medium rounded-xl hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2">
+                        <span>Siguiente</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ORACULO DADO DE 25 FRASES -->
+        <section id="view-oracle" class="hidden flex-1 flex flex-col items-center justify-center py-6">
+            <div class="bg-cream-card max-w-2xl w-full rounded-2xl p-8 md:p-12 shadow-xl border-2 border-[#e5dcc5] text-center space-y-6">
+                <div class="inline-block p-4 rounded-full bg-[#f0e7d5] mb-2">
+                    <i class="fa-solid fa-dice-d20 text-5xl text-aged-gold"></i>
+                </div>
+                
+                <h2 class="text-3xl font-bold text-[#23022e]">Oráculo de la Sabiduría</h2>
+                <p class="text-gray-700 text-sm max-w-md mx-auto">
+                    Presiona el botón para lanzar el dado místico y recibir una frase del oráculo guiada para tu proceso de autocuidado e integración.
+                </p>
+
+                <!-- Oracle Result Box -->
+                <div id="oracle-box" class="min-h-[120px] bg-[#fdfbf7] p-6 rounded-xl border border-[#e2d7be] flex items-center justify-center my-4 shadow-inner transition-all">
+                    <p id="oracle-text" class="text-lg italic font-serif text-[#23022e]">
+                        "Haz clic en el botón para consultar tu guía diaria..."
+                    </p>
+                </div>
+
+                <button onclick="rollOracle()" class="px-8 py-3.5 bg-purple-dark text-[#f7f3e8] font-bold text-lg rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mx-auto">
+                    <i class="fa-solid fa-dice text-aged-gold text-xl"></i>
+                    <span>Lanzar Oráculo</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW: CONTACTO -->
+        <section id="view-contact" class="hidden flex-1 flex flex-col items-center justify-center py-6">
+            <div class="bg-cream-card max-w-2xl w-full rounded-2xl p-8 md:p-12 shadow-xl border-2 border-[#e5dcc5] text-center space-y-6">
+                <h2 class="signature-cursive text-4xl font-bold text-[#23022e]">Constanza Valentina</h2>
+                
+                <p class="text-aged-gold font-bold text-sm tracking-widest uppercase">
+                    CONÓCETE ★ DECIDE ★ DISEÑA ★ EJECUTA
+                </p>
+
+                <div class="py-4 border-y border-[#e2d7be] space-y-3 text-left max-w-md mx-auto">
+                    <div class="flex items-center gap-4 text-gray-800">
+                        <i class="fa-brands fa-whatsapp text-2xl text-emerald-600"></i>
+                        <div>
+                            <p class="text-xs text-gray-500">WhatsApp / Teléfono</p>
+                            <a href="https://wa.me/56978047782" target="_blank" class="font-bold hover:underline">+56 9 7804 7782</a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 text-gray-800">
+                        <i class="fa-solid fa-envelope text-2xl text-aged-gold"></i>
+                        <div>
+                            <p class="text-xs text-gray-500">Correo Electrónico</p>
+                            <a href="mailto:cpinop@fen.uchile.cl" class="font-bold hover:underline">cpinop@fen.uchile.cl</a>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-600 italic">
+                    Astrología evolutiva, diseño de vida y desarrollo de proyectos con propósito personal.
+                </p>
+
+                <button onclick="navigateTo('home')" class="px-6 py-2.5 bg-purple-dark text-[#f7f3e8] font-medium rounded-xl transition-colors">
+                    Volver al Inicio
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const ORACLE_PHRASES = [
+            "1. El cuidado que le das a los demás también te lo debes a ti misma.",
+            "2. Estructurar tu día no es una prisión; es el andamiaje que sostiene tu libertad.",
+            "3. Cuando la mente se satura de análisis, vuelve al cuerpo y a la respiración.",
+            "4. Tu intuición no necesita justificarse racionalmente para ser válida.",
+            "5. Poner límites sanos es la mayor expresión de amor propio y reciprocidad.",
+            "6. La libertad emocional comienza cuando dejas de buscar la aprobación externa.",
+            "7. Tu capacidad de servicio resplandece cuando actúas desde la plenitud, no desde el desgaste.",
+            "8. Honra tus raíces familiares, pero recuerda que eres libre de redactar tu propia historia.",
+            "9. Un tropezón en tu rutina no es un fracaso; es una oportunidad para recalibrar con compasión.",
+            "10. La verdadera fuerza radica en la vulnerabilidad expresada con honestidad.",
+            "11. Comunica lo que sientes con dulzura, pero con la firmeza de tus convicciones.",
+            "12. Tu creatividad necesita espacio libre de perfeccionismo para manifestarse.",
+            "13. No temas brillar con luz propia; tu brillo inspira a quienes te rodean.",
+            "14. El liderazgo auténtico nace del servicio a un propósito más grande que el ego.",
+            "15. Reorganizar tu espacio físico limpia las telarañas del pensamiento.",
+            "16. Sanar la relación con el trabajo requiere equilibrar el esfuerzo con el descanso reparador.",
+            "17. Confía en la red afectiva que te sostiene cuando decides soltar el control.",
+            "18. Las contradicciones internas son la semilla de una síntesis superior.",
+            "19. Tu paciencia con los procesos ajenos empieza por la paciencia con tu propio ritmo.",
+            "20. Convierte las ideas en acciones concretas, una pequeña meta a la vez.",
+            "21. El pasado es conocimiento; el presente es tu verdadero lugar de poder.",
+            "22. Reconoce el valor de tu tiempo y energía como tu recurso más sagrado.",
+            "23. Innoversar tu rutina trae el soplo de aire fresco que tu espíritu anhela.",
+            "24. Escucha el mensaje de tu cuerpo antes de que se convierta en síntoma.",
+            "25. Eres el proyecto más importante en el que jamás trabajarás."
+        ];
+
+        const DOCUMENTS = {
+            general: {
+                title: "Carta Astral General",
+                slides: [
+                    {
+                        planet: "Sol",
+                        house: "Casa 6",
+                        sign: "Cáncer",
+                        symbol: "fa-sun",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">1. Sol — Casa 6 — Cáncer</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa el Sol?</h4>
+                                    <p>El Sol representa la esencia vital, la identidad central, la energía consciente, la luz personal y la forma en que una persona busca autoexpresarse y dar sentido a su existencia.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">El Sol en Cáncer</h4>
+                                    <p>Otorga una sensibilidad profunda, un fuerte instinto de protección, una memoria emocional desarrollada y una orientación hacia el cuidado de los demás, la familia y los entornos seguros.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">El Sol en Casa 6</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li><strong>En el ambiente laboral:</strong> Destaca por su vocación de servicio, dedicación, sentido del deber y capacidad para cuidar los detalles operativos e interpersonales.</li>
+                                        <li><strong>En la formación de otras personas:</strong> Muestra empatía pedagógica, paciencia y un enfoque nutritivo al transmitir conocimientos.</li>
+                                        <li><strong>En la construcción de proyectos:</strong> Se entrega de manera metodológica, aportando constancia, cuidado y un toque humano indispensable.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Desafíos del Sol</h4>
+                                    <p>Riesgo de sobrecargarse emocional y laboralmente, asumir responsabilidades ajenas y descuidar sus propias necesidades por sostener el bienestar del entorno.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Luna",
+                        house: "Casa 11",
+                        sign: "Sagitario (Cercana a Capricornio)",
+                        symbol: "fa-moon",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">2. Luna — Casa 11 — Sagitario / Capricornio</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa la Luna?</h4>
+                                    <p>Simboliza el mundo emocional, los mecanismos de defensa, las necesidades de seguridad afectiva y la forma de reaccionar instintivamente.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">La Luna en Casa 11 & Sagitario / Capricornio</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li><strong>La Luna en Casa 11:</strong> Encuentra confort en grupos, redes sociales, causas colectivas y proyectos comunitarios.</li>
+                                        <li><strong>La Luna en Sagitario:</strong> Busca refugio en el optimismo, la expansión, la libertad y la búsqueda de sentido superior.</li>
+                                        <li><strong>La Luna cercana a Capricornio:</strong> Aporta un matiz de madurez, pragmatismo, contención y necesidad de estructura emocional.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Expresión Emocional, Fortaleza y Sombra</h4>
+                                    <p><strong>Expresión:</strong> Combina entusiasmo idealista con responsabilidad pragmática en sus vínculos.</p>
+                                    <p><strong>Fortaleza:</strong> Gran capacidad para liderar y acoger a grupos humanos con madurez y visión de futuro.</p>
+                                    <p><strong>Sombra:</strong> Tendencia a racionalizar las emociones o huir hacia metas intelectuales/futuras cuando siente vulnerabilidad personal.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Mercurio",
+                        house: "Casa 6",
+                        sign: "Cáncer (Cercano a Géminis)",
+                        symbol: "fa-comments",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">3. Mercurio — Casa 6 — Cáncer / Géminis</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa Mercurio?</h4>
+                                    <p>Gobierna el intelecto, la comunicación, los procesos de aprendizaje, la lógica y la organización del pensamiento.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Mercurio en Cáncer / Géminis en Casa 6</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li><strong>Mercurio en Cáncer:</strong> Pensamiento empático, imaginativo, ligado a la memoria y los sentimientos.</li>
+                                        <li><strong>Cercanía a Géminis:</strong> Agrega agilidad mental, versatilidad, rapidez de respuesta y curiosidad analítica.</li>
+                                        <li><strong>En Casa 6:</strong> Excelente para resolver problemas cotidianos, gestión pragmática, organización detallada del trabajo y comunicación enfocada en la utilidad práctica.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Comunicación en otros ámbitos</h4>
+                                    <p>Habilidad para traducir conceptos complejos en mensajes cálidos, comprensibles y aplicables en la vida diaria.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Venus",
+                        house: "Casa 7",
+                        sign: "Leo",
+                        symbol: "fa-heart",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">4. Venus — Casa 7 — Leo</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa Venus?</h4>
+                                    <p>El amor, el deseo, la escala de valores, la belleza, la armonía y la manera de establecer relaciones de pareja o alianzas.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Venus en Casa 7 en Leo</h4>
+                                    <p>En el escenario del compromiso (Casa 7), Venus viste ropajes de Leo: busca un amor apasionado, generoso, leal, donde ambos se admiren mútuamente.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Necesidad de Reciprocidad & Sombra</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li><strong>Reciprocidad:</strong> Exige validación, demostraciones afectivas cálidas y trato digno recíproco.</li>
+                                        <li><strong>Sombra y advertencias:</strong> Orgullo en la pareja, temor al rechazo o insatisfacción si siente falta de apreciación o indiferencia.</li>
+                                        <li><strong>Clave afectiva:</strong> Construir relaciones donde el brillo personal de ambos sea celebrado en igualdad.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Marte",
+                        house: "Casa 9",
+                        sign: "Libra",
+                        symbol: "fa-fire",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">5. Marte — Casa 9 — Libra</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa Marte?</h4>
+                                    <p>La acción, la asertividad, la energía impulsora, los deseos, la fuerza de voluntad y el cómo defendemos nuestras posturas.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Marte en Casa 9 en Libra</h4>
+                                    <p>Dirige su empuje hacia la justicia, los ideales, la educación superior, los viajes y la expansión filosófica. En Libra, actúa buscando el consenso, la diplomacia y el equilibrio contractual.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Atracción & Posibles Dificultades</h4>
+                                    <p><strong>Atracción:</strong> Busca parejas e ideales cultos, educados, con valores estéticos y sentido ético elevado.</p>
+                                    <p><strong>Dificultades:</strong> Indecisión por evitar conflictos directos o desgaste por acomodarse a las expectativas ajenas antes de actuar.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Ascendente",
+                        house: "Casa 1",
+                        sign: "Acuario",
+                        symbol: "fa-user-astronaut",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">6. Ascendente — Acuario</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa el Ascendente?</h4>
+                                    <p>El canal de aprendizaje vital, la personalidad consciente, la imagen hacia el mundo y la lente a través de la cual se experimenta la vida.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Ascendente en Acuario</h4>
+                                    <p>Imprime una búsqueda constante de originalidad, libertad mental, enfoque humanista, perspectiva innovadora e independencia de criterios tradicionales.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Potencial y Sombra</h4>
+                                    <p><strong>Potencial:</strong> Capacidad para liderar cambios, integrar grupos diversos e innovar con una mirada vanguardista.</p>
+                                    <p><strong>Sombra:</strong> Sensación de desarraigo, desconexión emocional o rebeldía defensiva cuando se siente incomprendida.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Júpiter y Saturno",
+                        house: "Casa 3",
+                        sign: "Aries",
+                        symbol: "fa-scale-balanced",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">7 & 8. Júpiter y Saturno — Casa 3 — Aries</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Júpiter en Casa 3 en Aries</h4>
+                                    <p>Aporta entusiasmo intelectual, valentía para expresar opiniones, capacidad pionera en la comunicación e iniciativas académicas o comunicativas veloces.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Saturno en Casa 3 en Aries</h4>
+                                    <p>Exige rigor, disciplina mental, prudencia al hablar y superación de posibles inseguridades de la infancia ligadas a la voz propia o al entorno cercano.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Interpretación Transgeneracional & Integración</h4>
+                                    <p>Patrones familiares donde la comunicación fue inhibida o conflictiva. La integración requiere unir la audacia de Júpiter con la estructura sabia de Saturno para convertirse en una comunicadora autorizada y contundente.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Urano y Neptuno",
+                        house: "Casa 12",
+                        sign: "Capricornio",
+                        symbol: "fa-water",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">9 & 10. Urano y Neptuno — Casa 12 — Capricornio</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Urano en Casa 12 en Capricornio</h4>
+                                    <p>Despertar inconsciente, liberación de mandatos o cargas familiares heredadas sobre el éxito, la rigidez y las estructuras tradicionales.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Neptuno en Casa 12 en Capricornio</h4>
+                                    <p>Sensibilidad psíquica sutil, intuición profunda canalizada a través de realizaciones concretas y compasión con contención práctica.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Dimensión Transgeneracional & Clave</h4>
+                                    <p>Sancionar y disolver viejas culpas o cargas invisibles del linaje familiar mediante la toma de conciencia espiritual e intelectual.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Plutón",
+                        house: "Casa 10",
+                        sign: "Transformación Social",
+                        symbol: "fa-volcano",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">11. Plutón — Casa 10</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">¿Qué representa Plutón en Casa 10?</h4>
+                                    <p>Poder personal, transformación radical de la vocación, superación de crisis de imagen o estatus, e impacto profundo en la esfera pública.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Cómo puede ser recordada</h4>
+                                    <p>Como una figura resiliente, transformadora, influyente y con la autoridad de quien ha reconstruido su carrera desde la autenticidad.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Síntesis",
+                        house: "Balance",
+                        sign: "Elementos",
+                        symbol: "fa-dharmachakra",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">12. Balance de Elementos y Misión Vital</h3>
+                            <div class="space-y-3">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li><strong>Fuego (Luna, Júpiter, Saturno, Venus):</strong> Pasión, empuje, liderazgo, entusiasmo para iniciar caminos.</li>
+                                    <li><strong>Aire (Ascendente, Marte, Mercurio en cercanía):</strong> Visión analítica, comunicación, objetividad y conexión social.</li>
+                                    <li><strong>Agua (Sol, Mercurio):</strong> Empatía, intuición, afecto y capacidad de sostener emocionalmente.</li>
+                                    <li><strong>Tierra (Urano, Neptuno, Luna en cúspide):</strong> Sustento pragmático, realismo y capacidad ejecutiva.</li>
+                                </ul>
+                                <div class="p-3 bg-[#f0e7d5] rounded-xl border border-[#d8caaa] mt-3">
+                                    <h4 class="font-bold text-[#23022e]">Misión de Vida:</h4>
+                                    <p class="text-sm">Integrar el cuidado empático con la innovación conceptual y el rigor pragmático para servir a la comunidad con liderazgo y conciencia.</p>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            amor: {
+                title: "Carta Astral: Amor y Familia",
+                slides: [
+                    {
+                        planet: "Sol",
+                        house: "Casa 6",
+                        sign: "Cáncer",
+                        symbol: "fa-heart-circle-check",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">1. Sol en Cáncer — Casa 6 (Amor y Familia)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: El cuidado, el hogar y el vínculo con los demás.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">En el Ámbito Familiar y Afectivo</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>El amor se demuestra mediante actos concretos de servicio, protección y presencia constante.</li>
+                                        <li>Necesidad vital de crear un ambiente seguro, cálido e íntimo para sus seres queridos.</li>
+                                        <li>Fuerte lazo con la memoria familiar, las tradiciones y el rol de sostén nutricio.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Aprendizaje Afectivo</h4>
+                                    <p>Aprender a cuidar sin sobreproteger ni sacrificarse en exceso. Comprender que cuidar de sí misma es la condición primera para poder cuidar de otros de forma sana.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Luna",
+                        house: "Casa 11",
+                        sign: "Sagitario / Capricornio",
+                        symbol: "fa-people-roof",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">2. Luna en Casa 11 — Sagitario / Capricornio (Vínculos y Pertenencia)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Necesidades emocionales y vínculos colectivos o familiares.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">En Casa 11 & Sagitario</h4>
+                                    <p>Busca pertenencia afectiva en grupos de amigos y familia elegida. Necesita espacio, libertad y filosofía compartida para sentir comodidad emocional en el amor.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Cercanía con Capricornio & Sombra</h4>
+                                    <p><strong>Cercanía Capricornio:</strong> Aporta contención firme, sentido de lealtad a largo plazo y madurez emocional.</p>
+                                    <p><strong>Sombra afectiva:</strong> Reprimir la vulnerabilidad por parecer fuerte o buscar refugio en responsabilidades sociales/laborales para evitar el conflicto íntimo.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Mercurio",
+                        house: "Casa 6",
+                        sign: "Cáncer / Géminis",
+                        symbol: "fa-comments-dollar",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">3. Mercurio en Casa 6 — Cáncer / Géminis (Comunicación Afectiva)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Diálogo diario, resolución de dinámicas familiares y afecto.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Comunicación Afectiva</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Sensibilidad para captar necesidades no verbales en sus seres queridos.</li>
+                                        <li>La cercanía con Géminis permite hablar sobre temas emocionales con ligereza y sentido práctico.</li>
+                                        <li>Llevar las emociones a lo concreto: acuerdos de convivencia claros, colaborativos y ordenados.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Aprendizaje Afectivo</h4>
+                                    <p>Evitar asumir que el otro "ya sabe" lo que siente; expresar los requerimientos emocionales con claridad y soltura.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Venus",
+                        house: "Casa 7",
+                        sign: "Leo",
+                        symbol: "fa-crown",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">4. Venus en Leo — Casa 7 (La Pareja e Identidad Afectiva)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Amor, dignidad, generosidad y compromiso recíproco.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Necesidades Afectivas</h4>
+                                    <p>Requiere un amor romántico, leal, generoso y noble. Desea sentirse valorada, celebrada y admirada en su singularidad.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Heridas del Pasado en el Amor</h4>
+                                    <ol class="list-decimal pl-5 space-y-1">
+                                        <li>Sensación de haber dado amor generoso a quien no supo apreciarlo con la misma intensidad.</li>
+                                        <li>Miedo a ser invisibilizada o relegada a un segundo plano emocional.</li>
+                                        <li>Protección mediante una coraza de orgullo para evitar ser herida.</li>
+                                    </ol>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Clave Afectiva</h4>
+                                    <p>Exigir reciprocidad transparente desde el inicio y permitir que la vulnerabilidad coexista con su dignidad.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Marte",
+                        house: "Casa 9",
+                        sign: "Libra",
+                        symbol: "fa-scale-unbalanced",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">5. Marte en Libra — Casa 9 (La Pareja deseada y Dinámica Relacional)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Atracción, valores éticos e ideales compartidos.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Energía de Pareja</h4>
+                                    <p>Se siente atraída por personas diplomáticas, cultas, con inquietudes intelectuales o espirituales, orientadas a la justicia.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Dificultades y Aprendizaje</h4>
+                                    <p>Tendencia a postergar sus propios deseos con tal de no alterar la paz con la pareja. El aprendizaje es ejercer la asertividad y la confrontación sana cuando sea necesario.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Saturno",
+                        house: "Casa 3",
+                        sign: "Aries",
+                        symbol: "fa-shield-halved",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">6. Saturno en Aries — Casa 3 (Patrones Familiares Transgeneracionales)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Inseguridad, comunicación y sanación del linaje.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Interpretación Transgeneracional</h4>
+                                    <p>Historias familiares donde tomar la iniciativa o expresar verbalmente la individualidad estuvo reprimido, juzgado o acarreó consecuencias duras.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Integración Familiar</h4>
+                                    <p>Dar voz propia a los sentimientos y desarticular mandatos de silencio o timidez aprendidos en el entorno primario.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Urano y Neptuno",
+                        house: "Casa 12",
+                        sign: "Capricornio",
+                        symbol: "fa-key",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">7 & 8. Urano y Neptuno en Casa 12 (Liberación Inconsciente)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Ruptura de Patrones Heredados</h4>
+                                    <p>Liberación inconsciente de lealtades invisibles a mandatos familiares de sacrificio, frialdad o estatus rígido.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Aprendizaje Afectivo</h4>
+                                    <p>Confiar en su intuición profunda para reconocer dinámicas dañinas y elegir libremente su propia modalidad de amor y hogar.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Plutón",
+                        house: "Casa 10",
+                        sign: "Legado",
+                        symbol: "fa-gem",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">9. Plutón en Casa 10 (Transformación del Dolor)</h3>
+                            <div class="space-y-3">
+                                <p>Capacidad de transformar las crisis o heridas del pasado familiar en una fuente imponente de resiliencia, sabiduría y dignidad pública.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Síntesis Amor",
+                        house: "Integración",
+                        sign: "Afectiva",
+                        symbol: "fa-hands-holding-circle",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">10. Síntesis del Tema Amor y Familia</h3>
+                            <div class="space-y-3">
+                                <p class="text-gray-800">El viaje afectivo exige conciliar la profunda necesidad de cuidar y proteger (Cáncer) con la exigencia indiscutible de ser respetada y valorada en su dignidad brillante (Leo), construyendo relaciones basadas en la libertad responsable (Acuario/Sagitario).</p>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            dinero: {
+                title: "Carta Astral: Dinero y Desarrollo Profesional",
+                slides: [
+                    {
+                        planet: "Sol",
+                        house: "Casa 6",
+                        sign: "Cáncer",
+                        symbol: "fa-briefcase",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">1. Sol en Cáncer — Casa 6 (Trabajo y Proyectos)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Trabajo, servicio, vocación y edificación de proyectos.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Potencial Laboral y Empresarial</h4>
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        <li>Gran vocación por actividades que brinden contención, cuidado, formación o bienestar a personas.</li>
+                                        <li>Capacidad ejecutiva respaldada por la constancia diaria, la meticulosidad y la empatía en la gestión de equipos.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Clave Económica</h4>
+                                    <p>Monetizar sus habilidades de cuidado, organización e intuición, asegurándose de valorar adecuadamente el precio de su trabajo.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Mercurio",
+                        house: "Casa 6",
+                        sign: "Cáncer / Géminis",
+                        symbol: "fa-brain",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">2. Mercurio en Casa 6 — Cáncer / Géminis (Comunicación Profesional)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Habilidades intelectuales aplicadas a la productividad.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Aplicación Laboral</h4>
+                                    <p>Habilidad sobresaliente para coordinar tareas, optimizar procesos operativos y redactar o comunicar proyectos con precisión pedagógica.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Clave Económica</h4>
+                                    <p>Diversificar fuentes de ingresos mediante capacitaciones, asesorías, elaboración de contenidos o gestión de información.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Marte",
+                        house: "Casa 9",
+                        sign: "Libra",
+                        symbol: "fa-graduation-cap",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">3. Marte en Libra — Casa 9 (Formación y Expansión)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Conocimientos, internacionalización y alianzas estratégicas.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Desarrollo Profesional</h4>
+                                    <p>Impulso para especializarse a través de estudios superiores, diplomados o colaboraciones con entidades internacionales o jurídicas.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Clave Profesional</h4>
+                                    <p>Utilizar la negociación diplomática y la búsqueda de justicia comercial para cerrar acuerdos beneficiosos.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Ascendente",
+                        house: "Casa 1",
+                        sign: "Acuario",
+                        symbol: "fa-lightbulb",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">4. Ascendente en Acuario (Innovación y Liderazgo)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Emprendimiento, tecnología y visión vanguardista.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Potencial Profesional</h4>
+                                    <p>Destacar por implementar metodologías creativas, proyectos tecnológicos, comunitarios o modelos de trabajo no convencionales.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Sombra Profesional</h4>
+                                    <p>Resistencia a amoldarse a jefaturas autoritarias o estructuras obsoletas. Su camino es el liderazgo autónomo o colaborativo.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Júpiter y Saturno",
+                        house: "Casa 3",
+                        sign: "Aries",
+                        symbol: "fa-chart-line",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">5 & 6. Júpiter y Saturno en Aries (Iniciativa vs Estructura)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Tensión y Potencial Económico</h4>
+                                    <p><strong>Júpiter:</strong> Deseo de lanzarse rápidamente a nuevos emprendimientos o ideas comerciales.</p>
+                                    <p><strong>Saturno:</strong> Exige cautela, planes de negocios rigurosos y evitar decisiones impetuosas sin fundamento.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Integración Profesional</h4>
+                                    <p>La combinación perfecta entre la audacia para vender sus proyectos y la disciplina para consolidar un negocio duradero.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Luna",
+                        house: "Casa 11",
+                        sign: "Sagitario / Capricornio",
+                        symbol: "fa-network-wired",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">7. Luna en Casa 11 (Redes, Comunidad y Expansión)</h3>
+                            <div class="space-y-3">
+                                <p>Capacidad para movilizar comunidades, trabajar con colectivos y generar ingresos a través de redes de contacto profesionales bien cimentadas.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Urano y Neptuno",
+                        house: "Casa 12",
+                        sign: "Capricornio",
+                        symbol: "fa-building-columns",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">8 & 9. Urano y Neptuno en Casa 12 (Romper Mandatos Laborales)</h3>
+                            <div class="space-y-3">
+                                <p>Superación de mandatos del linaje sobre "lo que significa trabajar duro". Permitirse prosperar mediante fórmulas innovadoras sin culpas inconscientes.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Plutón",
+                        house: "Casa 10",
+                        sign: "Éxito",
+                        symbol: "fa-trophy",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">10. Plutón en Casa 10 (Legado y Estatus Profesional)</h3>
+                            <div class="space-y-3">
+                                <p>Proyección hacia posiciones de alta autoridad, liderazgo transformador y construcción de un legado imborrable en su área de trabajo.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Síntesis Dinero",
+                        house: "Estrategia",
+                        sign: "Prosperidad",
+                        symbol: "fa-vault",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">11. Síntesis Económica y Profesional</h3>
+                            <div class="space-y-3">
+                                <p class="text-gray-800">El éxito económico reside en unir la excelencia operativa de su rutina (Casa 6) con la proyección visionaria de sus redes e innovaciones (Acuario/Casa 11), adueñándose plenamente de su poder profesional (Plutón en Casa 10).</p>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            salud: {
+                title: "Carta Astral: Salud y Desarrollo Personal",
+                slides: [
+                    {
+                        planet: "Sol",
+                        house: "Casa 6",
+                        sign: "Cáncer",
+                        symbol: "fa-heart-pulse",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">1. Sol en Cáncer — Casa 6 (Autocuidado y Bienestar)</h3>
+                            <div class="space-y-3">
+                                <p class="text-sm italic">Eje central: Salud física, somatización y rutinas de nutrición.</p>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Salud y Somatización</h4>
+                                    <p>Sensibilidad digestiva y emocional (Cáncer). Las tensiones o emociones no procesadas tienden a somatizarse en el estómago o mediante fatiga corporal en la rutina (Casa 6).</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Clave de Desarrollo</h4>
+                                    <p>Establecer rutinas de autocuidado, alimentación consciente y espacios sagrados de descanso libre de culpa.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Luna",
+                        house: "Casa 11",
+                        sign: "Sagitario / Capricornio",
+                        symbol: "fa-spa",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">2. Luna en Casa 11 (Procesamiento Emocional)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Procesamiento de Emociones</h4>
+                                    <p>Necesita aire libre, movimiento corporal (Sagitario) y espacios comunitarios para descomprimir la sobrecarga mental.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-[#c5a059]">Sombra de Salud</h4>
+                                    <p>Rigidez muscular o articular debido al estrés por querer controlar la estructura afectiva (cercanía a Capricornio).</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Mercurio",
+                        house: "Casa 6",
+                        sign: "Cáncer / Géminis",
+                        symbol: "fa-brain",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">3. Mercurio en Casa 6 (Salud Mental y Expresión)</h3>
+                            <div class="space-y-3">
+                                <p>Comprensión sutil de la mente sobre los mensajes del cuerpo. Utilizar la escritura, la palabra o la terapia para liberar pensamientos obsesivos sobre el trabajo o la familia.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Marte",
+                        house: "Casa 9",
+                        sign: "Libra",
+                        symbol: "fa-person-running",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">4. Marte en Libra — Casa 9 (Vitalidad y Crecimiento)</h3>
+                            <div class="space-y-3">
+                                <p>Canalizar la energía física mediante disciplinas armónicas como yoga, pilates, caminatas en la naturaleza o actividades que unan movimiento y belleza estética.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Ascendente",
+                        house: "Casa 1",
+                        sign: "Acuario",
+                        symbol: "fa-dna",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">5. Ascendente en Acuario (Autonomía e Identidad)</h3>
+                            <div class="space-y-3">
+                                <p>Desarrollo de una sólida autonomía personal. Aprender a desengancharse del drama ajeno para preservar su propio campo energético y sistema nervioso.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Júpiter y Saturno",
+                        house: "Casa 3",
+                        sign: "Aries",
+                        symbol: "fa-feather",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">6 & 7. Júpiter y Saturno (Desbloqueo Mental y Expresivo)</h3>
+                            <div class="space-y-3">
+                                <p>Superar el diálogo interno autocrítico o perfeccionista (Saturno) afianzando la confianza en la sabiduría propia e impulsos creativos (Júpiter).</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Urano y Neptuno",
+                        house: "Casa 12",
+                        sign: "Capricornio",
+                        symbol: "fa-infinity",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">8 & 9. Urano y Neptuno en Casa 12 (Sanación Psíquica)</h3>
+                            <div class="space-y-3">
+                                <p>Prácticas de meditación, descanso de pantallas e introspección profunda para limpiar la mente subconsciente de lealtades transgeneracionales pesadas.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Plutón",
+                        house: "Casa 10",
+                        sign: "Poder Personal",
+                        symbol: "fa-sun-plant-wilt",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">10. Plutón en Casa 10 (Autorrealización)</h3>
+                            <div class="space-y-3">
+                                <p>Transformación espiritual y fortalecimiento interno al asumir su lugar de autoridad personal frente al mundo.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        planet: "Síntesis Salud",
+                        house: "Bienestar",
+                        sign: "Holístico",
+                        symbol: "fa-hand-holding-heart",
+                        content: `
+                            <h3 class="text-2xl font-bold text-[#23022e] mb-2">11. Síntesis de Desarrollo Personal</h3>
+                            <div class="space-y-3">
+                                <p class="text-gray-800">El bienestar integral se alcanza escuchando activamente el cuerpo, organizando rutinas amorosas de vida diaria y permitiéndose ser plenamente auténtica y libre en sus decisiones.</p>
+                            </div>
+                        `
+                    }
+                ]
+            }
+        };
+
+        let currentDocKey = 'general';
+        let currentSlideIndex = 0;
+
+        function navigateTo(viewName) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-doc').classList.add('hidden');
+            document.getElementById('view-oracle').classList.add('hidden');
+            document.getElementById('view-contact').classList.add('hidden');
+
+            if (viewName === 'home') document.getElementById('view-home').classList.remove('hidden');
+            if (viewName === 'doc') document.getElementById('view-doc').classList.remove('hidden');
+            if (viewName === 'oracle') document.getElementById('view-oracle').classList.remove('hidden');
+            if (viewName === 'contact') document.getElementById('view-contact').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openDocument(docKey) {
+            currentDocKey = docKey;
+            currentSlideIndex = 0;
+            const doc = DOCUMENTS[docKey];
+
+            document.getElementById('doc-title').innerText = doc.title;
+            renderSlide();
+            navigateTo('doc');
+        }
+
+        function renderSlide() {
+            const doc = DOCUMENTS[currentDocKey];
+            const slide = doc.slides[currentSlideIndex];
+            const total = doc.slides.length;
+
+            document.getElementById('doc-counter').innerText = `Lámina ${currentSlideIndex + 1} de ${total}`;
+
+            const slideContainer = document.getElementById('slide-container');
+            slideContainer.innerHTML = `
+                <div class="flex items-center gap-3 mb-4 border-b border-[#e5dcc5] pb-3">
+                    <i class="fa-solid ${slide.symbol || 'fa-star'} text-3xl text-aged-gold"></i>
+                    <div>
+                        <span class="text-xs uppercase font-bold text-aged-gold tracking-wider">${slide.house} — ${slide.sign}</span>
+                        <h3 class="text-2xl font-bold text-[#23022e]">${slide.planet}</h3>
+                    </div>
+                </div>
+                <div>${slide.content}</div>
+            `;
+
+            // Update Navigation Buttons
+            document.getElementById('btn-prev').disabled = currentSlideIndex === 0;
+            document.getElementById('btn-next').disabled = currentSlideIndex === total - 1;
+
+            // Render Dots Navigation
+            const dotsContainer = document.getElementById('dots-container');
+            dotsContainer.innerHTML = '';
+            doc.slides.forEach((_, idx) => {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all ${idx === currentSlideIndex ? 'bg-[#23022e] w-5' : 'bg-[#d8caaa]'}`;
+                dot.onclick = () => {
+                    currentSlideIndex = idx;
+                    renderSlide();
+                };
+                dotsContainer.appendChild(dot);
+            });
+
+            slideContainer.scrollTop = 0;
+        }
+
+        function changeSlide(direction) {
+            const doc = DOCUMENTS[currentDocKey];
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 0) currentSlideIndex = 0;
+            if (currentSlideIndex >= doc.slides.length) currentSlideIndex = doc.slides.length - 1;
+            renderSlide();
+        }
+
+        function rollOracle() {
+            const textElement = document.getElementById('oracle-text');
+            const box = document.getElementById('oracle-box');
+            
+            box.classList.add('opacity-50', 'scale-95');
+            
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * ORACLE_PHRASES.length);
+                textElement.innerText = ORACLE_PHRASES[randomIndex];
+                box.classList.remove('opacity-50', 'scale-95');
+            }, 250);
+        }
+
+        function exportToWord() {
+            if (typeof docx === 'undefined') {
+                alert('La librería de exportación está cargando. Intenta de nuevo en unos segundos.');
+                return;
+            }
+
+            const docData = DOCUMENTS[currentDocKey];
+            const Paragraph = docx.Paragraph;
+            const TextRun = docx.TextRun;
+            const HeadingLevel = docx.HeadingLevel;
+
+            const children = [
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: docData.title,
+                            bold: true,
+                            size: 36,
+                            color: "23022E",
+                            font: "Calibri"
+                        })
+                    ],
+                    heading: HeadingLevel.HEADING_1,
+                    spaceAfter: 300
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: "por Constanza Valentina",
+                            italic: true,
+                            size: 24,
+                            color: "C5A059",
+                            font: "Calibri"
+                        })
+                    ],
+                    spaceAfter: 500
+                })
+            ];
+
+            docData.slides.forEach((slide, idx) => {
+                children.push(
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: `${idx + 1}. ${slide.planet} (${slide.house} - ${slide.sign})`,
+                                bold: true,
+                                size: 28,
+                                color: "23022E",
+                                font: "Calibri"
+                            })
+                        ],
+                        spaceBefore: 300,
+                        spaceAfter: 150
+                    })
+                );
+
+                // Strip HTML tags for clean Word document text paragraph insertion
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = slide.content;
+                const cleanText = tempDiv.innerText || tempDiv.textContent || '';
+
+                const lines = cleanText.split('\n').filter(line => line.trim() !== '');
+                lines.forEach(line => {
+                    children.push(
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: line.trim(),
+                                    size: 24,
+                                    font: "Calibri"
+                                })
+                            ],
+                            spaceAfter: 120
+                        })
+                    );
+                });
+            });
+
+            const doc = new docx.Document({
+                sections: [{
+                    properties: {},
+                    children: children
+                }]
+            });
+
+            docx.Packer.toBlob(doc).then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${docData.title.replace(/[^a-zA-Z0-9]/g, '_')}_Katherin.docx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</body>
+</html>
