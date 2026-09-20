@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Del feedback a la acción</title>
+    <style>
+        :root {
+            --base-font-size: 16px;
+            
+            /* Dark Theme (Default) */
+            --bg-body: #050505;
+            --bg-surface: #141414;
+            --bg-card: #1f1f1f;
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --accent: #d90429; /* Red */
+            --accent-hover: #ef233c;
+            --border: #333333;
+            --success: #2a9d8f;
+            --warning: #e9c46a;
+            
+            /* UI Elements */
+            --sidebar-width: 80px;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f8f9fa;
+            --bg-surface: #ffffff;
+            --bg-card: #f1f3f5;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --accent: #d90429;
+            --accent-hover: #b20722;
+            --border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* STRICT NO SCROLL */
+            font-size: var(--base-font-size);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .side-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        .side-btn:hover {
+            color: var(--accent);
+            background-color: var(--bg-card);
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--border);
+            transition: 0.3s;
+        }
+        .dot.active {
+            background-color: var(--accent);
+            transform: scale(1.5);
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        /* Main Slides Container */
+        #main-content {
+            flex-grow: 1;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Typography & Layout */
+        h1 { font-size: 2.8em; line-height: 1.1; margin-bottom: 0.5em; font-weight: 800; }
+        h2 { font-size: 2em; margin-bottom: 0.5em; color: var(--accent); }
+        h3 { font-size: 1.5em; margin-bottom: 0.8em; font-weight: 600; color: var(--text-muted); }
+        p, li { font-size: 1.1em; line-height: 1.5; margin-bottom: 1em; }
+        
+        .accent-text { color: var(--accent); font-weight: bold; }
+        
+        /* Layout Utilities */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; width: 100%; }
+        .flex-col { display: flex; flex-direction: column; gap: 1rem; }
+        .center-text { text-align: center; align-items: center; }
+        
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .card-red { border-left: 5px solid var(--accent); }
+        .card-green { border-left: 5px solid var(--success); }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8em 1.5em;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.1s;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* Revealer */
+        .reveal-content {
+            display: none;
+            animation: fadeIn 0.5s;
+            margin-top: 1.5rem;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Floating Modals / Overlays */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: scaleUp 0.3s ease-out;
+        }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: var(--accent); }
+
+        /* Matrix */
+        .matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1;
+            margin: 0 auto;
+            position: relative;
+        }
+        .matrix::before { content: 'Urgencia / Necesidad'; position: absolute; left: -40px; top: 50%; transform: rotate(-90deg) translateX(-50%); font-weight: bold; font-size: 0.8em; color: var(--text-muted); }
+        .matrix::after { content: 'Impacto Estratégico'; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 0.8em; color: var(--text-muted); }
+        .quad {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .quad:hover { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .quad-1 { background-color: rgba(217, 4, 41, 0.1); }
+        .quad-2 { background-color: rgba(233, 196, 106, 0.1); }
+        .quad-3 { background-color: rgba(42, 157, 143, 0.1); }
+        .quad-4 { background-color: var(--bg-card); }
+
+        .time-badge {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            background-color: var(--bg-card);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <button class="side-btn" id="btn-theme" title="Cambiar Tema">☀️</button>
+        <button class="side-btn" onclick="changeFontSize(1)" title="Aumentar Letra">A+</button>
+        <button class="side-btn" onclick="changeFontSize(0)" title="Letra Normal">A</button>
+        <button class="side-btn" onclick="changeFontSize(-1)" title="Reducir Letra">A-</button>
+        
+        <!-- Nuevos botones interactivos en la barra -->
+        <div style="margin: 0.5rem 0; width: 80%; border-top: 1px solid var(--border);"></div>
+        <button class="side-btn" onclick="openModal('modal-rules')" title="Reglas de Oro">🎁</button>
+        <button class="side-btn" onclick="openTrivia()" title="¿Entendí? (Preguntas al azar)">🎲</button>
+
+        <div class="progress-container" id="progress-dots">
+            <!-- Dots injected by JS -->
+        </div>
+        
+        <button class="side-btn" onclick="prevSlide()">⬆</button>
+        <span class="progress-text" id="progress-text">1/18</span>
+        <button class="side-btn" onclick="nextSlide()">⬇</button>
+    </nav>
+
+    <!-- Modal: Reglas de Oro (Regalo) -->
+    <div id="modal-rules" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('modal-rules')">&times;</button>
+            <h2 style="color: var(--accent); margin-bottom: 1rem;">🎁 Las 3 Reglas de Oro</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Claves fundamentales para transformar con éxito cualquier feedback 360° en un PDI real.</p>
+            
+            <div class="card" style="margin-bottom: 1rem; border-left: 5px solid var(--success);">
+                <h3>1. Diagnóstico ≠ Tratamiento</h3>
+                <p>Aceptar un número bajo no basta. Debes explorar la causa raíz, validar la interpretación con datos y diseñar un plan con acompañamiento real, no solo teoría.</p>
+            </div>
+            
+            <div class="card" style="margin-bottom: 1rem; border-left: 5px solid var(--warning);">
+                <h3>2. Menos es Más (Foco Radical)</h3>
+                <p>Nunca intentes corregir 10 cosas a la vez. Selecciona solo 1 o 2 brechas de alto impacto estratégico y trabájalas en profundidad.</p>
+            </div>
+            
+            <div class="card" style="border-left: 5px solid var(--accent);">
+                <h3>3. Conducta + Contexto + Soporte</h3>
+                <p>Un PDI fracasa si el entorno o la jefatura castigan el cambio. El desarrollo requiere oportunidades de práctica continua y un ecosistema que lo apoye.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: ¿Entendí? (Trivia / Preguntas al azar) -->
+    <div id="modal-trivia" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('modal-trivia')">&times;</button>
+            <h2 style="color: var(--accent); margin-bottom: 0.5rem;">🎲 ¿Entendí? - Desafío de Materia</h2>
+            <p id="trivia-counter" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;"></p>
+            
+            <div class="card" style="background-color: var(--bg-body); margin-bottom: 1.5rem;">
+                <p id="trivia-question" style="font-size: 1.2em; font-weight: bold;"></p>
+            </div>
+
+            <button class="btn" onclick="revealTriviaAnswer()">Ver respuesta correcta</button>
+            
+            <div id="trivia-answer-box" class="reveal-content card card-green" style="margin-top: 1rem;">
+                <p id="trivia-answer" style="margin-bottom: 0;"></p>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: right;">
+                <button class="btn btn-outline" onclick="openTrivia()">Otra pregunta 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        
+        <!-- SLIDE 1: Portada -->
+        <div class="slide active" data-section="intro">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <div class="center-text" style="max-width: 800px; margin: 0 auto;">
+                <h3 style="color: var(--accent); text-transform: uppercase; letter-spacing: 2px;">Estrategia Empresarial</h3>
+                <h1>Del feedback a la acción</h1>
+                <h2>Problemas habituales al convertir un 360° en un PDI</h2>
+                <p style="font-size: 1.3em; margin-top: 2rem; color: var(--text-muted);">
+                    "Cuando el problema no está en evaluar, sino en qué hacemos después con la información."
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide" data-section="intro">
+            <div class="time-badge">Tiempo est: 1 min</div>
+            <h2>El Puente Roto</h2>
+            <div class="grid-2" style="align-items: center; height: 100%;">
+                <div>
+                    <p>Las organizaciones invierten meses diseñando evaluaciones 360°, calibrando competencias y generando reportes perfectos.</p>
+                    <p>Pero luego, al momento de diseñar el <strong>Plan de Desarrollo Individual (PDI)</strong>, el proceso fracasa.</p>
+                </div>
+                <div class="card card-red center-text">
+                    <h3>¿Por qué?</h3>
+                    <p>Porque asumimos que recibir feedback equivale automáticamente a saber cómo cambiar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide" data-section="intro">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <div class="center-text" style="max-width: 800px; margin: 0 auto;">
+                <h1 style="color: var(--accent); font-size: 4em;">🩺</h1>
+                <h2>"El 360° es un diagnóstico, no el tratamiento."</h2>
+                <p style="font-size: 1.2em; margin-top: 2rem;">
+                    Saber que tienes el colesterol alto (diagnóstico) no te dice cómo hacer la dieta ni te da la disciplina para ir al gimnasio (tratamiento).
+                </p>
+                <p style="font-size: 1.2em;">
+                    Saber que tienes un 2,8 en Delegación es solo el síntoma inicial.
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide" data-section="seccion1">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Vocabulario Estratégico</h2>
+            <p>Antes de avanzar, diferenciemos conceptos que suelen confundirse:</p>
+            <div class="grid-2">
+                <div class="card">
+                    <p><strong class="accent-text">Resultado:</strong> El número en el reporte (Ej: 3,2 en Comunicación).</p>
+                    <p><strong class="accent-text">Interpretación:</strong> La historia que contamos sobre ese número ("Mi equipo cree que no los escucho").</p>
+                    <p><strong class="accent-text">Brecha:</strong> La diferencia entre lo que hago hoy y lo que el rol requiere de mí.</p>
+                </div>
+                <div class="card">
+                    <p><strong class="accent-text">Objetivo:</strong> La conducta específica que decido cambiar.</p>
+                    <p><strong class="accent-text">Acción:</strong> Lo que haré concretamente para lograrlo (Ej: Mentoring, práctica guiada).</p>
+                    <p><strong class="accent-text">Evidencia:</strong> Cómo demostraremos que ocurrió el cambio.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Caso 1 -->
+        <div class="slide" data-section="seccion2">
+            <div class="time-badge">Tiempo est: 3 min</div>
+            <h2>Caso 1: "Todos me tienen mala"</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <p><strong>Protagonista:</strong> Roberto, Gerente de Operaciones.</p>
+                <p><strong>Resultado 360°:</strong> Puntuación crítica en "Comunicación Efectiva" (2,1/5) por parte de su equipo directo.</p>
+                <p><strong>Reacción de Roberto:</strong> <em>"Este equipo es muy sensible. Simplemente tienen algo contra mí porque soy exigente. El feedback está equivocado."</em></p>
+            </div>
+            <h3>Pregunta Estratégica:</h3>
+            <p>¿Qué debería hacer la organización (o RR.HH.) antes de obligar a Roberto a anotar un curso en su PDI?</p>
+            <button class="btn" onclick="reveal(this)">Ver análisis</button>
+            <div class="reveal-content card card-red">
+                <p><strong>El problema es la defensividad y el rechazo del feedback.</strong></p>
+                <p>Obligar a alguien a diseñar un plan cuando rechaza el diagnóstico es inútil. Primero hay que trabajar la <em>interpretación</em>: ayudarle a separar su identidad ("soy un buen jefe") de la percepción conductual del equipo. No hay PDI sin aceptación previa.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Caso 2 -->
+        <div class="slide" data-section="seccion2">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 2: "Tengo 12 cosas que mejorar"</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <p><strong>Protagonista:</strong> Laura, Analista Senior.</p>
+                <p><strong>Contexto:</strong> Obtuvo resultados bajos o medios en 12 comportamientos distintos.</p>
+                <p><strong>Su decisión:</strong> Llenar su PDI con 12 objetivos diferentes, comprometiéndose a leer 4 libros, hacer 5 cursos y pedir feedback semanal a 8 personas.</p>
+            </div>
+            <h3>Pregunta Estratégica:</h3>
+            <p>¿Por qué esta aparente "alta motivación" es en realidad una trampa y cómo la priorizarías?</p>
+            <button class="btn" onclick="reveal(this)">Ver análisis</button>
+            <div class="reveal-content card card-red">
+                <p><strong>Problema: Falta de foco y exceso de objetivos.</strong></p>
+                <p>El cambio conductual consume mucha energía. Un PDI con 12 metas es imposible de ejecutar y genera frustración rápida. La regla de oro: <strong>Elegir máximo 1 o 2 brechas críticas</strong> a la vez y trabajarlas en profundidad.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Caso 3 -->
+        <div class="slide" data-section="seccion2">
+            <div class="time-badge">Tiempo est: 3 min</div>
+            <h2>Caso 3: "El promedio engaña"</h2>
+            <p><strong>Competencia: "Colaboración"</strong> (Promedio Final: 3,8/5)</p>
+            <div class="grid-2">
+                <div class="card">
+                    <p><strong>Desglose de notas:</strong></p>
+                    <ul style="list-style:none; padding:0;">
+                        <li>👤 Autoevaluación: 4,7</li>
+                        <li>⬆️ Jefatura: 4,5</li>
+                        <li>↔️ Pares: 3,1</li>
+                        <li>⬇️ Colaboradores: 2,9</li>
+                    </ul>
+                </div>
+                <div class="flex-col">
+                    <h3>Pregunta:</h3>
+                    <p>Si miramos solo el 3,8 (nota aceptable), no hay problema. Pero al ver el desglose, ¿qué historia podría estar detrás de estos números?</p>
+                    <button class="btn" onclick="reveal(this)">Ver análisis</button>
+                    <div class="reveal-content card card-red" style="margin-top:1rem;">
+                        <p>Posiblemente estamos ante un perfil que <strong>"gestiona hacia arriba"</strong> (complace al jefe) pero atropella o descuida a sus pares y a su equipo (el llamado síndrome de "besa arriba, patea abajo"). El promedio oculta el verdadero problema relacional.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Caso 4 -->
+        <div class="slide" data-section="seccion2">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 4: "El feedback contradice la realidad"</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <p>El 360° de Carlos indica una bajísima "Delegación". Sin embargo, los indicadores objetivos del área (KPIs) muestran que su equipo es el más productivo y autónomo de toda la empresa, cumpliendo metas incluso cuando Carlos está de vacaciones.</p>
+            </div>
+            <p><strong>¿Qué nos enseña esto sobre los resultados del 360°?</strong></p>
+            <button class="btn" onclick="reveal(this)">Ver análisis</button>
+            <div class="reveal-content card card-red">
+                <p><strong>Resultado → Interpretación → Hipótesis → Validación.</strong></p>
+                <p>El 360 mide <em>percepciones</em>. Quizás Carlos no delega siguiendo el "procedimiento formal" que el cuestionario describe, pero ha construido un sistema orgánico que funciona. Un resultado bajo es una señal para explorar, no una conclusión definitiva e irrefutable.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 9 -->
+        <div class="slide" data-section="seccion3">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Definiendo la Brecha: El problema de la generalidad</h2>
+            <p>El principal error al pasar del diagnóstico al plan es mantener el lenguaje genérico de las competencias.</p>
+            
+            <div class="grid-2">
+                <div class="card card-red">
+                    <h3>❌ Incorrecto</h3>
+                    <p>"Necesita mejorar su liderazgo."</p>
+                    <p><small><em>(Demasiado amplio. Liderazgo puede significar 100 cosas distintas. ¿Empatía? ¿Firmeza? ¿Visión?)</em></small></p>
+                </div>
+                <div class="card card-green">
+                    <h3>✅ Correcto</h3>
+                    <p>"Necesita mejorar la capacidad de delegar responsabilidades operativas y realizar seguimiento sin intervenir en la ejecución detallada de su equipo."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Caso 5 -->
+        <div class="slide" data-section="seccion3">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 5: "La brecha gigante"</h2>
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <p><strong>Feedback recibido:</strong> "Debes mejorar tu Pensamiento Estratégico."</p>
+                <p><strong>Acción en el PDI:</strong> Hacer un diplomado de 6 meses en Estrategia.</p>
+            </div>
+            <h3>El problema:</h3>
+            <p>Confundir un título corporativo con una conducta diaria.</p>
+            <button class="btn" onclick="reveal(this)">¿Qué información adicional necesitamos?</button>
+            <div class="reveal-content card card-red">
+                <p>Necesitamos hacer doble clic. ¿Qué significa "falta estrategia" en su día a día? ¿Significa que no prioriza tareas? ¿Que no entiende el mercado? ¿Que no conecta el trabajo de su área con las metas anuales? Sin esa respuesta, el diplomado será una pérdida de dinero.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 11 -->
+        <div class="slide" data-section="seccion4">
+            <div class="time-badge">Tiempo est: 3 min</div>
+            <h2>Matriz de Priorización</h2>
+            <p>No todo resultado bajo se transforma en prioridad. Haz clic en los cuadrantes para ver su detalle:</p>
+            
+            <div class="matrix">
+                <div class="quad quad-1" onclick="showMatrixInfo('Alta Urgencia / Alto Impacto: ¡AQUÍ SE ENFOCA EL PDI! Son brechas que frenan la estrategia actual e impactan a tus KPI de inmediato.')">1. Acción Inmediata</div>
+                <div class="quad quad-2" onclick="showMatrixInfo('Bajo Impacto / Alta Urgencia: Resolver rápido, quizás con un mentoring puntual o un ajuste procedimental. No requiere un PDI complejo.')">2. Táctico</div>
+                <div class="quad quad-3" onclick="showMatrixInfo('Alto Impacto / Baja Urgencia: Desarrollo a largo plazo (Ej: preparar a un futuro sucesor, aprender un nuevo idioma estratégico).')">3. Desarrollo a futuro</div>
+                <div class="quad quad-4" onclick="showMatrixInfo('Bajo Impacto / Baja Urgencia: Ignorar por ahora. No es estratégico destinar recursos y energía a mejorar esto hoy.')">4. Postergar</div>
+            </div>
+            
+            <div id="matrix-info" class="reveal-content card" style="margin-top: 1.5rem; text-align: center; border-left: 5px solid var(--accent);">
+                <p id="matrix-text"><em>Selecciona un cuadrante para ver su descripción.</em></p>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Caso 6 -->
+        <div class="slide" data-section="seccion4">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 6: "La nota más baja no es la prioridad"</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <p><strong>Notas de Andrea:</strong></p>
+                    <ul>
+                        <li>Presentaciones en público: <strong>2,8</strong> ⬇️</li>
+                        <li>Delegación: 3,2</li>
+                        <li>Colaboración interáreas: <strong>3,4</strong></li>
+                        <li>Orientación a resultados: 4,1</li>
+                    </ul>
+                </div>
+                <div class="flex-col">
+                    <p><strong>Contexto:</strong> La empresa está en plena fusión con otra compañía. Andrea lidera la integración de sistemas, lo que requiere alinear a 5 departamentos diferentes. Casi no hace presentaciones en público.</p>
+                    <button class="btn" onclick="reveal(this)">¿Qué priorizamos en su PDI?</button>
+                    <div class="reveal-content card card-red" style="margin-top:1rem;">
+                        <p><strong>Priorizamos "Colaboración interáreas" (3,4).</strong></p>
+                        <p>Aunque "Presentaciones" (2,8) es su punto más débil, no tiene <em>impacto estratégico</em> en su contexto actual. La colaboración es urgente por la fusión.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13 -->
+        <div class="slide" data-section="seccion5">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Del Diagnóstico al Objetivo</h2>
+            <p>Un buen objetivo de desarrollo no es una declaración de buenas intenciones. Es un acuerdo conductual.</p>
+            
+            <div class="card">
+                <h3 class="accent-text center-text">FÓRMULA DE OBJETIVO PDI</h3>
+                <h2 class="center-text">Brecha + Conducta Observable + Contexto + Plazo + Evidencia</h2>
+            </div>
+            
+            <div class="card card-green" style="margin-top: 1.5rem;">
+                <p><strong>Ejemplo aplicado:</strong></p>
+                <p>"Durante los próximos 60 días <em>(plazo)</em>, delegar al menos dos responsabilidades semanales <em>(conducta)</em> a integrantes del equipo de proyectos <em>(contexto)</em>, definiendo expectativas en reuniones breves y realizando seguimiento sin intervenir, evidenciado por el registro de tareas en Trello <em>(evidencia)</em>."</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Caso 7 -->
+        <div class="slide" data-section="seccion6">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 7: "Curso para todo"</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <p><strong>El problema:</strong> Martín tiene problemas de escucha activa e interrumpe a sus pares constantemente.</p>
+                <p><strong>La solución de la empresa:</strong> "RR.HH. le pagará un curso online asincrónico sobre Comunicación Efectiva de 4 horas."</p>
+            </div>
+            <h3>Pregunta Estratégica:</h3>
+            <p>¿Por qué esta solución está destinada a fracasar?</p>
+            <button class="btn" onclick="reveal(this)">Ver análisis</button>
+            <div class="reveal-content card card-red">
+                <p><strong>Capacitación ≠ Desarrollo.</strong></p>
+                <p>Saber la teoría de la escucha (capacitación) no cambia el hábito de interrumpir por ansiedad o ego. El desarrollo requiere: <strong>Práctica, observación in situ, feedback en tiempo real y cambio de hábitos (ej. coaching o shadow-mentoring).</strong></p>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Caso 8 -->
+        <div class="slide" data-section="seccion6">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 8: "Acciones imposibles"</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <p><strong>Objetivo de Sofía:</strong> "Mejorar la colaboración entre áreas operativas."</p>
+                <p><strong>Plan de acción (PDI):</strong> Leer el libro 'Silos, Politics and Turf Wars', ver una charla TED sobre trabajo en equipo y reflexionar.</p>
+            </div>
+            <h3>El problema de diseño:</h3>
+            <p>Ninguna de esas acciones genera una oportunidad real para <strong>practicar</strong> la conducta deseada. Son acciones solitarias para un problema colectivo.</p>
+            <button class="btn" onclick="reveal(this)">¿Qué acción propondrías?</button>
+            <div class="reveal-content card card-green">
+                <p><em>Ejemplo de acción real:</em> "Liderar una reunión quincenal cruzada entre Operaciones y Ventas durante 3 meses, para resolver un problema de proceso conjunto." (Modelo 70-20-10: Desarrollo en el puesto de trabajo).</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Caso 9 -->
+        <div class="slide" data-section="seccion6">
+            <div class="time-badge">Tiempo est: 3 min</div>
+            <h2>Caso 9: "El PDI vs El Contexto"</h2>
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <p>A Pedro se le exige en su PDI que sea más "Autónomo y Proactivo" tomando decisiones sin consultar todo.</p>
+                <p>Sin embargo, la Jefatura de Pedro practica un <em>micromanagement</em> severo, exige ser copiada en todos los correos y revierte las decisiones que Pedro toma por su cuenta.</p>
+            </div>
+            <h3>Pregunta:</h3>
+            <p>¿Puede existir desarrollo individual si el sistema refuerza la conducta contraria?</p>
+            <button class="btn" onclick="reveal(this)">Ver análisis</button>
+            <div class="reveal-content card card-red">
+                <p><strong>No. Persona + Jefe + Contexto = Comportamiento.</strong></p>
+                <p>Culpar a la persona por no desarrollarse cuando el ecosistema lo impide es injusto e inútil. Aquí la intervención principal debe ser hacia el líder de Pedro, no solo hacia Pedro.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: Caso 10 -->
+        <div class="slide" data-section="seccion7">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 10: "El PDI que nadie mira"</h2>
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <p>Febrero: Se invierten semanas redactando PDIs hermosos en Excel corporativos.</p>
+                    <p>Noviembre: Llega la fecha de evaluación anual. Jefe y colaborador abren el archivo por primera vez desde febrero para ver "qué decía".</p>
+                </div>
+                <div class="card card-red">
+                    <h3>¿Por qué pasa esto?</h3>
+                    <ul style="margin-left: 1rem;">
+                        <li>PDI tratado como trámite administrativo (Check de RRHH).</li>
+                        <li>Falta de responsables de seguimiento.</li>
+                        <li>Desconexión con el trabajo diario.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: Caso 11 -->
+        <div class="slide" data-section="seccion7">
+            <div class="time-badge">Tiempo est: 2 min</div>
+            <h2>Caso 11: "El jefe no tiene tiempo"</h2>
+            <p>El colaborador tiene sus acciones definidas, pero su jefatura cancela sistemáticamente las reuniones mensuales de seguimiento del PDI por "urgencias operativas".</p>
+            <div class="card" style="margin-top: 1rem;">
+                <h3 class="center-text">¿Quién es el dueño del desarrollo?</h3>
+                <p class="center-text">El dueño de su propio desarrollo siempre es el colaborador. Sin embargo, <strong>la jefatura es el facilitador indispensable</strong>; sin su apoyo para destrabar el día a día, el PDI se estanca.</p>
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        // --- 1. Lógica para mostrar los paneles ocultos (Botones "Ver Análisis") ---
+        function reveal(boton) {
+            let contenido = boton.nextElementSibling; 
+            
+            if (contenido.style.display === "block") {
+                contenido.style.display = "none";
+                if (boton.innerText.includes("Ocultar")) {
+                    boton.innerText = boton.innerText.replace("Ocultar", "Ver");
+                }
+            } else {
+                contenido.style.display = "block";
+                if (boton.innerText.includes("Ver") || boton.innerText.includes("¿Qué")) {
+                    if (boton.innerText.includes("Ver análisis")) {
+                        boton.innerText = "Ocultar análisis";
+                    }
+                }
+            }
+        }
+
+        // --- 2. Lógica para la Matriz de Priorización ---
+        function showMatrixInfo(texto) {
+            let infoPanel = document.getElementById("matrix-info");
+            let textElement = document.getElementById("matrix-text");
+            
+            textElement.innerHTML = `<strong>Análisis:</strong> ${texto}`;
+            infoPanel.style.display = "block";
+        }
+
+        // --- 3. Lógica para modales (Regalo y Trivia) ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            // Si cerramos la trivia, ocultamos la respuesta anterior
+            if(modalId === 'modal-trivia') {
+                document.getElementById('trivia-answer-box').style.display = 'none';
+            }
+        }
+
+        // --- 4. Banco de Preguntas para el botón "¿Entendí?" ---
+        const triviaQuestions = [
+            {
+                q: "¿Por qué se dice que el feedback 360° es como un diagnóstico médico y no un tratamiento?",
+                a: "Porque mide el estado actual o los síntomas (ej. un puntaje bajo en delegación), pero no te enseña la dieta ni el ejercicio (el plan de acción) necesario para cambiar."
+            },
+            {
+                q: "Si un colaborador obtiene notas bajas en 12 competencias distintas, ¿cuál es el error más común al llenar el PDI?",
+                a: "Intentar abarcar las 12 cosas a la vez. La regla de oro exige seleccionar máximo 1 o 2 brechas críticas para enfocar la energía y lograr cambios reales."
+            },
+            {
+                q: "¿Qué significa el síndrome de 'besa arriba, patea abajo' en un reporte 360°?",
+                a: "Ocurre cuando el promedio general oculta la realidad: la persona sale bien evaluada por su jefatura pero obtiene notas muy bajas por parte de sus pares y colaboradores directos."
+            },
+            {
+                q: "Ante una brecha detectada como 'Falta de Pensamiento Estratégico', ¿por qué inscribir a la persona en un diplomado de 6 meses suele ser un error?",
+                a: "Porque confunde un título corporativo con una conducta diaria. Hay que hacer doble clic para entender qué significa exactamente esa falta en su día a día antes de elegir la solución."
+            },
+            {
+                q: "¿Por qué un curso online asincrónico suele fracasar al corregir un problema de escucha activa o interrupciones?",
+                a: "Porque 'capacitación' no es igual a 'desarrollo'. Saber la teoría no cambia un hábito; se requiere práctica in situ, observación, feedback en tiempo real y cambio de conducta."
+            },
+            {
+                q: "En la fórmula de un buen objetivo de PDI, ¿qué elementos mínimos deben estar presentes?",
+                a: "Brecha clara + Conducta observable + Contexto + Plazo definido + Evidencia de cambio."
+            }
+        ];
+
+        function openTrivia() {
+            // Seleccionar una pregunta al azar
+            const randomIndex = Math.floor(Math.random() * triviaQuestions.length);
+            const selected = triviaQuestions[randomIndex];
+            
+            document.getElementById("trivia-question").innerText = selected.q;
+            document.getElementById("trivia-answer").innerText = selected.a;
+            document.getElementById("trivia-counter").innerText = `Pregunta aleatoria #${randomIndex + 1} de ${triviaQuestions.length}`;
+            
+            // Ocultar la respuesta anterior si estaba abierta
+            document.getElementById("trivia-answer-box").style.display = "none";
+            
+            openModal('modal-trivia');
+        }
+
+        function revealTriviaAnswer() {
+            let ansBox = document.getElementById("trivia-answer-box");
+            ansBox.style.display = (ansBox.style.display === "block") ? "none" : "block";
+        }
+
+        // --- 5. Lógica para el paso de Slides (Diapositivas) ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll(".slide");
+        const progressText = document.getElementById("progress-text");
+        const dotsContainer = document.getElementById("progress-dots");
+
+        slides.forEach((_, index) => {
+            let dot = document.createElement("div");
+            dot.classList.add("dot");
+            if(index === 0) dot.classList.add("active");
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll(".dot");
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove("active");
+                dots[index].classList.remove("active");
+                if (index === currentSlide) {
+                    slide.classList.add("active");
+                    dots[index].classList.add("active");
+                }
+            });
+            progressText.innerText = `${currentSlide + 1}/${slides.length}`;
+            
+            document.querySelectorAll('.reveal-content').forEach(panel => {
+                if(!panel.id.includes('trivia-answer-box')) panel.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.btn').forEach(btn => {
+                if (btn.innerText.includes("Ocultar")) {
+                    btn.innerText = btn.innerText.replace("Ocultar", "Ver");
+                }
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        // --- 6. Lógica de Cambio de Tema (Oscuro/Claro) ---
+        const btnTheme = document.getElementById("btn-theme");
+        btnTheme.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            if (currentTheme === "light") {
+                document.documentElement.removeAttribute("data-theme");
+                btnTheme.innerText = "☀️";
+            } else {
+                document.documentElement.setAttribute("data-theme", "light");
+                btnTheme.innerText = "🌙";
+            }
+        });
+
+        // --- 7. Lógica de Cambio de Tamaño de Letra ---
+        let baseFontSize = 16;
+        function changeFontSize(step) {
+            if (step === 0) {
+                baseFontSize = 16;
+            } else {
+                baseFontSize += step * 2;
+            }
+            if(baseFontSize < 12) baseFontSize = 12;
+            if(baseFontSize > 24) baseFontSize = 24;
+            
+            document.documentElement.style.setProperty('--base-font-size', baseFontSize + 'px');
+        }
+
+        // --- Atajos de teclado para mover slides ---
+        document.addEventListener("keydown", (e) => {
+            // Evitar que las flechas muevan slides si hay un modal abierto
+            const rulesOpen = document.getElementById("modal-rules").style.display === "flex";
+            const triviaOpen = document.getElementById("modal-trivia").style.display === "flex";
+            if(rulesOpen || triviaOpen) return;
+
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") nextSlide();
+            if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevSlide();
+        });
+
+    </script>
+</body>
+</html>
