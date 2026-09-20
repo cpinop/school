@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sucesión y transferencia de roles | Clase práctica</title>
+  <style>
+    :root {
+      --cream:#f5efe4; --paper:#fffaf2; --ink:#171717; --muted:#625b52;
+      --red:#b8322b; --red-dark:#7f201e; --line:#d8cbbb; --soft:#eadfd0;
+      --shadow:0 18px 50px rgba(23,23,23,.14);
+    }
+    [data-theme="dark"] {
+      --cream:#171717; --paper:#25211e; --ink:#f8f0e4; --muted:#c9bfb2;
+      --red:#ed665d; --red-dark:#ff8a7f; --line:#514941; --soft:#372f2a;
+      --shadow:0 18px 50px rgba(0,0,0,.34);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;font-size:1.125rem;transition:.25s ease}
+    button{font:inherit;cursor:pointer}
+    .topbar{position:fixed;z-index:10;inset:0 0 auto 0;height:68px;background:color-mix(in srgb,var(--cream) 90%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 3vw}
+    .brand{font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:.76rem;color:var(--red)}
+    .tools{display:flex;gap:8px;align-items:center}
+    .tool{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:8px 12px;min-width:42px;box-shadow:0 3px 12px rgba(0,0,0,.06)}
+    .tool:hover{border-color:var(--red);color:var(--red)}
+    .progress{position:fixed;z-index:11;top:67px;left:0;height:4px;background:var(--red);width:0;transition:width .25s}
+    main{max-width:1180px;margin:0 auto;padding:90px 4vw 78px;height:100vh}
+    .slide{height:calc(100vh - 168px);min-height:0;display:none;align-content:start;position:relative;padding:14px 0;overflow:hidden}
+    .slide.active{display:grid;animation:in .35s ease}
+    @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+    h1,h2,h3{line-height:1.07;margin:0 0 20px;letter-spacing:-.035em}
+    h1{font-size:clamp(3rem,8vw,7.4rem);max-width:950px}
+    h2{font-size:clamp(2rem,4vw,4.5rem);max-width:950px}
+    h3{font-size:1.25rem}
+    p{max-width:850px;color:var(--muted);font-size:1.08em}
+    .lead{font-size:clamp(1.15rem,2vw,1.55rem);max-width:800px;color:var(--ink)}
+    .rule{width:110px;height:8px;background:var(--red);margin:22px 0 28px;border-radius:9px}
+    .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+    .pill{display:inline-flex;align-items:center;border:1px solid var(--line);padding:8px 13px;border-radius:999px;background:var(--paper);font-size:.9rem;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+    .card.red{background:var(--red);color:#fff;border-color:var(--red)}
+    .card.red p,.card.red li,.card.red li strong,.card.red .small{color:#fff}
+    .card h3{color:var(--red)} .card.red h3{color:#fff}
+    .number{font-size:2.3rem;font-weight:900;color:var(--red);line-height:1;margin-bottom:16px}
+    .small{font-size:.88rem;color:var(--muted)}
+    ul{padding-left:1.2rem;max-width:900px} li{margin:.55rem 0;color:var(--muted)}
+    li strong{color:var(--ink)}
+    .callout{border-left:7px solid var(--red);background:var(--soft);padding:18px 22px;border-radius:0 14px 14px 0;max-width:940px;margin:26px 0}
+    .callout strong{color:var(--red-dark)}
+    .scenario{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:start;margin:18px 0}
+    .tag{font-weight:900;color:var(--red);font-size:.85rem;text-transform:uppercase;letter-spacing:.08em}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+    .step{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;min-height:160px}
+    .step:not(:last-child)::after{content:"→";position:absolute;right:-18px;top:48%;color:var(--red);font-size:24px;font-weight:900;z-index:2}
+    .step b{display:block;color:var(--red);margin-bottom:8px}
+    .table-wrap{overflow:auto;margin-top:22px;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    table{border-collapse:collapse;width:100%;min-width:780px;background:var(--paper);font-size:.92rem}
+    th{background:var(--ink);color:var(--cream);text-align:left;padding:14px}td{padding:14px;border-top:1px solid var(--line);vertical-align:top;color:var(--muted)}td:first-child{font-weight:800;color:var(--ink)}
+    .activity{border:2px dashed var(--red);background:var(--paper);border-radius:18px;padding:26px;margin-top:25px}
+    .activity h3{color:var(--red);margin-bottom:8px}
+    .answer-btn{border:1px solid var(--red);background:transparent;color:var(--red);border-radius:999px;padding:8px 13px;margin-top:15px;font-weight:800;font-size:.88rem}
+    .answer-btn:hover{background:var(--red);color:#fff}
+    .answer{display:none;margin-top:14px;padding:14px 16px;background:var(--soft);border-radius:12px;color:var(--muted);font-size:.94rem}
+    .answer.open{display:block;animation:in .2s ease}
+    .font-large main{height:auto}
+    .font-large .slide{height:auto;min-height:calc(100vh - 168px);overflow:visible}
+    .timer{display:inline-block;background:var(--red);color:white;padding:7px 12px;border-radius:999px;font-weight:800;font-size:.82rem}
+    .ref{font-size:.82rem;margin:9px 0;color:var(--muted);max-width:1000px}
+    .nav{position:fixed;z-index:10;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:9px;background:var(--paper);border:1px solid var(--line);padding:8px;border-radius:999px;box-shadow:var(--shadow)}
+    .nav button{border:0;background:transparent;color:var(--ink);border-radius:999px;padding:9px 14px}.nav button:hover{background:var(--soft)}
+    .nav .primary{background:var(--red);color:white}.nav .primary:hover{background:var(--red-dark)}
+    .scroll-controls{position:fixed;z-index:10;left:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px;background:var(--paper);border:1px solid var(--line);padding:7px;border-radius:999px;box-shadow:var(--shadow)}
+    .scroll-controls button{width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--ink);font-size:1.35rem;line-height:1}
+    .scroll-controls button:hover{background:var(--red);color:#fff}
+    #toast{position:fixed;z-index:20;right:22px;bottom:82px;max-width:390px;background:var(--ink);color:var(--cream);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);display:none}
+    #toast.show{display:block;animation:in .25s ease}
+    .footer-note{position:absolute;bottom:5px;right:0;color:var(--muted);font-size:.76rem}
+    @media(min-width:761px){h2{font-size:clamp(1.9rem,3.6vw,3.4rem)}p{font-size:1em}.grid{gap:14px;margin-top:18px}.card{padding:18px}.callout{margin:18px 0;padding:14px 18px}.activity{padding:18px;margin-top:18px}.flow{margin-top:18px}.step{min-height:125px;padding:15px}}
+    @media(max-width:760px){body{font-size:1rem}.grid,.grid.three{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.step:not(:last-child)::after{display:none}.scenario{grid-template-columns:1fr;gap:3px}.topbar{height:60px}.progress{top:59px}main{padding-top:90px;height:auto}.slide{height:auto;min-height:calc(100vh - 120px);overflow:visible}.tool{padding:7px 9px}.brand{font-size:.63rem}.scroll-controls{left:8px}.scroll-controls button{width:34px;height:34px}}
+    @media print{.topbar,.nav,.progress,#toast{display:none!important}.slide{display:grid!important;min-height:0;page-break-after:always}.card{box-shadow:none}main{padding:20px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Gestión de personas · Clase aplicada</div>
+    <div class="tools" aria-label="Herramientas de la presentación">
+      <button class="tool" id="themeBtn" title="Cambiar entre modo claro y oscuro">☾</button>
+      <button class="tool" id="smallerBtn" title="Achicar letra">A−</button>
+      <button class="tool" id="largerBtn" title="Agrandar letra">A+</button>
+      <button class="tool" id="diceBtn" title="Pregunta al azar">🎲</button>
+      <button class="tool" id="giftBtn" title="Resumen de la clase">🎁</button>
+    </div>
+  </header>
+  <div class="progress" id="progress"></div>
+
+  <main id="deck">
+    <section class="slide active">
+      <div>
+        <div class="eyebrow">Control de gestión y personas · 50 minutos</div>
+        <h1>Sucesión y transferencia de roles</h1>
+        <div class="rule"></div>
+        <p class="lead">Cómo intervenir cuando una persona joven aprende un rol junto a alguien con experiencia: sin reemplazo o con reemplazo efectivo.</p>
+        <div class="meta"><span class="pill">Clase práctica para RR. HH.</span><span class="pill">Diagnóstico · conversación · control</span></div>
+        <p class="small" style="margin-top:42px">Basado en el informe «Gestión: sucesión y transferencia de roles».</p>
+      </div>
+      <div class="footer-note">Usa ← → o los botones inferiores para navegar</div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">01 · Apertura</div><h2>Qué debería poder hacer al terminar</h2>
+      <div class="grid three">
+        <div class="card"><div class="number">01</div><h3>Diagnosticar</h3><p>Distinguir una amenaza al estatus de una amenaza real al empleo.</p></div>
+        <div class="card"><div class="number">02</div><h3>Intervenir</h3><p>Preparar conversaciones, límites y acuerdos de transferencia.</p></div>
+        <div class="card"><div class="number">03</div><h3>Controlar</h3><p>Usar indicadores para saber si el proceso avanza y corregir a tiempo.</p></div>
+      </div>
+      <div class="callout"><strong>Pregunta de entrada:</strong> ¿Qué harías si la persona experta responde con frialdad, retiene información o desacredita a quien está aprendiendo?</div>
+      <span class="timer">5 min · activar experiencia previa</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">02 · Marco conceptual</div><h2>El problema no es solo técnico</h2>
+      <p class="lead">La transferencia de conocimiento puede activar identidad, territorio, estatus y miedo. Por eso una buena inducción necesita diseño de roles y seguridad psicológica.</p>
+      <div class="grid">
+        <div class="card"><h3>Propiedad psicológica organizativa</h3><p>Sentir que el cargo, las ideas o el espacio «son míos». Puede impulsar cuidado, pero también defensa y exclusión.</p></div>
+        <div class="card"><h3>Ocultamiento de conocimiento</h3><p>Retener deliberadamente información solicitada para conservar estatus, poder o ventaja. No equivale a no saber.</p></div>
+        <div class="card"><h3>Inseguridad cualitativa</h3><p>Temor a perder aspectos valorados del rol: autoridad, autonomía, reconocimiento o exclusividad.</p></div>
+        <div class="card"><h3>Inseguridad cuantitativa</h3><p>Temor a perder el empleo, la estabilidad o la rutina. Exige claridad, acompañamiento y un cierre digno.</p></div>
+      </div>
+      <span class="timer">7 min · explicación dialogada</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">03 · Diagnóstico</div><h2>Primero: identificar qué está siendo amenazado</h2>
+      <div class="table-wrap"><table><thead><tr><th>Señal observable</th><th>Hipótesis de fondo</th><th>Respuesta de RR. HH.</th></tr></thead><tbody>
+        <tr><td>«Aquí siempre se ha hecho así»</td><td>Defensa territorial o pérdida de exclusividad</td><td>Reconocer experiencia y definir complementariedad</td></tr>
+        <tr><td>Entrega información mínima o confusa</td><td>Ocultamiento evasivo / acaparamiento</td><td>Documentar, acordar entregables y revisar avances</td></tr>
+        <tr><td>Habla de «mi puesto» o «mi reemplazo»</td><td>Ambigüedad de propósito</td><td>Comunicación formal sobre alcance y horizonte</td></tr>
+        <tr><td>Desacredita a la persona joven</td><td>Inseguridad, duelo o incivilidad laboral</td><td>Conversación privada, límites y protección del clima</td></tr>
+      </tbody></table></div>
+      <div class="callout"><strong>Regla práctica:</strong> no etiquetar a la persona mayor como «difícil» antes de aclarar qué información recibió, qué se le prometió y qué perdería según su percepción.</div>
+      <span class="timer">5 min · análisis de señales</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">04 · Caso 1</div><h2>Aprender sin reemplazar</h2>
+      <div class="scenario"><div class="tag">Situación</div><p>La persona joven llega para aprender y apoyar. La persona mayor cree que perderá su lugar y se vuelve desagradable.</p></div>
+      <div class="grid">
+        <div class="card red"><h3>Riesgo principal</h3><p>Confundir integración con desplazamiento: aumenta la reactancia, la incivilidad y el ocultamiento evasivo.</p></div>
+        <div class="card"><h3>Intervención recomendada</h3><ul><li><strong>Aclarar públicamente</strong> que no existe reemplazo.</li><li><strong>Rediseñar el rol</strong> para mostrar complementariedad.</li><li><strong>Reconocer expertise</strong> sin convertirla en monopolio.</li><li><strong>Poner límites</strong> a burlas, aislamiento o trato hostil.</li></ul></div>
+      </div>
+      <div class="activity"><h3>Micropráctica: conversación de 3 minutos</h3><p>Formula una frase que valide la trayectoria, explique el propósito de la incorporación y establezca una expectativa concreta de colaboración.</p><span class="timer">6 min · role-play RR. HH. / persona experta</span><br><button class="answer-btn">Ver posible respuesta</button><div class="answer"><strong>Posible respuesta:</strong> «Tu experiencia es clave para que el proceso siga funcionando. La incorporación de esta persona no reemplaza tu rol: busca distribuir mejor el conocimiento y reducir la dependencia de una sola persona. Acordemos qué enseñarás, qué decisiones seguirás tomando y cómo revisaremos el avance».</div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">05 · Caso 1</div><h2>Guion para desactivar la amenaza al estatus</h2>
+      <div class="flow">
+        <div class="step"><b>Reconocer</b><p class="small">«Tu experiencia sostiene una parte crítica del proceso».</p></div>
+        <div class="step"><b>Aclarar</b><p class="small">«Esta incorporación no elimina tu rol; amplía la capacidad del equipo».</p></div>
+        <div class="step"><b>Diseñar</b><p class="small">Definir qué enseña cada persona y qué decisiones conserva.</p></div>
+        <div class="step"><b>Regular</b><p class="small">Acordar conductas observables y consecuencias ante incivilidad.</p></div>
+      </div>
+      <div class="callout"><strong>Control cultural:</strong> seguridad psicológica, civismo y sanción explícita de la incivilidad. La experiencia se honra; el maltrato no se normaliza.</div>
+      <div class="activity"><h3>Aplicación</h3><p>Redacta tres conductas observables para una transferencia respetuosa: por ejemplo, responder preguntas, registrar procedimientos y no corregir mediante humillación.</p><span class="timer">4 min · producir un acuerdo</span><br><button class="answer-btn">Ver posible respuesta</button><div class="answer"><strong>Posible respuesta:</strong> 1) Responder las preguntas relevantes o indicar dónde encontrar la información. 2) Registrar los pasos críticos y las excepciones del proceso. 3) Corregir en privado, con ejemplos concretos y sin descalificar a la persona.</div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">06 · Caso 2</div><h2>Cuando el reemplazo sí ocurrirá</h2>
+      <div class="scenario"><div class="tag">Situación</div><p>El relevo es definitivo por jubilación, promoción o reestructuración. La persona mayor enfrenta pérdida de empleo o estabilidad.</p></div>
+      <div class="grid">
+        <div class="card"><h3>Lo que puede aparecer</h3><ul><li>Duelo laboral y pérdida de identidad.</li><li>Retención de know-how tácito.</li><li>Acaparamiento de información o sabotaje pasivo.</li><li>Desconfianza ante promesas vagas.</li></ul></div>
+        <div class="card red"><h3>Lo que debe hacer RR. HH.</h3><ul><li>Comunicar pronto y con honestidad.</li><li>Definir fecha, criterios y responsabilidades.</li><li>Capturar conocimiento antes del cierre.</li><li>Ofrecer acompañamiento y una salida digna.</li></ul></div>
+      </div>
+      <div class="callout"><strong>Principio:</strong> no pedir colaboración indefinida a alguien cuyo futuro se mantiene ambiguo. La claridad es una condición de cooperación.</div>
+      <span class="timer">5 min · distinguir hechos de temores</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">07 · Caso 2</div><h2>Transferir conocimiento sin depender de la buena voluntad</h2>
+      <div class="flow">
+        <div class="step"><b>1. Iniciación</b><p class="small">Comunicar decisión, propósito, calendario y apoyos.</p></div>
+        <div class="step"><b>2. Integración</b><p class="small">Job shadowing, demostración y práctica acompañada.</p></div>
+        <div class="step"><b>3. Mando conjunto</b><p class="small">La persona joven ejecuta; la experta observa y retroalimenta.</p></div>
+        <div class="step"><b>4. Retirada</b><p class="small">Validar autonomía, cerrar pendientes y reconocer legado.</p></div>
+      </div>
+      <div class="grid" style="margin-top:30px"><div class="card"><h3>Herramienta clave</h3><p>Mentoría inversa: la persona joven comparte herramientas o prácticas nuevas y la persona experta transfiere contexto y criterio.</p></div><div class="card"><h3>Protección del proceso</h3><p>Documentación obligatoria, agendas compartidas, reuniones registradas y cofirma de hitos.</p></div></div>
+      <span class="timer">4 min · construir una hoja de ruta</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">08 · Control de gestión</div><h2>Lo humano también se puede monitorear</h2>
+      <div class="table-wrap"><table><thead><tr><th>Indicador</th><th>Fórmula</th><th>Objetivo / frecuencia</th><th>Si empeora...</th></tr></thead><tbody>
+        <tr><td>ITK · Transferencia de know-how</td><td>Tareas críticas independientes ÷ total de tareas críticas × 100</td><td>85–100% · mensual</td><td>Horas extra de shadowing y revisar manuales</td></tr>
+        <tr><td>TFI · Fricción intergeneracional</td><td>Incidentes de incivilidad ÷ colaboradores del equipo × 100</td><td>&lt; 5% · trimestral</td><td>Mediación, mapas de empatía y reforzar civismo</td></tr>
+        <tr><td>IDCS · Desviación del cronograma</td><td>Días de desviación ÷ duración planificada × 100</td><td>&lt; 10% · mensual</td><td>Revisar causas y carga de trabajo</td></tr>
+        <tr><td>TRTS · Retención del sucesor</td><td>Sucesores que permanecen ÷ sucesores incorporados × 100</td><td>&gt; 90% · anual</td><td>Evaluar apoyo social y plan de carrera</td></tr>
+      </tbody></table></div>
+      <div class="callout"><strong>Importante:</strong> los KPIs no reemplazan la conversación. Sirven para detectar señales, comparar con objetivos y activar acciones correctivas.</div>
+      <span class="timer">4 min · lectura de tablero</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">09 · Plan táctico</div><h2>Cuatro fases para intervenir</h2>
+      <div class="grid">
+        <div class="card"><div class="number">01</div><h3>Diagnóstico y auditoría</h3><p>Auditar procesos críticos, mapear empatía multigeneracional y evaluar adaptabilidad.</p></div>
+        <div class="card"><div class="number">02</div><h3>Protocolo y diseño</h3><p>Redefinir el rol, crear hoja de ruta y acordar cofirma, hitos y responsabilidades.</p></div>
+        <div class="card"><div class="number">03</div><h3>Ejecución e intercambio</h3><p>Job shadowing, mentoría inversa, bitácoras y talleres de civismo.</p></div>
+        <div class="card"><div class="number">04</div><h3>Evaluación y cierre</h3><p>Monitorear ITK/TFI, reconocer el legado y cerrar la relación con dignidad.</p></div>
+      </div>
+      <div class="activity"><h3>Decisión profesional</h3><p>En una organización con rumores y hostilidad, ¿qué fase no puedes saltarte y qué evidencia pedirías antes de intervenir?</p><span class="timer">3 min · discusión</span><br><button class="answer-btn">Ver posible respuesta</button><div class="answer"><strong>Posible respuesta:</strong> No saltarse la fase de diagnóstico y auditoría. Pediría la descripción formal de los roles, el calendario de sucesión, registros de incidentes, ejemplos concretos de conductas, entrevistas breves con ambas personas y evidencia de qué conocimiento crítico aún no se ha transferido.</div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">10 · Caso integrador</div><h2>Tu plan de acción en RR. HH.</h2>
+      <div class="card red"><h3>Escenario</h3><p>Una analista de 26 años debe aprender un proceso de remuneraciones de una especialista de 61. La jefatura dice que «solo viene a apoyar», pero no lo comunica al equipo. La especialista deja de compartir archivos y corrige a la analista delante de otros.</p></div>
+      <div class="grid"><div class="card"><h3>Responde</h3><ol><li>¿Cuál es el escenario: integración sin reemplazo o sucesión?</li><li>¿Qué señales y riesgos observas?</li><li>¿Qué conversación tendrías primero?</li></ol></div><div class="card"><h3>Entrega</h3><ol><li>Un mensaje de aclaración para el equipo.</li><li>Dos acuerdos de conducta.</li><li>Un KPI y una acción correctiva.</li></ol></div></div>
+      <div class="callout"><strong>Criterio de calidad:</strong> una respuesta sólida combina claridad de rol, respeto por la experiencia, protección frente al maltrato, transferencia documentada y seguimiento.</div>
+      <span class="timer">5 min · resolución de caso</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">11 · Cierre</div><h2>La idea que debe quedar</h2>
+      <p class="lead">Una sucesión bien gestionada no deja que el miedo gobierne la transferencia. Hace explícito el futuro, convierte el conocimiento tácito en capacidad compartida y cuida a las personas mientras protege la operación.</p>
+      <div class="grid three"><div class="card"><h3>Claridad</h3><p>Qué cambia, qué no cambia y cuándo.</p></div><div class="card"><h3>Conductas</h3><p>Qué significa colaborar y qué no se tolera.</p></div><div class="card"><h3>Control</h3><p>Qué evidencia indica avance o necesidad de corrección.</p></div></div>
+      <div class="activity"><h3>Ticket de salida</h3><p>Escribe una acción que aplicarás esta semana en tu organización y una señal que observarás para saber si funciona.</p><span class="timer">2 min · compromiso final</span><br><button class="answer-btn">Ver posible respuesta</button><div class="answer"><strong>Posible respuesta:</strong> Acción: agendar una conversación de aclaración y construir una lista de tareas críticas con responsables y fechas. Señal: aumenta el porcentaje de tareas que la persona joven ejecuta de forma independiente y disminuyen los incidentes de incivilidad.</div></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">12 · Referencias</div><h2>Referencias · APA 7</h2>
+      <p class="ref">Brown, G., Lawrence, T. B., & Robinson, S. L. (2005). Territoriality in organizations. <i>Academy of Management Review, 30</i>(3), 577–594. https://doi.org/10.5465/amr.2005.17293710</p>
+      <p class="ref">Connelly, C. E., Zweig, D., Webster, J., & Trougakos, J. P. (2012). Knowledge hiding in organizations. <i>Journal of Organizational Behavior, 33</i>(1), 64–88. https://doi.org/10.1002/job.1739</p>
+      <p class="ref">Edmondson, A. (1999). Psychological safety and learning behavior in work teams. <i>Administrative Science Quarterly, 44</i>(2), 350–383. https://doi.org/10.2307/2666999</p>
+      <p class="ref">Merchant, K. A., & Van der Stede, W. A. (2017). <i>Management control systems: Performance measurement, evaluation and incentives</i> (4th ed.). Pearson.</p>
+      <p class="ref">Simons, R. (1995). <i>Levers of control: How managers use innovative control systems to drive strategic renewal</i>. Harvard Business School Press.</p>
+      <p class="ref">Informe de gestión: sucesión y transferencia de roles. (2026). <i>Documento técnico de apoyo para la clase</i>.</p>
+      <div class="callout"><strong>Nota docente:</strong> las referencias conceptuales amplían y respaldan los marcos utilizados en el informe base; conviene contrastar edición, DOI y disponibilidad institucional antes de entregar una bibliografía formal.</div>
+    </section>
+  </main>
+
+  <div class="nav"><button id="prev">← Anterior</button><span id="counter" style="padding:9px 5px;color:var(--muted)">1 / 12</span><button class="primary" id="next">Siguiente →</button></div>
+  <div class="scroll-controls" aria-label="Controles de desplazamiento">
+    <button id="scrollUp" title="Desplazar hacia arriba" aria-label="Desplazar hacia arriba">↑</button>
+    <button id="scrollDown" title="Desplazar hacia abajo" aria-label="Desplazar hacia abajo">↓</button>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const slides=[...document.querySelectorAll('.slide')]; let current=0; let fontScale=1;
+    const questions=[
+      '¿Qué diferencia hay entre inseguridad cualitativa y cuantitativa?',
+      '¿Qué señal podría indicar ocultamiento evasivo de conocimiento?',
+      '¿Cómo aclararías que una incorporación no implica reemplazo?',
+      '¿Qué conducta concreta protegería la seguridad psicológica?',
+      '¿Qué información debe incluir una comunicación de sucesión?',
+      '¿Para qué sirve el índice ITK y qué harías si baja?',
+      '¿Qué lugar ocupa la mentoría inversa en una transferencia?',
+      '¿Por qué no conviene dejar el cronograma implícito?',
+      '¿Qué diferencia hay entre job shadowing y autonomía?',
+      '¿Cómo cerrarías una transición honrando el legado de la persona experta?'
+    ];
+    const summary='Resumen: primero diagnostica si existe amenaza al estatus o al empleo. Luego aclara el futuro, diseña roles complementarios, formaliza la transferencia, protege contra la incivilidad y monitorea indicadores como ITK, TFI, IDCS y TRTS. En ambos casos, la experiencia se reconoce, pero el conocimiento crítico no puede quedar sujeto a una relación personal ni a la ambigüedad.';
+    function show(i){current=(i+slides.length)%slides.length; slides.forEach((s,n)=>s.classList.toggle('active',n===current)); document.getElementById('counter').textContent=`${current+1} / ${slides.length}`;document.getElementById('progress').style.width=((current+1)/slides.length*100)+'%';window.scrollTo({top:0,behavior:'smooth'})}
+    function toast(text){const t=document.getElementById('toast');t.textContent=text;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),7000)}
+    document.getElementById('next').onclick=()=>show(current+1); document.getElementById('prev').onclick=()=>show(current-1);
+    document.getElementById('scrollUp').onclick=()=>window.scrollBy({top:-Math.round(window.innerHeight*.72),behavior:'smooth'});
+    document.getElementById('scrollDown').onclick=()=>window.scrollBy({top:Math.round(window.innerHeight*.72),behavior:'smooth'});
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(current+1)}if(e.key==='ArrowLeft')show(current-1)});
+    document.getElementById('themeBtn').onclick=()=>{const dark=document.body.dataset.theme==='dark';document.body.dataset.theme=dark?'':'dark';document.getElementById('themeBtn').textContent=dark?'☾':'☀'};
+    function setScale(n){fontScale=Math.max(.85,Math.min(1.25,n));document.documentElement.style.fontSize=(fontScale*16)+'px';document.body.classList.toggle('font-large',fontScale>1)}
+    document.getElementById('largerBtn').onclick=()=>setScale(fontScale+.1);document.getElementById('smallerBtn').onclick=()=>setScale(fontScale-.1);
+    document.getElementById('diceBtn').onclick=()=>toast('🎲 Pregunta al azar: '+questions[Math.floor(Math.random()*questions.length)]);
+    document.getElementById('giftBtn').onclick=()=>toast('🎁 '+summary);
+    document.querySelectorAll('.answer-btn').forEach(btn=>btn.addEventListener('click',()=>{
+      const answer=btn.nextElementSibling;
+      const open=answer.classList.toggle('open');
+      btn.textContent=open?'Ocultar posible respuesta':'Ver posible respuesta';
+    }));
+    show(0);
+  </script>
+</body>
+</html>
