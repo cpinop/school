@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSTANZA VALENTINA - Taller Estratégico</title>
+    <!-- Carga de fuentes: Great Vibes para la firma y Montserrat/Calibri fallback para sobriedad -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --purpura-profundo: #1A051D;
+            --purpura-medio: #2D0B32;
+            --rosado-hielo: #F8EBF2;
+            --rosado-suave: #F3DFEB;
+            --crema-base: #FAF6F0;
+            --crema-alt: #F5EFE6;
+            --negro-profundo: #110B13;
+            --oro-envejecido: #C5A059;
+            --oro-hover: #D4AF37;
+            --oro-linea: rgba(197, 160, 89, 0.35);
+            
+            --font-main: 'Calibri', 'Segoe UI', -apple-system, sans-serif;
+            --font-title: 'Cinzel', 'Calibri', serif;
+            --font-signature: 'Great Vibes', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: var(--font-main);
+            font-size: 12px;
+            color: var(--negro-profundo);
+            background-color: var(--purpura-profundo);
+            line-height: 1.6;
+        }
+
+        #app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-color: var(--purpura-profundo);
+            overflow: hidden;
+        }
+
+        /* BARRA LATERAL IZQUIERDA */
+        .sidebar {
+            width: 70px;
+            height: 100%;
+            background-color: rgba(17, 11, 19, 0.85);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--oro-linea);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--oro-envejecido);
+            border-radius: 50%;
+            color: var(--oro-envejecido);
+            font-family: var(--font-title);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .nav-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            color: var(--oro-envejecido);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--oro-envejecido);
+            background-color: rgba(197, 160, 89, 0.1);
+            transform: translateY(-2px);
+            color: var(--oro-hover);
+        }
+
+        .nav-btn.active {
+            border-color: var(--oro-envejecido);
+            background-color: var(--oro-envejecido);
+            color: var(--purpura-profundo);
+            box-shadow: 0 0 12px rgba(197, 160, 89, 0.3);
+        }
+
+        .nav-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sidebar-footer-icon {
+            color: var(--oro-envejecido);
+            opacity: 0.6;
+        }
+
+        /* ÁREA DE CONTENIDO PRINCIPAL */
+        .main-stage {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-deck {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px 100px 60px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px) scale(0.995);
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.5s;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* TEMAS DE COLOR POR PANTALLA */
+        .theme-dark {
+            background-color: var(--purpura-profundo);
+            color: var(--crema-base);
+        }
+
+        .theme-light {
+            background-color: var(--crema-base);
+            color: var(--negro-profundo);
+        }
+
+        /* CONTENEDOR ANCHO MÁXIMO ELEGANTE */
+        .content-box {
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* TIPOGRAFÍA Y ENCABEZADOS */
+        .title-large {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .theme-dark .title-large {
+            color: var(--rosado-hielo);
+        }
+
+        .theme-light .title-large {
+            color: var(--purpura-profundo);
+        }
+
+        .subtitle {
+            font-size: 15px;
+            font-weight: 300;
+            max-width: 620px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+
+        .theme-dark .subtitle {
+            color: var(--rosado-suave);
+        }
+
+        .theme-light .subtitle {
+            color: var(--purpura-medio);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Modo Oscuro: Botón Crema / Texto Púrpura */
+        .theme-dark .btn-primary {
+            background-color: var(--crema-base);
+            color: var(--purpura-profundo);
+            border-color: var(--crema-base);
+        }
+
+        .theme-dark .btn-primary:hover {
+            background-color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.2);
+            border-color: var(--oro-envejecido);
+        }
+
+        /* Modo Claro: Botón Púrpura / Texto Crema */
+        .theme-light .btn-primary {
+            background-color: var(--purpura-profundo);
+            color: var(--crema-base);
+            border-color: var(--purpura-profundo);
+        }
+
+        .theme-light .btn-primary:hover {
+            background-color: var(--purpura-medio);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 11, 50, 0.2);
+            border-color: var(--oro-envejecido);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* FIRMA PERMANENTE ESQUINA INFERIOR IZQUIERDA */
+        .permanent-signature {
+            position: fixed;
+            bottom: 24px;
+            left: 94px;
+            z-index: 110;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            transition: color 0.4s ease;
+        }
+
+        .signature-name {
+            font-family: var(--font-signature);
+            font-size: 26px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .signature-motto {
+            font-size: 8px;
+            letter-spacing: 2.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .theme-dark-active .permanent-signature {
+            color: var(--rosado-hielo);
+        }
+
+        .theme-light-active .permanent-signature {
+            color: var(--purpura-profundo);
+        }
+
+        /* FLECHAS DE NAVEGACIÓN INFERIOR */
+        .nav-arrows {
+            position: fixed;
+            bottom: 24px;
+            right: 40px;
+            display: flex;
+            gap: 16px;
+            z-index: 110;
+            align-items: center;
+        }
+
+        .arrow-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid var(--oro-envejecido);
+            color: var(--oro-envejecido);
+        }
+
+        .arrow-btn:hover:not(.disabled) {
+            background-color: var(--oro-envejecido);
+            color: var(--purpura-profundo);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.25);
+        }
+
+        .arrow-btn.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            border-color: rgba(197, 160, 89, 0.3);
+        }
+
+        .arrow-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* PANTALLA 1: TARJETAS DE RECORRIDO */
+        .cards-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .journey-card {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(45, 11, 50, 0.08);
+            border-radius: 6px;
+            padding: 24px;
+            text-align: left;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .journey-card.featured {
+            border: 1.5px solid var(--oro-envejecido);
+            background: linear-gradient(145deg, #FFFFFF, var(--rosado-hielo));
+            box-shadow: 0 10px 25px rgba(197, 160, 89, 0.15);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: -12px;
+            right: 16px;
+            background-color: var(--oro-envejecido);
+            color: var(--purpura-profundo);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card-num {
+            font-family: var(--font-title);
+            font-size: 20px;
+            color: var(--oro-envejecido);
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--purpura-profundo);
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 11px;
+            color: #555555;
+        }
+
+        /* PANTALLA 2: OBJETIVOS */
+        .objectives-list {
+            width: 100%;
+            max-width: 680px;
+            text-align: left;
+            margin: 20px 0 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 18px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-left: 3px solid var(--oro-envejecido);
+            border-radius: 0 4px 4px 0;
+            font-size: 12px;
+        }
+
+        .gold-frame {
+            border: 1px solid var(--oro-envejecido);
+            padding: 16px 32px;
+            border-radius: 4px;
+            background-color: rgba(197, 160, 89, 0.05);
+            display: inline-block;
+        }
+
+        .gold-frame-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--oro-envejecido);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .gold-frame-body {
+            font-family: var(--font-title);
+            font-size: 16px;
+            color: var(--purpura-profundo);
+            letter-spacing: 1px;
+        }
+
+        /* PANTALLA 3: MODAL ACTIVIDAD */
+        .activity-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(17, 11, 19, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .activity-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .activity-card {
+            background-color: var(--crema-base);
+            border: 1px solid var(--oro-envejecido);
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+
+        .activity-overlay.active .activity-card {
+            transform: translateY(0);
+        }
+
+        .activity-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: var(--oro-envejecido);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulseGold 2s infinite;
+        }
+
+        @keyframes pulseGold {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(197, 160, 89, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
+        }
+
+        /* ACTIVIDAD INTERACTIVA: PIZARRA DEL FLUJO */
+        .activity-overlay { align-items: stretch; justify-content: stretch; padding: 22px; }
+        .activity-card.activity-workspace { width: 100%; max-width: none; height: 100%; padding: 0; text-align: left; display: flex; flex-direction: column; overflow: hidden; background: var(--crema-base); }
+        .activity-topbar { padding: 15px 22px; display:flex; align-items:center; justify-content:space-between; gap:18px; border-bottom:1px solid var(--oro-linea); background:#fffaf5; }
+        .activity-topbar h3 { font-family:var(--font-title); color:var(--purpura-profundo); font-size:18px; }
+        .activity-topbar p { color:#6c5c68; font-size:11px; }
+        .activity-close { border:0; background:transparent; color:var(--purpura-profundo); font-size:22px; cursor:pointer; padding:4px 8px; }
+        .activity-toolbar { display:flex; align-items:center; gap:9px; padding:11px 16px; flex-wrap:wrap; border-bottom:1px solid rgba(197,160,89,.22); background:#f8efe8; }
+        .activity-toolbar input { width:220px; border:1px solid #d8c5b3; border-radius:4px; padding:9px 10px; font:inherit; color:var(--purpura-profundo); background:#fff; }
+        .tool-btn { border:1px solid var(--oro-envejecido); background:#fff; color:var(--purpura-profundo); padding:8px 12px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:600; }
+        .tool-btn:hover { background:var(--rosado-hielo); }
+        .tool-btn.primary { background:var(--purpura-profundo); color:#fff; }
+        .stage-map-only { display:none; }
+        .activity-workspace[data-mode="map"] .stage-flow-only { display:none !important; }
+        .activity-workspace[data-mode="map"] .stage-map-only { display:inline-flex; }
+        .activity-board-wrap { flex:1; min-height:0; padding:14px; display:flex; }
+        .activity-board { position:relative; flex:1; overflow:hidden; border:1px solid #decdbd; border-radius:6px; background-color:#fffdf9; background-image:linear-gradient(rgba(197,160,89,.10) 1px, transparent 1px),linear-gradient(90deg, rgba(197,160,89,.10) 1px, transparent 1px); background-size:24px 24px; }
+        .activity-node { position:absolute; min-width:145px; max-width:210px; padding:13px 30px 12px 13px; border:1px solid var(--oro-envejecido); border-radius:6px; background:#fff; color:var(--purpura-profundo); box-shadow:0 5px 12px rgba(45,11,50,.12); cursor:grab; user-select:none; font-size:12px; z-index:3; transition:outline-color .15s, box-shadow .15s, border-color .15s; }
+        .activity-node:active { cursor:grabbing; }
+        .activity-node .star-toggle { position:absolute; top:5px; right:6px; border:0; background:transparent; color:#cbbcae; font-size:18px; cursor:pointer; line-height:1; }
+        .activity-node .connect-handle { position:absolute; right:5px; bottom:3px; width:23px; height:23px; display:grid; place-items:center; border:1px solid var(--oro-linea); border-radius:50%; color:var(--purpura-medio); background:#fffaf5; font-size:13px; cursor:crosshair; touch-action:none; }
+        .activity-node.starred { border-width:2px; box-shadow:0 0 0 3px rgba(197,160,89,.17),0 5px 12px rgba(45,11,50,.12); }
+        .activity-node.starred .star-toggle { color:var(--oro-envejecido); }
+        .board-arrow { position:absolute; z-index:2; color:var(--purpura-medio); font-size:42px; line-height:1; cursor:grab; user-select:none; text-shadow:0 2px 3px rgba(0,0,0,.12); }
+        .board-arrow:after { content:'➜'; }
+        .connector-layer { position:absolute; inset:0; width:100%; height:100%; z-index:2; overflow:visible; pointer-events:none; }
+        .connector-line { stroke:var(--purpura-medio); stroke-width:2.5; fill:none; pointer-events:stroke; cursor:pointer; }
+        .connector-line:hover { stroke:var(--oro-envejecido); stroke-width:4; }
+        .connector-preview { stroke:var(--oro-envejecido); stroke-width:2; stroke-dasharray:6 5; fill:none; }
+        .activity-node.connecting { outline:3px solid rgba(197,160,89,.75); box-shadow:0 0 0 7px rgba(197,160,89,.13),0 8px 20px rgba(45,11,50,.2); }
+        .activity-node.connection-target { border-color:#6f9a69; outline:3px solid rgba(111,154,105,.48); box-shadow:0 0 0 7px rgba(111,154,105,.12),0 8px 20px rgba(45,11,50,.16); transform:scale(1.035); }
+        .activity-node.connection-source .connect-handle { background:var(--oro-envejecido); color:#fff; }
+        .map-board { background-image:none; }
+        .map-axis-x,.map-axis-y { position:absolute; background:var(--oro-envejecido); z-index:1; }
+        .map-axis-x { left:8%; right:4%; top:50%; height:1px; }
+        .map-axis-y { top:5%; bottom:7%; left:50%; width:1px; }
+        .map-axis-x:after { content:'➜'; position:absolute; right:-3px; top:-13px; color:var(--oro-envejecido); }
+        .map-axis-y:after { content:'➜'; position:absolute; right:-7px; top:-8px; color:var(--oro-envejecido); transform:rotate(-90deg); }
+        .map-label { position:absolute; color:#806d61; font-size:10px; letter-spacing:1px; font-weight:700; z-index:1; }
+        .map-label.weak { left:8%; top:calc(50% + 8px); }.map-label.strong { right:5%; top:calc(50% + 8px); }.map-label.low { left:calc(50% + 8px); bottom:5%; }.map-label.high { left:calc(50% + 8px); top:5%; }
+        .map-quadrant { position:absolute; left:50%; top:5%; width:46%; height:45%; background:rgba(248,235,242,.55); border:1px dashed var(--oro-linea); z-index:0; }
+        .map-legend { padding:8px 16px; color:#6c5c68; font-size:10px; border-top:1px solid var(--oro-linea); background:#fffaf5; }
+
+        /* PANTALLA 4: DIAGRAMA DE OPERACIONES */
+        .flow-chain {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 24px 0;
+            width: 100%;
+        }
+
+        .flow-node {
+            background-color: #FFFFFF;
+            border: 1px solid var(--oro-linea);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purpura-profundo);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .flow-arrow {
+            color: var(--oro-envejecido);
+            font-size: 14px;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 24px;
+            width: 100%;
+        }
+
+        .question-box {
+            background-color: rgba(45, 11, 50, 0.03);
+            border: 1px dashed var(--oro-envejecido);
+            padding: 20px;
+            border-radius: 6px;
+            text-align: left;
+        }
+
+        .question-num {
+            font-family: var(--font-title);
+            color: var(--oro-envejecido);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        /* PANTALLA 5: MATRIZ DE TALENTO 2X2 */
+        .matrix-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            height: 320px;
+        }
+
+        .matrix-quadrant {
+            background-color: #FFFFFF;
+            border: 1px solid var(--oro-linea);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .matrix-quadrant:hover {
+            border-color: var(--oro-envejecido);
+            box-shadow: 0 6px 16px rgba(197, 160, 89, 0.12);
+        }
+
+        .quadrant-tag {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: var(--oro-envejecido);
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .quadrant-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--purpura-profundo);
+        }
+
+        .axis-label-x {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--oro-envejecido);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .axis-label-y {
+            position: absolute;
+            left: -35px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--oro-envejecido);
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        /* PANTALLA 6 Y 7: TARJETAS DE ESTRATEGIA */
+        .quadrant-action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .action-card {
+            background-color: #FFFFFF;
+            border-left: 3px solid var(--oro-envejecido);
+            border-radius: 4px;
+            padding: 18px;
+            text-align: left;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .action-header {
+            font-family: var(--font-title);
+            font-size: 13px;
+            color: var(--purpura-profundo);
+            margin-bottom: 4px;
+        }
+
+        .action-subtitle {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: var(--oro-envejecido);
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .action-desc {
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .action-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background-color: var(--rosado-hielo);
+            color: var(--purpura-profundo);
+            font-size: 9px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .quote-banner {
+            margin-top: 16px;
+            font-family: var(--font-title);
+            font-size: 14px;
+            color: var(--purpura-profundo);
+            border-top: 1px solid var(--oro-linea);
+            border-bottom: 1px solid var(--oro-linea);
+            padding: 12px 0;
+            width: 100%;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            #app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 54px;
+                flex-direction: row;
+                padding: 0 16px;
+                border-right: none;
+                border-bottom: 1px solid var(--oro-linea);
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-btn svg {
+                width: 15px;
+                height: 15px;
+            }
+
+            .slide {
+                padding: 30px 20px 90px 20px;
+            }
+
+            .title-large {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .cards-grid-4, 
+            .questions-grid, 
+            .quadrant-action-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .matrix-wrapper {
+                margin-left: 15px;
+            }
+
+            .matrix-grid {
+                height: 260px;
+            }
+
+            .axis-label-y {
+                left: -22px;
+                font-size: 8px;
+            }
+
+            .permanent-signature {
+                left: 20px;
+                bottom: 18px;
+            }
+
+            .signature-name {
+                font-size: 20px;
+            }
+
+            .signature-motto {
+                font-size: 7px;
+                letter-spacing: 1.5px;
+            }
+
+            .nav-arrows {
+                right: 20px;
+                bottom: 18px;
+            }
+
+            .arrow-btn {
+                width: 38px;
+                height: 38px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container" class="theme-dark-active">
+        
+        <!-- BARRA LATERAL IZQUIERDA -->
+        <aside class="sidebar" aria-label="Navegación Principal">
+            <div class="sidebar-brand" title="Constanza Valentina">CV</div>
+            
+            <nav class="sidebar-nav">
+                <!-- Botón Inicio / Casa -->
+                <button class="nav-btn active" data-target="0" title="Inicio (Pantalla 0)">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </button>
+                <!-- Botón Recorrido -->
+                <button class="nav-btn" data-target="1" title="Nuestro Recorrido">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                </button>
+                <!-- Botón Matriz -->
+                <button class="nav-btn" data-target="5" title="Matriz de Talento">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                </button>
+                <!-- Botón Cierre -->
+                <button class="nav-btn" data-target="8" title="Final">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer-icon" title="Lujo Sobrio">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8M8 12h8"></path></svg>
+            </div>
+        </aside>
+
+        <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+        <main class="main-stage">
+            <div class="slide-deck">
+                
+                <!-- PANTALLA 0 — HOME -->
+                <section class="slide theme-dark active" data-index="0" data-theme="dark">
+                    <div class="content-box">
+                        <div style="color: var(--oro-envejecido); margin-bottom: 20px; font-size: 24px;">❖</div>
+                        <h1 class="title-large">Bienvenida, Mayté</h1>
+                        <p class="subtitle">Hoy comenzaremos a mirar tu emprendimiento desde arriba.</p>
+                        <button class="btn-primary" onclick="goToSlide(1)">INICIAR RECORRIDO</button>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 1 — NUESTRO RECORRIDO -->
+                <section class="slide theme-light" data-index="1" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">Nuestro recorrido</h2>
+                        <p class="subtitle">Cuatro pasos estratégicos para transformar tu negocio.</p>
+                        
+                        <div class="cards-grid-4">
+                            <div class="journey-card featured">
+                                <span class="card-badge">ESTAMOS AQUÍ → SESIÓN 1</span>
+                                <div class="card-num">01</div>
+                                <div class="card-title">Diagnóstico actual</div>
+                                <div class="card-desc">¿Cómo funciona hoy mi emprendimiento?</div>
+                            </div>
+                            <div class="journey-card">
+                                <div class="card-num">02</div>
+                                <div class="card-title">Entorno y oportunidades</div>
+                                <div class="card-desc">¿Dónde tiene sentido crecer?</div>
+                            </div>
+                            <div class="journey-card">
+                                <div class="card-num">03</div>
+                                <div class="card-title">Números del negocio</div>
+                                <div class="card-desc">¿Es económicamente viable crecer?</div>
+                            </div>
+                            <div class="journey-card">
+                                <div class="card-num">04</div>
+                                <div class="card-title">Dirección de crecimiento</div>
+                                <div class="card-desc">¿Hacia dónde vamos y qué necesitamos?</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 2 — OBJETIVOS DE HOY -->
+                <section class="slide theme-light" data-index="2" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">¿Qué vamos a descubrir?</h2>
+                        <p class="subtitle">Claridad operacional para decisiones con dirección.</p>
+                        
+                        <div class="objectives-list">
+                            <div class="objective-item">
+                                <span style="color:var(--oro-envejecido);">✦</span>
+                                <div>Cómo funciona hoy tu emprendimiento.</div>
+                            </div>
+                            <div class="objective-item">
+                                <span style="color:var(--oro-envejecido);">✦</span>
+                                <div>Qué actividades hacen posible que funcione.</div>
+                            </div>
+                            <div class="objective-item">
+                                <span style="color:var(--oro-envejecido);">✦</span>
+                                <div>Cuáles de esas actividades son fundamentales.</div>
+                            </div>
+                            <div class="objective-item">
+                                <span style="color:var(--oro-envejecido);">✦</span>
+                                <div>Cuáles son tus puntos fuertes y cuáles no.</div>
+                            </div>
+                            <div class="objective-item">
+                                <span style="color:var(--oro-envejecido);">✦</span>
+                                <div>Qué lugar debería ocupar cada actividad dentro de tu emprendimiento.</div>
+                            </div>
+                        </div>
+
+                        <div class="gold-frame">
+                            <div class="gold-frame-title">RESULTADO DE HOY</div>
+                            <div class="gold-frame-body">MATRIZ DE TALENTO</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 3 — EL FLUJO -->
+                <section class="slide theme-light" data-index="3" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">¿Cuál es el flujo de tu emprendimiento?</h2>
+                        <p class="subtitle">Imaginemos que mañana una persona quiere tomar clases contigo.<br>¿Qué ocurre desde que aparece como posible alumno hasta que termina sus clases?</p>
+                        
+                        <button class="btn-primary" onclick="toggleActivityModal(true)">COMENZAR ACTIVIDAD</button>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 4 — DEL FLUJO A LAS OPERACIONES -->
+                <section class="slide theme-light" data-index="4" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">Del recorrido a las operaciones</h2>
+                        <p class="subtitle">Cada paso del recorrido requiere que alguien haga algo. Ahora vamos a identificar qué operaciones hacen posible que el emprendimiento funcione.</p>
+
+                        <div class="flow-chain">
+                            <div class="flow-node">Consulta</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Responder</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Coordinar</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Cobrar</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Preparar</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Realizar la clase</div>
+                            <span class="flow-arrow">↓</span>
+                            <div class="flow-node">Hacer seguimiento</div>
+                        </div>
+                        <div style="font-size:10px; color:#777; font-style:italic; margin-bottom: 20px;">* Ejemplos ilustrativos a definir en taller con Mayté</div>
+
+                        <div class="questions-grid">
+                            <div class="question-box">
+                                <div class="question-num">01</div>
+                                <div style="font-weight:600; color:var(--purpura-profundo);">¿Es fundamental para el emprendimiento?</div>
+                            </div>
+                            <div class="question-box">
+                                <div class="question-num">02</div>
+                                <div style="font-weight:600; color:var(--purpura-profundo);">¿Es un punto fuerte tuyo?</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 5 — MATRIZ DE TALENTO -->
+                <section class="slide theme-light" data-index="5" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">Construyamos la Matriz de Talento</h2>
+                        <p class="subtitle" style="margin-bottom:16px;">Ubicación estratégica de tus actividades actuales.</p>
+
+                        <div class="matrix-wrapper">
+                            <div class="axis-label-y">
+                                <span>PUNTO FUERTE</span>
+                                <span>NO ES PUNTO FUERTE</span>
+                            </div>
+                            <div class="matrix-grid">
+                                <div class="matrix-quadrant">
+                                    <div class="quadrant-tag">Cuadrante II</div>
+                                    <div class="quadrant-title">NO PUNTO FUERTE<br>+<br>FUNDAMENTAL</div>
+                                </div>
+                                <div class="matrix-quadrant" style="background-color: var(--rosado-hielo); border-color: var(--oro-envejecido);">
+                                    <div class="quadrant-tag">Cuadrante I</div>
+                                    <div class="quadrant-title" style="color:var(--purpura-profundo); font-weight:700;">PUNTO FUERTE<br>+<br>FUNDAMENTAL</div>
+                                </div>
+                                <div class="matrix-quadrant">
+                                    <div class="quadrant-tag">Cuadrante IV</div>
+                                    <div class="quadrant-title">NO PUNTO FUERTE<br>+<br>NO FUNDAMENTAL</div>
+                                </div>
+                                <div class="matrix-quadrant">
+                                    <div class="quadrant-tag">Cuadrante III</div>
+                                    <div class="quadrant-title">PUNTO FUERTE<br>+<br>NO FUNDAMENTAL</div>
+                                </div>
+                            </div>
+                            <div class="axis-label-x">
+                                <span>NO FUNDAMENTAL</span>
+                                <span>FUNDAMENTAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 6 — ¿QUÉ HACEMOS CON CADA CUADRANTE? -->
+                <section class="slide theme-light" data-index="6" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">¿Qué hacemos con cada cuadrante?</h2>
+                        
+                        <div class="quadrant-action-grid">
+                            <div class="action-card">
+                                <div class="action-header">EL CORAZÓN</div>
+                                <div class="action-subtitle">Punto Fuerte + Fundamental</div>
+                                <div class="action-desc">Estas actividades son el corazón del emprendimiento.</div>
+                                <div class="action-pills">
+                                    <span class="pill">Proteger</span>
+                                    <span class="pill">Desarrollar</span>
+                                    <span class="pill">Priorizar</span>
+                                </div>
+                            </div>
+
+                            <div class="action-card">
+                                <div class="action-header">SACAR DE TUS MANOS</div>
+                                <div class="action-subtitle">No Punto Fuerte + Fundamental</div>
+                                <div class="action-desc">Necesarias para el negocio, pero no deben depender de ti.</div>
+                                <div class="action-pills">
+                                    <span class="pill">Delegar</span>
+                                    <span class="pill">Automatizar</span>
+                                    <span class="pill">Sistematizar</span>
+                                </div>
+                            </div>
+
+                            <div class="action-card">
+                                <div class="action-header">MANTENER EN SU LUGAR</div>
+                                <div class="action-subtitle">Punto Fuerte + No Fundamental</div>
+                                <div class="action-desc">Las haces bien, pero no deberían ocupar demasiado tiempo.</div>
+                                <div class="action-pills">
+                                    <span class="pill">Mantener</span>
+                                    <span class="pill">Reducir Tiempo</span>
+                                </div>
+                            </div>
+
+                            <div class="action-card">
+                                <div class="action-header">ELIMINAR O AUTOMATIZAR</div>
+                                <div class="action-subtitle">No Punto Fuerte + No Fundamental</div>
+                                <div class="action-desc">¿Es necesario seguir haciéndolo? Si no → dejar de hacerlo.</div>
+                                <div class="action-pills">
+                                    <span class="pill">Eliminar</span>
+                                    <span class="pill">Simplificar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quote-banner">
+                            "No todo lo que hacemos merece la misma cantidad de nuestro tiempo."
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 7 — CIERRE -->
+                <section class="slide theme-light" data-index="7" data-theme="light">
+                    <div class="content-box">
+                        <h2 class="title-large">¿Qué nos acaba de mostrar la matriz?</h2>
+                        
+                        <div class="quadrant-action-grid" style="margin-bottom:24px;">
+                            <div class="action-card" style="border-left-color:var(--purpura-medio);">
+                                <div class="action-header">POTENCIAR</div>
+                                <div class="action-desc">Lo que es fundamental y hacemos bien.</div>
+                            </div>
+                            <div class="action-card" style="border-left-color:var(--purpura-medio);">
+                                <div class="action-header">SACAR DE NUESTRAS MANOS</div>
+                                <div class="action-desc">Lo fundamental que no hacemos bien.</div>
+                            </div>
+                            <div class="action-card" style="border-left-color:var(--purpura-medio);">
+                                <div class="action-header">REDUCIR</div>
+                                <div class="action-desc">Lo que hacemos bien, pero no es fundamental.</div>
+                            </div>
+                            <div class="action-card" style="border-left-color:var(--purpura-medio);">
+                                <div class="action-header">CUESTIONAR</div>
+                                <div class="action-desc">Lo que no hacemos bien y tampoco es fundamental.</div>
+                            </div>
+                        </div>
+
+                        <div style="font-family:var(--font-title); font-size:16px; color:var(--purpura-profundo); margin-top:10px;">
+                            ¿Qué dice esto sobre el papel que cumples hoy dentro de tu emprendimiento?
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANTALLA 8 — FINAL -->
+                <section class="slide theme-dark" data-index="8" data-theme="dark">
+                    <div class="content-box">
+                        <div style="color: var(--oro-envejecido); margin-bottom: 16px; font-size: 24px;">❖</div>
+                        <h2 class="title-large">¿Consultas?</h2>
+                        <p class="subtitle">Hoy construimos tu diagnóstico inicial.<br><br>En la próxima sesión vamos a mirar hacia afuera:<br><strong style="color:var(--rosado-hielo);">entorno + competencia + oportunidades de crecimiento.</strong></p>
+                        <button class="btn-primary" onclick="goToSlide(0)">FINALIZAR</button>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- FIRMA PERMANENTE EN ESQUINA INFERIOR IZQUIERDA -->
+        <div class="permanent-signature">
+            <span class="signature-name">Constanza Valentina</span>
+            <span class="signature-motto">CONÓCETE - DECIDE - DISEÑA - EJECUTA</span>
+        </div>
+
+        <!-- BOTONES CON FLECHAS DE NAVEGACIÓN INFERIOR (Ocultos en Pantalla 0) -->
+        <div class="nav-arrows" id="nav-arrows" style="display: none;">
+            <button class="arrow-btn" id="prev-btn" onclick="prevSlide()" title="Anterior (ArrowLeft)">
+                <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <button class="arrow-btn" id="next-btn" onclick="nextSlide()" title="Siguiente (ArrowRight)">
+                <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+        </div>
+
+        <!-- MODAL DE ACTIVIDAD EN CURSO -->
+        <div class="activity-overlay" id="activity-modal" onclick="toggleActivityModal(false)">
+            <div class="activity-card activity-workspace" onclick="event.stopPropagation()">
+                <div class="activity-topbar">
+                    <div><div style="font-size:10px;letter-spacing:2px;color:var(--oro-envejecido);font-weight:700;"><span class="activity-status"></span>ACTIVIDAD EN CURSO</div><h3>El flujo del alumno</h3><p id="activity-help">Crea las actividades y ordénalas en la pizarra. Puedes moverlas libremente.</p></div>
+                    <button class="activity-close" onclick="toggleActivityModal(false)" title="Cerrar">×</button>
+                </div>
+                <div class="activity-toolbar">
+                    <input id="activity-input" placeholder="Escribe una actividad…" maxlength="80" onkeydown="if(event.key==='Enter') addActivity()">
+                    <button class="tool-btn primary" onclick="addActivity()">＋ Añadir actividad</button>
+                    <button class="tool-btn stage-flow-only" onclick="clearBoard()">Limpiar pizarra</button>
+                    <button class="tool-btn primary stage-flow-only" style="margin-left:auto" onclick="showActivityMap()">Ver actividades en el mapa →</button>
+                    <button class="tool-btn stage-map-only" onclick="showFlowBoard()">← Volver al flujo</button>
+                    <button class="tool-btn primary stage-map-only" style="margin-left:auto" onclick="returnToPresentation()">Volver a la presentación</button>
+                </div>
+                <div class="activity-board-wrap"><div class="activity-board" id="activity-board"></div></div>
+                <div class="map-legend" id="activity-legend">★ Marca las actividades fundamentales. Para conectar, arrastra desde el punto de una tarjeta hasta otra.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ESTADO DE LA APLICACIÓN
+        let currentSlideIndex = 0;
+        const totalSlides = 9;
+
+        // ELEMENTOS DOM
+        const slides = document.querySelectorAll('.slide');
+        const sidebarBtns = document.querySelectorAll('.sidebar-nav .nav-btn');
+        const navArrows = document.getElementById('nav-arrows');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const appContainer = document.getElementById('app-container');
+
+        // CAMBIAR PANTALLA
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            currentSlideIndex = index;
+
+            // Actualizar clase activa en slides
+            slides.forEach((slide, i) => {
+                if (i === currentSlideIndex) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Actualizar tema visual global (Firma e interfaz)
+            const activeSlide = slides[currentSlideIndex];
+            const theme = activeSlide.getAttribute('data-theme');
+            if (theme === 'dark') {
+                appContainer.classList.add('theme-dark-active');
+                appContainer.classList.remove('theme-light-active');
+            } else {
+                appContainer.classList.add('theme-light-active');
+                appContainer.classList.remove('theme-dark-active');
+            }
+
+            // Actualizar barra lateral
+            sidebarBtns.forEach(btn => {
+                const target = parseInt(btn.getAttribute('data-target'));
+                if (target === currentSlideIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Control de visibilidad de flechas (Pantalla 0 NO tiene flechas)
+            if (currentSlideIndex === 0) {
+                navArrows.style.display = 'none';
+            } else {
+                navArrows.style.display = 'flex';
+            }
+
+            // Habilitar/Deshabilitar estado de flechas
+            if (currentSlideIndex === 1) {
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.classList.remove('disabled');
+            }
+
+            if (currentSlideIndex === totalSlides - 1) {
+                nextBtn.classList.add('disabled');
+            } else {
+                nextBtn.classList.remove('disabled');
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                goToSlide(currentSlideIndex + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 1) {
+                goToSlide(currentSlideIndex - 1);
+            }
+        }
+
+        // CONTROL DE TECLADO (ArrowRight / ArrowLeft)
+        document.addEventListener('keydown', (e) => {
+            // Ignorar si el usuario está escribiendo en campos de entrada
+            const activeElem = document.activeElement;
+            const isInput = activeElem.tagName === 'INPUT' || activeElem.tagName === 'TEXTAREA' || activeElem.isContentEditable;
+            
+            if (isInput) return;
+
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // NAVEGACIÓN DESDE LA BARRA LATERAL
+        sidebarBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = parseInt(btn.getAttribute('data-target'));
+                goToSlide(target);
+            });
+        });
+
+        // MODAL DE ACTIVIDAD
+        function toggleActivityModal(show) {
+            const modal = document.getElementById('activity-modal');
+            if (show) {
+                modal.classList.add('active');
+                showFlowBoard();
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        let activityItems = [];
+        let activityConnections = [];
+        let activityMode = 'flow';
+        let activityCounter = 0;
+        const activityStorageKey = 'constanza-taller-flujo-alumno-v1';
+        function saveActivityState() {
+            try { localStorage.setItem(activityStorageKey, JSON.stringify({items:activityItems, connections:activityConnections, counter:activityCounter})); }
+            catch (error) { console.warn('No se pudo guardar el tablero en este navegador.', error); }
+        }
+        function loadActivityState() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(activityStorageKey) || 'null');
+                if (saved && Array.isArray(saved.items)) {
+                    activityItems = saved.items; activityConnections = Array.isArray(saved.connections) ? saved.connections : [];
+                    activityCounter = Number(saved.counter) || activityItems.reduce((max,item)=>Math.max(max,Number(item.id)||0),0);
+                }
+            } catch (error) { console.warn('No se pudo recuperar el tablero guardado.', error); }
+        }
+        function showFlowBoard() {
+            activityMode = 'flow';
+            document.querySelector('.activity-workspace').dataset.mode = 'flow';
+            const board = document.getElementById('activity-board');
+            board.className = 'activity-board';
+            document.getElementById('activity-input').style.display = '';
+            document.getElementById('activity-help').textContent = 'Crea las actividades y ordénalas en la pizarra. Puedes moverlas libremente.';
+            document.getElementById('activity-legend').textContent = '★ Marca las actividades fundamentales. Para conectar, arrastra desde el punto de una tarjeta hasta otra.';
+            renderBoard();
+        }
+        function addActivity() {
+            const input = document.getElementById('activity-input');
+            const text = input.value.trim(); if (!text) return;
+            const initialX=8+(activityItems.length%4)*22, initialY=12+Math.floor(activityItems.length/4)*22;
+            activityItems.push({id:++activityCounter, text, x:initialX, y:initialY, flowX:initialX, flowY:initialY, mapX:3, mapY:Math.min(82,5+activityItems.length*15), starred:false});
+            input.value = ''; renderBoard(); input.focus();
+        }
+        function clearBoard() { if (confirm('¿Limpiar todas las actividades y conexiones guardadas?')) { activityItems=[]; activityConnections=[]; activityCounter=0; saveActivityState(); renderBoard(); } }
+        function renderBoard() {
+            const board = document.getElementById('activity-board'); board.innerHTML = '';
+            board.classList.toggle('map-board', activityMode === 'map');
+            if (activityMode === 'map') { renderMapBackdrop(board); }
+            const svg = document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('class','connector-layer'); svg.setAttribute('viewBox','0 0 1000 700'); svg.setAttribute('preserveAspectRatio','none');
+            svg.innerHTML = '<defs><marker id="activity-arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,8 L9,4 z" fill="#2D0B32"></path></marker></defs>';
+            board.appendChild(svg);
+            activityItems.forEach(item => {
+                if(typeof item.flowX!=='number') item.flowX=typeof item.x==='number'?item.x:8;
+                if(typeof item.flowY!=='number') item.flowY=typeof item.y==='number'?item.y:12;
+                if(typeof item.mapX!=='number') item.mapX=3;
+                if(typeof item.mapY!=='number') item.mapY=Math.min(82,5+activityItems.indexOf(item)*15);
+                const node = document.createElement('div'); node.className = 'activity-node' + (item.starred?' starred':''); node.dataset.id=item.id;
+                const posX=activityMode==='flow'?item.flowX:item.mapX, posY=activityMode==='flow'?item.flowY:item.mapY;
+                item.x=posX; item.y=posY;
+                node.style.left = posX + '%'; node.style.top = posY + '%';
+                node.innerHTML = '<span>' + escapeHtml(item.text) + '</span><button class="star-toggle" title="Marcar o desmarcar como fundamental">★</button>' + (activityMode==='flow'?'<span class="connect-handle" title="Arrastra hasta otra actividad para conectarlas">↗</span>':'');
+                node.querySelector('.star-toggle').onclick = (e) => { e.stopPropagation(); item.starred=!item.starred; saveActivityState(); renderBoard(); };
+                const handle=node.querySelector('.connect-handle');
+                if(handle) handle.addEventListener('pointerdown',e=>startConnection(e,item.id,board,svg));
+                makeDraggable(node, board, item); board.appendChild(node);
+            });
+            requestAnimationFrame(()=>{if(activityMode==='flow') drawConnections(svg,board);});
+        }
+        function renderMapBackdrop(board) {
+            board.classList.add('map-board');
+            [['map-label weak','PUNTO DÉBIL'],['map-label strong','PUNTO FUERTE'],['map-label low','NO FUNDAMENTAL'],['map-label high','FUNDAMENTAL']].forEach(([cls,txt])=>{const el=document.createElement('span');el.className=cls;el.textContent=txt;board.appendChild(el);});
+            const q=document.createElement('div');q.className='map-quadrant';board.appendChild(q);
+            ['map-axis-x','map-axis-y'].forEach(c=>{const el=document.createElement('div');el.className=c;board.appendChild(el);});
+        }
+        function drawConnections(svg, board) {
+            if(activityMode!=='flow') return;
+            svg.querySelectorAll('.connection-group').forEach(group=>group.remove());
+            const rect=board.getBoundingClientRect();
+            activityConnections.forEach(connection=>{
+                const from=board.querySelector('.activity-node[data-id="'+connection.from+'"]');
+                const to=board.querySelector('.activity-node[data-id="'+connection.to+'"]');
+                if(!from||!to) return;
+                const a=from.getBoundingClientRect(), b=to.getBoundingClientRect();
+                const x1=((a.left+a.width/2-rect.left)/rect.width)*1000, y1=((a.top+a.height/2-rect.top)/rect.height)*700;
+                const x2=((b.left+b.width/2-rect.left)/rect.width)*1000, y2=((b.top+b.height/2-rect.top)/rect.height)*700;
+                const dx=x2-x1,dy=y2-y1,len=Math.max(1,Math.hypot(dx,dy));
+                const padFrom=38, padTo=48, sx=x1+dx/len*padFrom, sy=y1+dy/len*padFrom, ex=x2-dx/len*padTo, ey=y2-dy/len*padTo;
+                const group=document.createElementNS('http://www.w3.org/2000/svg','g');group.setAttribute('class','connection-group');
+                const hit=document.createElementNS('http://www.w3.org/2000/svg','line');
+                hit.setAttribute('x1',sx);hit.setAttribute('y1',sy);hit.setAttribute('x2',ex);hit.setAttribute('y2',ey);hit.setAttribute('class','connector-line');hit.setAttribute('marker-end','url(#activity-arrowhead)');hit.setAttribute('pointer-events','stroke');hit.setAttribute('title','Clic para eliminar conexión');
+                hit.addEventListener('click',()=>{activityConnections=activityConnections.filter(c=>c.id!==connection.id);saveActivityState();renderBoard();}); group.appendChild(hit); svg.appendChild(group);
+            });
+        }
+        function startConnection(event, fromId, board, svg) {
+            event.preventDefault(); event.stopPropagation();
+            const source=board.querySelector('.activity-node[data-id="'+fromId+'"]');
+            if(!source) return;
+            board.querySelectorAll('.activity-node').forEach(node=>node.classList.add('connection-target'));
+            source.classList.add('connecting','connection-source');
+            const rect=board.getBoundingClientRect(), start=source.getBoundingClientRect();
+            const x1=((start.left+start.width/2-rect.left)/rect.width)*1000, y1=((start.top+start.height/2-rect.top)/rect.height)*700;
+            const preview=document.createElementNS('http://www.w3.org/2000/svg','line');preview.setAttribute('class','connector-preview');preview.setAttribute('x1',x1);preview.setAttribute('y1',y1);svg.appendChild(preview);
+            const move=e=>{const box=board.getBoundingClientRect();preview.setAttribute('x2',((e.clientX-box.left)/box.width)*1000);preview.setAttribute('y2',((e.clientY-box.top)/box.height)*700);};
+            const end=e=>{
+                source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',end);source.classList.remove('connecting','connection-source');board.querySelectorAll('.activity-node').forEach(node=>node.classList.remove('connection-target'));preview.remove();
+                const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.activity-node');
+                if(target && Number(target.dataset.id)!==Number(fromId)) {
+                    const toId=Number(target.dataset.id);
+                    if(!activityConnections.some(c=>c.from===Number(fromId)&&c.to===toId)) activityConnections.push({id:Date.now()+Math.random(),from:Number(fromId),to:toId});
+                    saveActivityState();renderBoard();
+                }
+            };
+            window.addEventListener('pointermove',move);window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
+        }
+        function showActivityMap() {
+            activityMode='map'; document.querySelector('.activity-workspace').dataset.mode='map'; document.getElementById('activity-input').style.display='none';
+            activityItems.forEach((item, index) => { if(typeof item.mapX!=='number') item.mapX=3; if(typeof item.mapY!=='number') item.mapY=Math.min(82,5+index*15); });
+            document.getElementById('activity-help').textContent='Arrastra cada actividad desde su posición inicial y ubícala según cuánto te gusta hacerla y cuán fundamental es.';
+            document.getElementById('activity-legend').textContent='Arriba = más fundamental · Derecha = más punto fuerte. Las tarjetas conservan sus estrellas. Las flechas del flujo solo se muestran en la primera parte.';
+            renderBoard();
+        }
+        function returnToPresentation() {
+            saveActivityState();
+            toggleActivityModal(false);
+            goToSlide(5);
+        }
+        function makeDraggable(el, board, item) {
+            let dragging=false, ox=0, oy=0;
+            el.addEventListener('pointerdown', e=>{if(e.target.tagName==='BUTTON'||e.target.classList.contains('connect-handle'))return; dragging=true; el.setPointerCapture(e.pointerId); const r=el.getBoundingClientRect(); ox=e.clientX-r.left;oy=e.clientY-r.top;});
+            el.addEventListener('pointermove', e=>{if(!dragging)return; const b=board.getBoundingClientRect(); let x=((e.clientX-b.left-ox)/b.width)*100, y=((e.clientY-b.top-oy)/b.height)*100; x=Math.max(1,Math.min(92,x));y=Math.max(1,Math.min(90,y));el.style.left=x+'%';el.style.top=y+'%';if(item){item.x=x;item.y=y;if(activityMode==='flow'){item.flowX=x;item.flowY=y;}else{item.mapX=x;item.mapY=y;}}const svg=board.querySelector('.connector-layer');if(svg)drawConnections(svg,board);});
+            el.addEventListener('pointerup',()=>{if(dragging){dragging=false;saveActivityState();}});
+        }
+        function escapeHtml(value) { return value.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+        // INICIALIZACIÓN
+        window.addEventListener('load', () => {
+            loadActivityState();
+            goToSlide(0);
+        });
+    </script>
+</body>
+</html>
