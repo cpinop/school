@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de gemoterapias de Usuario Victorioso</title>
+
+<style>
+:root{
+  --purple:#33204f;
+  --purple2:#4b2e68;
+  --ice:#eadff0;
+  --cream:#f5edda;
+  --black:#17131a;
+  --gold:#a88a55;
+  --gold2:#c4a76b;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Calibri,Arial,sans-serif;
+  font-size:12pt
+}
+
+body{
+  background:var(--purple);
+  color:var(--cream);
+  transition:.25s
+}
+
+body.light{
+  background:var(--cream);
+  color:var(--black)
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+  border:0
+}
+
+/* =========================
+   BARRA LATERAL
+========================= */
+
+#side{
+  position:fixed;
+  z-index:20;
+  left:0;
+  top:0;
+  bottom:0;
+  width:68px;
+  background:#211530;
+  border-right:1px solid var(--gold);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:14px 8px;
+}
+
+.light #side{
+  background:#241c2c
+}
+
+.sidebtn{
+  width:46px;
+  height:46px;
+  border:1px solid var(--gold);
+  background:var(--gold);
+  color:#241b20;
+  border-radius:50%;
+  margin-bottom:12px;
+  font-size:22px;
+  display:grid;
+  place-items:center;
+  box-shadow:0 3px 10px #0004
+}
+
+#contact{
+  position:fixed;
+  z-index:19;
+  left:78px;
+  top:14px;
+  display:none;
+  background:var(--cream);
+  color:var(--black);
+  border:1px solid var(--gold);
+  padding:18px 20px;
+  max-width:290px;
+  box-shadow:0 8px 30px #0006
+}
+
+.light #contact{
+  background:var(--purple);
+  color:var(--cream)
+}
+
+#contact.show{
+  display:block
+}
+
+#contact .close{
+  float:right;
+  background:none;
+  color:inherit;
+  font-size:18px
+}
+
+.contact-script{
+  font-family:"Brush Script MT","Segoe Script",cursive;
+  font-size:19px
+}
+
+#signature{
+  position:fixed;
+  z-index:21;
+  left:82px;
+  bottom:12px;
+  pointer-events:none;
+  font-family:"Brush Script MT","Segoe Script",cursive;
+  font-size:25px;
+  line-height:1;
+}
+
+#signature small{
+  display:block;
+  font-family:Calibri,Arial,sans-serif;
+  font-size:8px;
+  letter-spacing:2px;
+  margin-top:5px
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+main{
+  margin-left:68px;
+  min-height:100vh;
+  padding:38px 24px 90px
+}
+
+.page{
+  display:none;
+  max-width:900px;
+  margin:0 auto;
+  animation:fade .3s
+}
+
+.page.active{
+  display:block
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(7px)
+  }
+  to{
+    opacity:1;
+    transform:none
+  }
+}
+
+.script{
+  font-family:"Brush Script MT","Segoe Script",cursive
+}
+
+h1{
+  font-size:clamp(30px,7vw,58px);
+  font-weight:400;
+  margin:8vh 0 5px
+}
+
+h2{
+  font-size:28px;
+  font-weight:500;
+  color:var(--gold2)
+}
+
+h3{
+  font-size:18px;
+  font-weight:600;
+  color:var(--gold2);
+  margin-top:28px
+}
+
+.subtitle{
+  font-size:18px
+}
+
+.center{
+  text-align:center
+}
+
+.gold{
+  color:var(--gold2)
+}
+
+.primary{
+  background:var(--cream);
+  color:var(--purple);
+  padding:15px 22px;
+  border-radius:3px;
+  border:1px solid var(--gold);
+  font-weight:bold;
+  letter-spacing:.2px
+}
+
+.light .primary{
+  background:var(--purple);
+  color:var(--cream)
+}
+
+.hero{
+  min-height:78vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center
+}
+
+.hero .primary{
+  margin-top:50px
+}
+
+.card{
+  border:1px solid var(--gold);
+  background:#2c1b40cc;
+  padding:25px;
+  margin:15px 0;
+  box-shadow:0 12px 35px #0003
+}
+
+.light .card{
+  background:#fff9ed
+}
+
+.session{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:transparent;
+  color:inherit;
+  border:1px solid var(--gold);
+  padding:18px;
+  margin:12px 0;
+  font-size:17px
+}
+
+.session:hover{
+  background:#a88a5522
+}
+
+.empty{
+  opacity:.65;
+  padding:22px;
+  border:1px dashed var(--gold)
+}
+
+.meta{
+  display:grid;
+  gap:12px
+}
+
+.meta div{
+  border-left:2px solid var(--gold);
+  padding-left:14px
+}
+
+.diagnosis{
+  line-height:1.55;
+  white-space:normal
+}
+
+.chakra-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px
+}
+
+.stone{
+  padding:13px;
+  border:1px solid #a88a5588
+}
+
+/* =========================
+   MAPA CORPORAL
+========================= */
+
+.body-wrap{
+  display:flex;
+  justify-content:center;
+  margin:38px 0 45px;
+  overflow:visible
+}
+
+/*
+  Figura humana de pie.
+  El sistema de coordenadas es:
+  - cabeza arriba
+  - brazos extendidos horizontalmente
+  - torso central
+  - piernas extendidas hacia abajo
+*/
+
+.body{
+  position:relative;
+  width:330px;
+  height:600px;
+}
+
+/* Cabeza */
+
+.body:before{
+  content:"";
+  position:absolute;
+  left:135px;
+  top:8px;
+  width:60px;
+  height:60px;
+  border:3px solid var(--gold);
+  border-radius:50%;
+  background:transparent;
+}
+
+/* Torso */
+
+.body:after{
+  content:"";
+  position:absolute;
+  left:112px;
+  top:66px;
+  width:106px;
+  height:260px;
+  border:3px solid var(--gold);
+  border-radius:48% 48% 38% 38% / 18% 18% 45% 45%;
+  background:transparent;
+}
+
+/* Brazos */
+
+.limb{
+  position:absolute;
+  border:3px solid var(--gold);
+  background:transparent;
+}
+
+/*
+  Los brazos salen desde los hombros
+  y se extienden horizontalmente.
+*/
+
+.arm1{
+  left:17px;
+  top:82px;
+  width:96px;
+  height:22px;
+  border-radius:20px;
+}
+
+.arm2{
+  left:217px;
+  top:82px;
+  width:96px;
+  height:22px;
+  border-radius:20px;
+}
+
+/* Manos */
+
+.arm1:after,
+.arm2:after{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  border:2px solid var(--gold);
+  border-radius:50%;
+  top:-1px;
+}
+
+.arm1:after{
+  left:-20px;
+}
+
+.arm2:after{
+  right:-20px;
+}
+
+/* Piernas */
+
+.leg1{
+  left:116px;
+  top:315px;
+  width:35px;
+  height:245px;
+  border-radius:20px;
+}
+
+.leg2{
+  left:179px;
+  top:315px;
+  width:35px;
+  height:245px;
+  border-radius:20px;
+}
+
+/* Pies */
+
+.leg1:after,
+.leg2:after{
+  content:"";
+  position:absolute;
+  bottom:-13px;
+  width:52px;
+  height:17px;
+  border:2px solid var(--gold);
+  border-radius:50%;
+}
+
+.leg1:after{
+  left:-10px;
+}
+
+.leg2:after{
+  right:-10px;
+}
+
+/* =========================
+   CHAKRAS
+========================= */
+
+.ch{
+  position:absolute;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--cream);
+  border:2px solid var(--black);
+  z-index:5;
+  left:50%;
+  transform:translateX(-50%);
+  cursor:pointer;
+  transition:.15s;
+  padding:0;
+}
+
+.ch:hover{
+  transform:translateX(-50%) scale(1.12);
+}
+
+.ch.active{
+  background:#111
+}
+
+/*
+  Posiciones:
+  Corona = sobre la cabeza
+  Tercer ojo = frente
+  Garganta = cuello
+  Corazón = pecho
+  Plexo = abdomen superior
+  Sacro = abdomen inferior
+  Raíz = base de pelvis
+*/
+
+.ch.crown{
+  top:-24px;
+}
+
+.ch.third{
+  top:29px;
+}
+
+.ch.throat{
+  top:75px;
+}
+
+.ch.heart{
+  top:135px;
+}
+
+.ch.plexus{
+  top:190px;
+}
+
+.ch.sacral{
+  top:247px;
+}
+
+.ch.root{
+  top:302px;
+}
+
+.ch::after{
+  content:attr(data-name);
+  position:absolute;
+  left:39px;
+  top:3px;
+  white-space:nowrap;
+  color:var(--cream);
+  font-size:11px;
+  font-weight:normal;
+  pointer-events:none;
+}
+
+.light .ch::after{
+  color:var(--black)
+}
+
+/* =========================
+   OBSERVACIONES
+========================= */
+
+.obs{
+  width:100%;
+  min-height:130px;
+  resize:vertical;
+  padding:12px;
+  border:1px solid var(--gold);
+  background:transparent;
+  color:inherit;
+  font:inherit
+}
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+.nav{
+  position:fixed;
+  z-index:18;
+  bottom:14px;
+  left:90px;
+  right:20px;
+  display:flex;
+  justify-content:space-between;
+  pointer-events:none
+}
+
+.nav button{
+  pointer-events:auto;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:var(--gold);
+  color:#241b20;
+  border:1px solid var(--gold2);
+  font-size:25px
+}
+
+.hidden{
+  visibility:hidden
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:600px){
+
+  main{
+    padding:28px 15px 100px;
+    margin-left:58px
+  }
+
+  #side{
+    width:58px
+  }
+
+  .sidebtn{
+    width:40px;
+    height:40px;
+    font-size:19px
+  }
+
+  #signature{
+    left:67px;
+    font-size:21px
+  }
+
+  #signature small{
+    font-size:7px
+  }
+
+  .chakra-grid{
+    grid-template-columns:1fr
+  }
+
+  .body{
+    transform:scale(.82);
+    transform-origin:top center;
+    margin-bottom:-100px
+  }
+
+  #contact{
+    left:68px;
+    right:10px
+  }
+}
+</style>
+</head>
+
+<body>
+
+<aside id="side">
+  <button class="sidebtn" title="Inicio" onclick="go(0)">⌂</button>
+  <button class="sidebtn" title="Contacto" onclick="toggleContact()">☎</button>
+  <button class="sidebtn" title="Cambiar modo" onclick="toggleTheme()">◐</button>
+</aside>
+
+<div id="contact">
+  <button class="close" onclick="toggleContact()">×</button>
+  <div class="contact-script">Contáctame</div>
+  <p>
+    WhatsApp: +56978047782<br>
+    Mail: cpinop@fen.uchile.cl
+  </p>
+  <div class="contact-script">
+    te invito a probar también mis sesiones de tarot y gemoterapia a distancia
+  </div>
+</div>
+
+<div id="signature">
+  Constanza Valentina
+  <small>CONÓCETE - DECIDE - DISEÑA - EJECUTA</small>
+</div>
+
+<main>
+
+<section class="page active" id="home">
+  <div class="hero center">
+
+    <div class="script" style="font-size:clamp(31px,7vw,55px)">
+      Registro de gemoterapias de<br>
+      <span class="gold">Usuario Victorioso</span>
+    </div>
+
+    <div class="script" style="font-size:22px;margin-top:12px">
+      por Constanza Valentina
+    </div>
+
+    <button class="primary" onclick="go(1)">
+      Iniciar recorrido por tu mapa energético
+    </button>
+
+  </div>
+</section>
+
+
+<section class="page" id="calendar">
+
+  <h2>Calendario de gemoterapias</h2>
+
+  <p>Selecciona una sesión para ingresar a su registro.</p>
+
+  <button class="session" onclick="go(2)">
+    Sesión 1
+    <span class="gold">·</span>
+    7 de septiembre de 2026
+  </button>
+
+  <button class="session" onclick="go(3)">
+    Sesión 2
+    <span class="gold">·</span>
+    26 de septiembre de 2026
+  </button>
+
+</section>
+
+
+<section class="page" id="s1">
+
+  <h2>Sesión 1</h2>
+
+  <div class="card meta">
+    <div>
+      <strong>Fecha de la sesión</strong><br>
+      7 de septiembre de 2026
+    </div>
+  </div>
+
+  <h3>Diagnóstico de chakras</h3>
+
+  <div class="card diagnosis">
+    <p><strong>Chakra corona — desbalanceado.</strong> Sensación de apuro; no se han podido cerrar cosas que la persona desearía poder cerrar.</p>
+    <p><strong>Tercer ojo — balanceado.</strong> La persona es capaz de conocer y escuchar su brújula interna.</p>
+    <p><strong>Chakra garganta — desbalanceado.</strong> Puede existir dificultad para decir las cosas o para decirlas de manera impulsiva.</p>
+    <p><strong>Chakra corazón — desbalanceado.</strong> Sensación de querer que pase lo peor, pero la situación se dilata; el corazón queda “en espera” de que se resuelvan las situaciones que permanecen en demora.</p>
+    <p><strong>Chakra manipura — balanceado.</strong> La falta de seguridad no ha llegado al punto de afectar la capacidad de disfrutar o distraerse, incluso en momentos de crisis.</p>
+    <p><strong>Chakra sacro — balanceado.</strong> La persona conserva la determinación para accionar sobre sus decisiones.</p>
+    <p><strong>Chakra raíz — desbalanceado.</strong> Sensación de seguridad familiar alterada, de que no hay piso firme y falta de contención en lo relacionado a la seguridad en esta Tierra.</p>
+  </div>
+
+  <h3>Mapa de chakras</h3>
+  <p>Haz clic en cada círculo para cambiar su estado.</p>
+
+  <div class="body-wrap">
+    <div class="body">
+      <span class="limb arm1"></span>
+      <span class="limb arm2"></span>
+      <span class="limb leg1"></span>
+      <span class="limb leg2"></span>
+      <button class="ch crown" data-name="Corona" onclick="toggleCh(this)"></button>
+      <button class="ch third" data-name="Tercer ojo" onclick="toggleCh(this)"></button>
+      <button class="ch throat" data-name="Garganta" onclick="toggleCh(this)"></button>
+      <button class="ch heart" data-name="Corazón" onclick="toggleCh(this)"></button>
+      <button class="ch plexus" data-name="Manipura" onclick="toggleCh(this)"></button>
+      <button class="ch sacral" data-name="Sacro" onclick="toggleCh(this)"></button>
+      <button class="ch root" data-name="Raíz" onclick="toggleCh(this)"></button>
+    </div>
+  </div>
+
+  <h3>Piedras usadas en la sesión</h3>
+  <div class="chakra-grid">
+    <div class="stone"><strong>Chakra raíz</strong><br>Jaspe rojo</div>
+    <div class="stone"><strong>Chakra sacro</strong><br>Cornalina</div>
+    <div class="stone"><strong>Chakra manipura</strong><br>Citrino</div>
+    <div class="stone"><strong>Chakra corazón</strong><br>Jade y serpentina</div>
+    <div class="stone"><strong>Chakra garganta</strong><br>Aventurina</div>
+    <div class="stone"><strong>Tercer ojo</strong><br>Sodalita</div>
+    <div class="stone"><strong>Chakra corona</strong><br>Amatista</div>
+  </div>
+
+</section>
+
+
+<section class="page" id="s2">
+
+  <h2>Sesión 2</h2>
+
+  <div class="card meta">
+
+    <div>
+      <strong>Fecha de la sesión</strong><br>
+      26 de septiembre de 2026
+    </div>
+
+    <div>
+      <strong>Objetivo de la sesión</strong><br>
+      Orientar, calmar y dar sostén para una liberación constructiva desde lo concreto:
+      favorecer que la persona pueda marcar límites, expresar lo que necesita y tomar
+      la decisión que sabe que debe tomar, trabajando el miedo a las consecuencias y
+      llevándolo hacia decisiones y acciones tangibles.
+    </div>
+
+  </div>
+
+
+  <h3>Diagnóstico de chakras</h3>
+
+  <div class="card diagnosis">
+
+    <p>
+      <strong>Chakra corona — desbalanceado.</strong>
+      Hay una gran concentración en las cosas prácticas y concretas del día a día,
+      con muchos asuntos que la persona intenta mantener fluyendo de manera constante.
+      Este esfuerzo ha producido cierta desconexión de lo exterior y de la perspectiva
+      más amplia: disfrutar de la naturaleza, desconectarse del teléfono, cuidar el
+      descanso y poder mirar más allá del problema inmediato. La atención está muy
+      centrada en elaborar y resolver lo que ocurre aquí y ahora, en parte para no
+      desesperarse, y eso dificulta tomar distancia y mirar la situación en perspectiva.
+    </p>
+
+    <p>
+      <strong>Tercer ojo — balanceado.</strong>
+      Una fortaleza importante en este momento es la posibilidad de confiar en la propia
+      intuición y distinguirla del ruido interno. Esta capacidad constituye una herramienta
+      para orientarse en medio de la situación actual.
+    </p>
+
+    <p>
+      <strong>Chakra garganta — desbalanceado.</strong>
+      Hay cosas que la persona quisiera decir o expresar que permanecen contenidas por
+      miedo a las consecuencias. También aparece temor frente a expresar necesidades y
+      marcar límites. Lo no dicho genera una sensación de bloqueo y de miedo a no poder
+      expresar aquello que necesita ser puesto en palabras.
+    </p>
+
+    <p>
+      <strong>Chakra corazón — balanceado.</strong>
+      Existe un discernimiento entre lo que mentalmente sabe que debe hacer y aquello
+      que emocionalmente necesita. Esta capacidad de integrar claridad mental y experiencia
+      emocional funciona como un sostén importante en el momento actual.
+    </p>
+
+    <p>
+      <strong>Plexo solar — desbalanceado.</strong>
+      Parte de aquello que no se dice también queda guardado internamente. Aparece además
+      una dificultad para conectar con el disfrute, el placer y la energía vital, como si
+      el peso de la situación actual dificultara permitirse vivir y experimentar con mayor ligereza.
+    </p>
+
+    <p>
+      <strong>Chakra sacro — desbalanceado.</strong>
+      Aparece una sensación de inestabilidad y de falta de seguridad o calma suficiente
+      para pensar con claridad qué hacer. Esto puede generar impulsos de tomar decisiones
+      rápidamente; sin embargo, el trabajo requiere frenar, analizar y discernir los siguientes
+      pasos antes de actuar.
+    </p>
+
+    <p>
+      <strong>Chakra raíz — desbalanceado.</strong>
+      A pesar de que la situación no se siente bien, existe claridad mental y emocional
+      respecto de lo que la persona sabe que debe hacer. Esta claridad constituye un sostén,
+      aunque actualmente se encuentre acompañada por un miedo importante a las consecuencias,
+      por temor a decir determinadas cosas y por la sensación de estar soportando un momento
+      especialmente intenso.
+    </p>
+
+    <p>
+      <strong>Intención transversal:</strong>
+      favorecer una liberación constructiva desde lo concreto, para que el miedo a las
+      consecuencias pueda ser trabajado sin perder claridad, permitiendo marcar límites,
+      expresar lo necesario y transformar el discernimiento interno en decisiones y acciones tangibles.
+    </p>
+
+  </div>
+
+
+  <h3>Mapa de chakras</h3>
+
+  <p>
+    Haz clic en cada círculo para cambiar su estado.
+  </p>
+
+  <div class="body-wrap">
+
+    <div class="body">
+
+      <!-- Brazos -->
+      <span class="limb arm1"></span>
+      <span class="limb arm2"></span>
+
+      <!-- Piernas -->
+      <span class="limb leg1"></span>
+      <span class="limb leg2"></span>
+
+      <!-- Chakras -->
+      <button
+        class="ch crown"
+        data-name="Corona"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch third"
+        data-name="Tercer ojo"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch throat"
+        data-name="Garganta"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch heart"
+        data-name="Corazón"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch plexus"
+        data-name="Plexo solar"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch sacral"
+        data-name="Sacro"
+        onclick="toggleCh(this)">
+      </button>
+
+      <button
+        class="ch root"
+        data-name="Raíz"
+        onclick="toggleCh(this)">
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <h3>Piedras usadas en la sesión</h3>
+
+  <div class="chakra-grid">
+
+    <div class="stone">
+      <strong>Chakra raíz</strong><br>
+      Obsidiana
+    </div>
+
+    <div class="stone">
+      <strong>Chakra sacro</strong><br>
+      Cornalina y malaquita
+    </div>
+
+    <div class="stone">
+      <strong>Plexo solar</strong><br>
+      Citrino
+    </div>
+
+    <div class="stone">
+      <strong>Chakra corazón</strong><br>
+      Cuarzo rosa
+    </div>
+
+    <div class="stone">
+      <strong>Chakra garganta</strong><br>
+      Calcita celeste
+    </div>
+
+    <div class="stone">
+      <strong>Tercer ojo</strong><br>
+      Sodalita
+    </div>
+
+    <div class="stone">
+      <strong>Chakra corona</strong><br>
+      Cuarzo cristal
+    </div>
+
+  </div>
+
+
+  <h3>Observaciones</h3>
+
+  <textarea
+    id="obs"
+    class="obs"
+    placeholder="Escribe aquí tus observaciones..."
+  ></textarea>
+
+</section>
+
+</main>
+
+
+<div class="nav" id="nav">
+
+  <button id="prev" onclick="go(current-1)">
+    ←
+  </button>
+
+  <button id="next" onclick="go(current+1)">
+    →
+  </button>
+
+</div>
+
+
+<script>
+
+const pages=[...document.querySelectorAll('.page')];
+
+let current=0;
+
+function go(n){
+
+  if(n<0 || n>=pages.length)return;
+
+  current=n;
+
+  pages.forEach((p,i)=>
+    p.classList.toggle('active',i===n)
+  );
+
+  document.getElementById('prev')
+    .classList.toggle('hidden',n===0);
+
+  document.getElementById('next')
+    .classList.toggle('hidden',n===pages.length-1);
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+
+document.addEventListener('keydown',e=>{
+
+  if(e.key==='ArrowLeft')
+    go(current-1);
+
+  if(e.key==='ArrowRight')
+    go(current+1);
+
+});
+
+
+function toggleTheme(){
+
+  document.body.classList.toggle('light');
+
+  localStorage.setItem(
+    'cv-theme',
+    document.body.classList.contains('light')
+      ? 'light'
+      : 'dark'
+  );
+
+}
+
+
+if(localStorage.getItem('cv-theme')==='light')
+  document.body.classList.add('light');
+
+
+function toggleContact(){
+
+  document
+    .getElementById('contact')
+    .classList.toggle('show');
+
+}
+
+
+function toggleCh(el){
+
+  el.classList.toggle('active');
+
+  const states=[
+    ...document.querySelectorAll('.ch')
+  ].map(x=>
+    x.classList.contains('active')
+  );
+
+  localStorage.setItem(
+    'cv-chakras',
+    JSON.stringify(states)
+  );
+
+}
+
+
+try{
+
+  const states=
+    JSON.parse(
+      localStorage.getItem('cv-chakras') || '[]'
+    );
+
+  document
+    .querySelectorAll('.ch')
+    .forEach((x,i)=>
+      x.classList.toggle(
+        'active',
+        !!states[i]
+      )
+    );
+
+}catch(e){}
+
+
+const obs=document.getElementById('obs');
+
+obs.value=
+  localStorage.getItem('cv-observaciones') || '';
+
+obs.addEventListener(
+  'input',
+  ()=>{
+    localStorage.setItem(
+      'cv-observaciones',
+      obs.value
+    );
+  }
+);
+
+</script>
+
+</body>
+</html>
