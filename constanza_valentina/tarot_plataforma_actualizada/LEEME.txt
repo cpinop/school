@@ -1,0 +1,3 @@
+Abre registro_tarot_usuaria_pionera.html (la carpeta cards/ debe estar junto al archivo).
+Modo tarotista: boton ✎ en la barra lateral. Para publicar una tirada: Copiar codigo y pegarlo en DEFAULT_SPREAD dentro del script.
+Cartas: Rider-Waite-Smith, dominio publico / CC0 (github.com/arcanaland/reference-decks).

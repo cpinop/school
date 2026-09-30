@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Registro de tarot para usuaria pionera</title>
+<style>
+:root {
+ --purple:#32152f; --purple2:#4a2348; --ice:#eadff0; --cream:#f5ecd9;
+ --black:#11100f; --gold:#a8894e; --gold2:#c4a96a; --muted:#d8cdbd;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Calibri,Arial,sans-serif;font-size:12pt;background:var(--purple);color:var(--cream)}
+body.light{background:var(--cream);color:var(--black)}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:74px;background:#180c17;border-right:1px solid var(--gold);
+display:flex;flex-direction:column;align-items:center;z-index:20;padding:16px 8px;gap:13px}
+body.light .sidebar{background:#17100d}
+.sidebtn{width:48px;height:48px;border:1px solid var(--gold);border-radius:14px;background:transparent;color:var(--gold2);font-size:23px;cursor:pointer}
+.sidebtn:hover{background:rgba(168,137,78,.15)}
+.brand{position:fixed;left:92px;bottom:18px;z-index:10}
+.brandname{font-family:"Segoe Script","Brush Script MT",cursive;font-size:25px;color:var(--gold2)}
+.tagline{font-size:10px;letter-spacing:1.3px;color:var(--gold2);margin-top:3px}
+main{margin-left:74px;min-height:100vh;padding:36px 30px 100px;display:flex;justify-content:center}
+.screen{width:min(1050px,100%);display:none;animation:fade .25s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+.home{min-height:82vh;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column}
+.hand{font-family:"Segoe Script","Brush Script MT",cursive}
+h1{font-size:clamp(30px,6vw,58px);font-weight:400;margin:0 0 8px;color:var(--cream)}
+body.light h1,body.light h2,body.light h3{color:var(--black)}
+.subtitle{font-size:20px;color:var(--ice);margin-bottom:46px}
+body.light .subtitle{color:var(--purple)}
+.primary,.sessionbtn{border:0;border-radius:10px;background:var(--cream);color:var(--purple);padding:16px 24px;font-size:15px;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+body.light .primary,body.light .sessionbtn{background:var(--purple);color:var(--cream)}
+h2{font-family:"Segoe Script","Brush Script MT",cursive;font-size:34px;font-weight:400;color:var(--cream)}
+.panel{background:rgba(0,0,0,.14);border:1px solid rgba(168,137,78,.45);border-radius:18px;padding:24px;margin:18px 0}
+body.light .panel{background:rgba(255,255,255,.34)}
+.sessionlist{display:grid;gap:12px}
+.sessionbtn{text-align:left;width:100%}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.meta div{padding:14px;border-left:3px solid var(--gold);background:rgba(168,137,78,.08)}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold2)}
+.value{margin-top:5px}
+.prose{line-height:1.7;white-space:normal}
+.prose p{margin:0 0 14px}
+.crosswrap{display:flex;justify-content:center;overflow:auto;padding:10px}
+.crossimg{width:min(410px,100%);border-radius:12px;border:1px solid var(--gold);background:#d7e5f0}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tarotcard{border:1px solid var(--gold);border-radius:14px;padding:15px;background:var(--cream);color:var(--purple);cursor:pointer;min-height:145px;transition:.18s}
+.tarotcard:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.tarotcard .num{font-size:12px;color:var(--gold);font-weight:bold}
+.tarotcard .name{font-family:Georgia,serif;font-size:19px;margin:10px 0 6px}
+.tarotcard .orientation{font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.guideimg{width:min(760px,100%);display:block;margin:auto;border:1px solid var(--gold);border-radius:14px}
+.callout{border-left:4px solid var(--gold2);padding:14px 18px;margin:14px 0;background:rgba(168,137,78,.09)}
+.nav{position:fixed;bottom:16px;left:90px;right:18px;display:flex;justify-content:space-between;pointer-events:none;z-index:15}
+.nav button{pointer-events:auto;border:1px solid var(--gold);background:#1c101b;color:var(--gold2);width:48px;height:48px;border-radius:50%;font-size:25px;cursor:pointer}
+body.light .nav button{background:#201714}
+.contact{position:fixed;left:84px;top:74px;display:none;width:min(330px,calc(100vw - 105px));padding:18px;background:#1b0e1a;color:var(--cream);border:1px solid var(--gold);border-radius:14px;z-index:25;box-shadow:0 15px 40px rgba(0,0,0,.35)}
+.contact.show{display:block}
+.contact .hand{font-size:24px;color:var(--gold2)}
+.close{float:right;background:none;border:0;color:var(--gold2);font-size:20px;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(10,5,10,.78);display:none;align-items:center;justify-content:center;padding:20px;z-index:40}
+.modal.show{display:flex}
+.modalbox{width:min(620px,100%);background:var(--cream);color:var(--purple);border:2px solid var(--gold);border-radius:18px;padding:25px;position:relative}
+.modalbox h3{font-family:Georgia,serif;font-size:28px;margin:0 35px 5px 0}
+.modalbox .ori{color:#8b6d34;text-transform:uppercase;font-size:11px;letter-spacing:1.3px}
+.modalbox p{line-height:1.6;white-space:pre-line}
+@media(max-width:650px){
+.sidebar{width:58px} main{margin-left:58px;padding:25px 15px 90px}
+.brand{left:70px;bottom:13px} .brandname{font-size:19px} .tagline{font-size:8px}
+.sidebtn{width:40px;height:40px;font-size:19px} h2{font-size:29px}
+.nav{left:70px} .crossimg{width:100%}
+}
+
+html,body{height:100%;overflow:hidden}
+main{margin-left:74px;height:100vh;min-height:0;padding:0;display:block;overflow:hidden}
+#deck{display:flex;width:300%;height:100%;transition:transform .5s ease}
+.col{width:calc(100%/3);height:100%;overflow:hidden}
+.stack{height:100%;transition:transform .5s ease}
+.slide{height:100vh;padding:3vh 30px 84px;display:flex;flex-direction:column;justify-content:center;width:min(1100px,100%);margin:0 auto;overflow:hidden}
+.slide.home{align-items:center;text-align:center}
+.slide h2{margin:0 0 1.5vh;font-size:clamp(24px,4.4vh,34px)}
+.slide .panel{margin:1vh 0}
+.prose{font-size:clamp(13px,2.2vh,18px);line-height:1.6}.prose p{margin:0 0 1.6vh}
+.prose h3{margin:1vh 0}
+.trow{display:flex;gap:28px;justify-content:center;align-items:center}
+#board{--w:min(calc((100vw - 74px - 400px)/6.6),calc((100vh - 190px)/7.05));--h:calc(var(--w)*1.757);display:grid;grid-template-columns:repeat(3,calc(var(--w)*1.5)) calc(var(--w)*.5) calc(var(--w)*1.5);grid-auto-rows:calc(var(--h)/2)}
+.slot{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.card{width:var(--w);height:var(--h);border-radius:6px;box-shadow:0 4px 14px #0009;transition:.2s}
+.slot.sel .card{outline:2px solid var(--gold2)}.slot:hover .card{outline:2px solid #fff8}
+#panel{width:290px;background:rgba(0,0,0,.18);border:1px solid rgba(168,137,78,.45);border-radius:14px;padding:16px;line-height:1.5;font-size:clamp(13px,2vh,16px)}
+#panel img{width:96px;float:right;margin:0 0 6px 12px;border-radius:5px}
+#panel h3{margin:6px 0 2px;font-family:Georgia,serif;font-size:22px}
+#panel .num{font-size:12px;color:var(--gold2);font-weight:bold}
+.tarotcard{min-height:0;padding:10px 14px}.tarotcard .name{font-size:clamp(14px,2.4vh,19px);margin:6px 0 4px}
+.cardgrid{grid-template-columns:repeat(auto-fit,minmax(min(200px,44%),1fr))}
+.gwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.gwrap figure{margin:0;display:flex;gap:14px;align-items:center}
+.gimg{height:min(42vh,340px);border-radius:8px;border:1px solid var(--gold)}
+.callout{font-size:clamp(13px,2.1vh,17px);line-height:1.5}
+.vnav{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:10px;align-items:center;z-index:15}
+.vnav button{border:1px solid var(--gold);background:#1c101b;color:var(--gold2);width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
+#pg{font-size:12px;color:var(--gold2)}
+@media(max-width:800px){.trow{flex-direction:column;gap:10px}#board{--w:min(calc((100vw - 110px)/6.6),calc((100vh - 400px)/7.05))}#panel{width:100%}#panel img{display:none}.slide{padding:2vh 14px 84px}}
+
+/* Navegación: recorrido único vertical */
+#deck{display:block;width:100%;height:100%;transition:transform .5s ease}
+#deck>.stack{height:100%;transition:transform .5s ease}
+.col{display:none}
+.nav{display:none!important}
+.vnav{display:flex}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<button class="sidebtn" title="Inicio" onclick="go(0)">⌂</button>
+<button class="sidebtn" title="Modo claro / oscuro" onclick="toggleMode()">◐</button>
+<button class="sidebtn" title="Contáctame" onclick="toggleContact()">☎</button>
+</aside>
+
+<div class="contact" id="contact">
+<button class="close" onclick="toggleContact()">×</button>
+<div class="hand">Contáctame</div>
+<p><b>WhatsApp</b><br>+56978047782</p>
+<p><b>Mail</b><br>cpinop@fen.uchile.cl</p>
+<p class="hand">te invito a probar también mis sesiones de tarot y gemoterapia a distancia</p>
+</div>
+
+<div class="brand">
+<div class="brandname">Constanza Valentina</div>
+<div class="tagline">CONÓCETE - DECIDE - DISEÑA - EJECUTA</div>
+</div>
+
+<main><div id="deck"><div class="stack"><section class="slide home">
+<div class="hand" style="font-size:clamp(31px,6vw,56px)">Registro de tarot para</div>
+<div class="hand" style="font-size:clamp(34px,7vw,64px);color:var(--gold2)">usuaria pionera</div>
+<div class="subtitle hand">por Constanza Valentina</div>
+<button class="primary" onclick="go(1)">Iniciar recorrido por tu historial de tarot</button>
+</section><section class="slide">
+<h2>Calendario de tarot</h2>
+<div class="panel">
+<div class="sessionlist">
+<button class="sessionbtn" onclick="go(2)">Sesión 1 — 30 de septiembre de 2026</button>
+</div>
+</div>
+</section><section class="slide "><h2>Sesión 1</h2><div class="meta">
+<div><div class="label">Fecha</div><div class="value">30 de septiembre de 2026</div></div>
+<div><div class="label">Objetivo</div><div class="value">Diagnóstico y guía en lo laboral</div></div>
+<div><div class="label">Tipo de tirada</div><div class="value">Cruz Celta + 2 cartas guía</div></div>
+</div></section>
+<section class="slide tirada"><h2>Diagnóstico del tarot</h2><div class="trow"><div id="board"></div><div id="panel"></div></div></section>
+
+<section class="slide "><h2>Interpretación de la Cruz Celta</h2><div class="panel prose"><p><b>El pasado: frustración y emociones contenidas.</b> La lectura muestra una acumulación importante de frustración y emociones. Durante un período prolongado puede haber habido muchas cosas que decir, sentir o expresar, sin contar siempre con espacio suficiente para hacerlo. La lectura señala la necesidad de recuperar contacto con las propias necesidades y con aquello que realmente se quiere expresar.</p><p><b>Pasado cercano: desorden y construcción de una estructura propia.</b> Aparece una etapa de cierto desorden, pero también un proceso de cuestionamiento de estructuras anteriores. La vida parece haber empujado a construir una estructura propia en lugar de depender únicamente de caminos previamente establecidos.</p></div></section>
+<section class="slide "><h2>Interpretación de la Cruz Celta</h2><div class="panel prose"><p><b>Presente: recuperar dirección a través de las ideas.</b> Hay capacidad para pensar, analizar, planificar y defender aquello que se considera correcto. El consejo es distinguir entre las ideas que ayudan a avanzar y aquellas que limitan, generan miedo o mantienen atrapada. Conectar con el “aire” implica observar los pensamientos con distancia y elegir cuáles conservar.</p><p><b>El bloqueo: demasiados deberes y poco espacio para sentir.</b> La lectura muestra una sensación de cargar demasiadas responsabilidades. Al llenar el tiempo de tareas y obligaciones, queda poco espacio para escuchar las propias emociones. Crear espacio vacío —simplificar, soltar algunas obligaciones y permitir momentos sin productividad— puede ayudar a recuperar esa conexión.</p></div></section>
+<section class="slide "><h2>Interpretación de la Cruz Celta</h2><div class="panel prose"><p><b>Futuro cercano: un período de incertidumbre.</b> Aparece un tiempo en el que puede no estar completamente claro cuál es el plan o qué dirección tomar. También puede existir distanciamiento respecto de algunas personas o situaciones relacionadas con el dinero. Este vacío puede cumplir una función: permitir descubrir qué se quiere conservar y qué ya no se quiere seguir sosteniendo.</p><p><b>La decisión laboral.</b> La lectura apunta hacia una eventual decisión de dejar determinados proyectos o situaciones laborales que emocionalmente ya no hacen bien. La dirección futura no parece construirse solamente desde la lógica económica: también necesita incorporar lo que gusta, lo que importa y lo que emocionalmente tiene sentido.</p></div></section>
+<section class="slide "><h2>Interpretación de la Cruz Celta</h2><div class="panel prose"><p><b>La alianza.</b> Aparece la posibilidad de una alianza con una persona cercana que contribuya al desarrollo laboral. También puede representar una alianza interna: integrar partes de sí misma que antes no se reconocían como recursos, especialmente la combinación de racionalidad, liderazgo, emoción e intuición.</p><p><b>Guía general.</b> La invitación es a no retener indefinidamente aquello que se quiere hacer: expresar ideas, avanzar hacia los proyectos y tomar progresivamente el mando de las decisiones laborales. El liderazgo aparece como un recurso importante, pero necesita estar acompañado por una estructura que pueda sostenerlo.</p></div></section>
+<section class="slide "><h2>Cartas guía</h2><div class="gwrap"><figure><img class="gimg" id="g0" alt=""><div class="callout"><b class="gt"></b> dejar espacio para procesar y soltar heridas o frustraciones que todavía ocupan energía. La guía es no quedarse retenida en aquello que ya dolió, sino permitir que la experiencia se transforme.</div></figure><figure><img class="gimg" id="g1" alt=""><div class="callout"><b class="gt"></b> movimiento, comunicación y acción. Una vez que la dirección esté suficientemente clara, la lectura invita a no postergar indefinidamente los proyectos y a permitir que las cosas avancen.</div></figure></div></section>
+<section class="slide "><h2>Si emprendes</h2><div class="prose">
+<p class="prose">El emprendimiento aparece acompañado inicialmente por incertidumbre y un período de exigencia. No se muestra como un camino necesariamente inmediato o cómodo. Sin embargo, si se sostiene desde lo racional —con un modelo de negocio bien construido, planificación y estructura— la incertidumbre puede transformarse en una dirección laboral más conectada con aquello que gusta y eventualmente en una etapa de mayor abundancia.</p>
+<p class="prose">Aparece además una capacidad para proyectar una imagen de liderazgo, pragmatismo y autoridad, cualidades que pueden convertirse en recursos importantes para dirigir un proyecto propio.</p>
+
+</div></section>
+<section class="slide "><div class="prose"><h3>Si buscas trabajo / permaneces en una estructura laboral</h3>
+<p class="prose">La lectura muestra una energía de mayor estabilidad, pero también una posibilidad de monotonía y de sentir que el dinero alcanza principalmente para cubrir lo necesario, sin una sensación equivalente de expansión. Esto contrasta con el movimiento que aparece cuando se abre espacio para construir una dirección propia.</p>
+
+<h3>La advertencia económica</h3>
+<p class="prose">La lectura invita a prepararse no solamente para generar dinero, sino también para recibirlo y administrarlo. Si una entrada económica importante llega sin estructura, puede irse con facilidad. Si existe previamente un plan —ahorro, reinversión, gastos definidos y objetivos— el dinero puede convertirse en una herramienta de expansión y estabilidad.</p>
+</div></section>
+<section class="slide "><div class="panel">
+<h2>Observaciones</h2>
+<p class="prose" style="min-height:90px">Espacio reservado para observaciones de Constanza Valentina.</p>
+</div></section>
+</div></div></main>
+<div class="vnav" id="vnav"><button onclick="row(-1)" title="Arriba">˄</button><span id="pg"></span><button onclick="row(1)" title="Abajo">˅</button></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeCard()"><div class="modalbox"><button class="close" onclick="closeCard()">×</button><h3 id="modalTitle"></h3><div class="ori" id="modalOri"></div><p id="modalText"></p></div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const cards=[{'n': 1, 'name': 'Caballero de Espadas', 'orientation': 'derecho', 'meaning': 'Claridad mental, rapidez y determinación para actuar. Capacidad de defender una idea y avanzar con decisión. Su desafío es evitar actuar desde la prisa o el exceso de racionalidad.'}, {'n': 2, 'name': 'Diez de Bastos', 'orientation': 'derecho', 'meaning': 'Carga, responsabilidades y sensación de llevar demasiado encima. Puede mostrar agotamiento por deberes que se han acumulado. La clave es distinguir qué cargas realmente corresponden y cuáles pueden soltarse.'}, {'n': 3, 'name': 'El Sacerdote', 'orientation': 'derecho', 'meaning': 'Estructuras, aprendizaje y sistemas que entregan orientación. Habla de construir una base y encontrar una forma ordenada de avanzar. También invita a revisar qué reglas heredadas siguen siendo útiles.'}, {'n': 4, 'name': 'El Rey', 'orientation': 'derecho', 'meaning': 'Autoridad, liderazgo y capacidad de tomar decisiones. Representa una energía pragmática y orientada a construir estructura. En lo laboral, favorece asumir dirección en vez de esperar que otros la definan.'}, {'n': 5, 'name': 'La Templanza', 'orientation': 'invertida', 'meaning': 'Desequilibrio entre distintas áreas o partes de una misma experiencia. Puede reflejar emociones acumuladas y dificultad para encontrar un ritmo propio. La invitación es recuperar equilibrio y dejar espacio para lo que ha sido postergado.'}, {'n': 6, 'name': 'El Loco', 'orientation': 'derecho', 'meaning': 'Inicio, salto hacia lo desconocido y apertura de un camino nuevo. Puede traer un período de incertidumbre porque la ruta todavía no está completamente definida. También representa la posibilidad de liberarse de una estructura que ya quedó pequeña.'}, {'n': 7, 'name': 'Sota de Oros', 'orientation': 'derecho', 'meaning': 'Aprendizaje práctico, oportunidad concreta y construcción paso a paso. Invita a convertir una idea en algo que pueda sostenerse materialmente. Es una energía favorable para aprender, probar y desarrollar habilidades.'}, {'n': 8, 'name': 'Caballero de Copas', 'orientation': 'derecho', 'meaning': 'Propuestas, vínculos y movimientos guiados por motivación emocional. Puede señalar una persona o alianza que acerque una posibilidad laboral. También invita a reconocer qué proyectos despiertan verdadero interés.'}, {'n': 9, 'name': 'Ocho de Copas', 'orientation': 'derecho', 'meaning': 'Alejarse de algo que ya no satisface emocionalmente. Puede representar el deseo de abandonar una situación conocida para buscar algo con mayor sentido. El desafío es aceptar que dejar atrás también puede ser parte del avance.'}, {'n': 10, 'name': 'Dos de Copas', 'orientation': 'derecho', 'meaning': 'Alianza, colaboración y encuentro entre dos partes. Puede manifestarse como una asociación laboral o una colaboración significativa. También representa integrar razón y emoción para construir una dirección propia.'}];
+/* ===== DATOS (editables) ===== */
+// Posiciones: [nombre, significado, fila, columna] — la grilla usa filas de media carta
+const POS=[
+ ["Presente","Tu situación actual, el centro del asunto.",4,2],
+ ["Desafío","Lo que se cruza en el camino u obstaculiza.",4,2],
+ ["Fundamento","La raíz: lo que sostiene la situación.",6,2],
+ ["Pasado","Lo que ya influyó y se va alejando.",4,1],
+ ["Corona","Tu meta consciente o el mejor resultado posible.",2,2],
+ ["Futuro cercano","Lo que viene a corto plazo.",4,3],
+ ["Tú","Tu actitud y posición frente a la situación.",7,5],
+ ["Entorno","Influencias externas y personas alrededor.",5,5],
+ ["Esperanzas y miedos","Lo que deseas y, a la vez, lo que temes.",3,5],
+ ["Resultado","Desenlace probable si se mantiene el rumbo.",1,5]];
+// Arcanos mayores: [archivo, nombre, palabras clave, significado]
+const M=[
+["the-fool","El Loco","Inicios, libertad, riesgo","Un salto de fe: empezar sin garantías, con espíritu abierto."],
+["the-magician","El Mago","Voluntad, recursos, acción","Tienes las herramientas; es momento de concretar una intención."],
+["the-high-priestess","La Sacerdotisa","Intuición, misterio, silencio","Un saber interior aún no revelado; escucha antes de actuar."],
+["the-empress","La Emperatriz","Abundancia, creatividad, cuidado","Fertilidad, sensualidad y crecimiento bien nutrido."],
+["the-emperor","El Rey","Estructura, autoridad, orden","Estabilidad mediante reglas, liderazgo y límites claros."],
+["the-hierophant","El Sacerdote","Tradición, enseñanza, creencias","Guía institucional o espiritual; normas compartidas."],
+["the-lovers","Los Enamorados","Elección, vínculo, valores","Una decisión del corazón que exige coherencia."],
+["the-chariot","El Carro","Determinación, victoria, rumbo","Avance por disciplina, dominando fuerzas opuestas."],
+["strength","La Fuerza","Coraje, paciencia, compasión","Poder suave: domar el impulso con calma."],
+["the-hermit","El Ermitaño","Introspección, búsqueda, sabiduría","Retirarse para encontrar la propia luz."],
+["wheel-of-fortune","La Rueda de la Fortuna","Ciclos, destino, cambio","Un giro inevitable: lo que sube baja y vuelve a subir."],
+["justice","La Justicia","Equilibrio, verdad, consecuencias","Causa y efecto; una decisión justa y honesta."],
+["the-hanged-man","El Colgado","Pausa, entrega, nueva mirada","Suspender la acción para ver desde otro ángulo."],
+["death","La Muerte","Final, transformación, renacer","Un cierre necesario que abre espacio a lo nuevo."],
+["temperance","La Templanza","Moderación, armonía, paciencia","Mezclar opuestos con medida; sanar con el tiempo."],
+["the-devil","El Diablo","Apego, sombra, tentación","Ataduras elegidas; reconocerlas es empezar a liberarse."],
+["the-tower","La Torre","Ruptura, revelación, caída","Se derrumba lo falso de golpe; una verdad brusca."],
+["the-star","La Estrella","Esperanza, renovación, calma","Serenidad tras la crisis y fe en el futuro."],
+["the-moon","La Luna","Ilusión, miedo, subconsciente","Nada es del todo claro; confía en la intuición, con cautela."],
+["the-sun","El Sol","Alegría, éxito, claridad","Vitalidad, confianza y resultados a plena luz."],
+["judgement","El Juicio","Llamado, balance, despertar","Reconocer el pasado y responder a un nuevo llamado."],
+["the-world","El Mundo","Plenitud, cierre, integración","Ciclo completo: logro y sensación de totalidad."]];
+// Arcanos menores: significado generado por palo + número
+const SUITS={cups:["Copas","las emociones y las relaciones"],wands:["Bastos","la acción, la energía y los proyectos"],swords:["Espadas","la mente, las ideas y los conflictos"],pentacles:["Oros","el dinero, el cuerpo y lo material"]};
+const RANKS={ace:["As","Un comienzo: semilla y potencial"],two:["Dos","Dualidad, elección o equilibrio"],three:["Tres","Crecimiento y colaboración"],four:["Cuatro","Estabilidad, pausa o estancamiento"],five:["Cinco","Conflicto, pérdida o desafío"],six:["Seis","Armonía, transición o intercambio"],seven:["Siete","Prueba, evaluación o estrategia"],eight:["Ocho","Movimiento, dominio o esfuerzo"],nine:["Nueve","Cercanía al logro; resistencia"],ten:["Diez","Culminación, cierre o exceso"],page:["Sota","Mensajes, curiosidad y aprendizaje"],knight:["Caballero","Acción, búsqueda e impulso"],queen:["Reina","Madurez interior y cuidado"],king:["Rey","Autoridad, dominio y responsabilidad"]};
+/* ===== MAZO ===== */
+const DECK=M.map((c,i)=>({img:`cards/major/${String(i).padStart(2,"0")}-${c[0]}.jpg`,name:c[1],kw:c[2],txt:c[3]}));
+for(const s in SUITS)for(const r in RANKS)DECK.push({img:`cards/minor/${s}-${r}.jpg`,name:`${RANKS[r][0]} de ${SUITS[s][0]}`,kw:SUITS[s][0],txt:`${RANKS[r][1]}, en el terreno de ${SUITS[s][1]}.`});
+
+const OVR=Object.fromEntries(cards.map(c=>[c.name,c.meaning]));
+const LBL=[...POS.map(p=>p[0]),"Carta guía 1","Carta guía 2"];
+/* TIRADA POR DEFECTO (sesión 1). Para publicarla a la usuaria: pega aquí el código copiado desde el modo tarotista. */
+const DEFAULT_SPREAD=[["Caballero de Espadas",0],["Diez de Bastos",0],["El Sacerdote",0],["El Rey",0],["La Templanza",1],["El Loco",0],["Sota de Oros",0],["Caballero de Copas",0],["Ocho de Copas",0],["Dos de Copas",0],["Tres de Espadas",1],["Ocho de Bastos",0]];
+const idx=n=>DECK.findIndex(c=>c.name==n);
+const valid=v=>Array.isArray(v)&&v.length==12&&v.every(x=>idx(x[0])>=0);
+let S,sel=0,r=[0];const N=[12];
+function load(){let d=DEFAULT_SPREAD;try{const v=JSON.parse(localStorage.getItem("tarotSpread"));if(valid(v))d=v}catch(e){}S=d.map(x=>({i:idx(x[0]),r:!!x[1]}))}
+const dump=()=>JSON.stringify(S.map(s=>[DECK[s.i].name,s.r?1:0]));
+const head=i=>i<10?"POSICIÓN "+(i+1):LBL[i].toUpperCase();
+function render(){
+ const b=$("board");b.innerHTML="";
+ POS.forEach((p,i)=>{const s=S[i],k=DECK[s.i],d=document.createElement("div");d.className="slot"+(i==sel?" sel":"");d.style.gridArea=`${p[2]} / ${p[3]} / span 2`;
+  d.innerHTML=`<img class="card" src="${k.img}" alt="${k.name}" title="${p[0]} · ${k.name}${s.r?" (invertida)":""}" style="transform:rotate(${(i==1?90:0)+(s.r?180:0)}deg)">`;
+  d.onclick=()=>{sel=i;render()};b.appendChild(d)});
+ const s=S[sel],k=DECK[s.i];
+ $("panel").innerHTML=`<img src="${k.img}" alt="${k.name}" style="transform:rotate(${s.r?180:0}deg)"><div class="num">${head(sel)}</div><h3>${k.name}${s.r?" (invertida)":""}</h3><div class="label">${LBL[sel]}${sel<10?" — "+POS[sel][1]:""}</div><p>${OVR[k.name]||k.txt}</p>`;
+ [0,1].forEach(j=>{const s=S[10+j],k=DECK[s.i],g=$("g"+j);g.src=k.img;g.alt=k.name;g.style.transform=s.r?"rotate(180deg)":"";document.querySelectorAll(".gt")[j].textContent=k.name+(s.r?" (invertida):":":")})}
+function openCard(i){const s=S[i],k=DECK[s.i];$("modalTitle").textContent=k.name;$("modalOri").textContent=(s.r?"invertida":"derecho")+" · "+LBL[i];$("modalText").textContent=OVR[k.name]||k.txt;$("modal").classList.add("show")}
+function closeCard(){$("modal").classList.remove("show")}
+/* Navegación: recorrido único vertical, sin scroll */
+function view(){
+ $("deck").style.transform=`translateY(${-r[0]*100}vh)`;
+ $("vnav").style.display="flex";
+ $("pg").textContent=`${r[0]+1}/${N[0]}`;
+}
+function go(n){r[0]=Math.max(0,Math.min(N[0]-1,n));view()}
+const row=d=>{r[0]=Math.max(0,Math.min(N[0]-1,r[0]+d));view()};
+document.addEventListener("keydown",e=>{
+ const k=e.key;
+ if(k=="ArrowDown")row(1);
+ if(k=="ArrowUp")row(-1);
+ if(k=="Escape"){closeCard()}
+});
+function toggleMode(){document.body.classList.toggle("light");try{localStorage.setItem("tarotMode",document.body.classList.contains("light")?"light":"dark")}catch(e){}}
+try{if(localStorage.getItem("tarotMode")=="light")document.body.classList.add("light")}catch(e){}
+function toggleContact(){$("contact").classList.toggle("show")}
+load();render();go(0);
+</script>
+</body>
+</html>
